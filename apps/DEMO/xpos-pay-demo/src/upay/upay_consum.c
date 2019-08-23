@@ -19,9 +19,10 @@
 static st_tmf_param * m_tmf_param;
 static int first = 0;
 
-#define COUNTRYCODE "\x01\x56"//CNY
+//#define COUNTRYCODE "\x01\x56"//CNY
 //#define COUNTRYCODE "\x03\x56"//INR
 //#define COUNTRYCODE "\x09\x78"//EUR
+#define COUNTRYCODE "\x08\x40"//USD
 
 
 
@@ -49,7 +50,7 @@ void TestSetTermConfig(TERMCONFIG *termconfig)
 	APP_TRACE( "TestSetTermConfig" );
 
 	memset(termconfig,0x00,sizeof(TERMCONFIG));	
-	memcpy( termconfig->TermCap, "\xE0\xE1\xC8", 3);	/*Terminal performance '9F33'*/
+	memcpy( termconfig->TermCap, "\xE0\xF8\xC8", 3);	/*Terminal performance '9F33'*/
 	memcpy( termconfig->AdditionalTermCap,"\xFF\x80\xF0\x00\x01", 5);/*Terminal additional performance*/	
 	memcpy( termconfig->IFDSerialNum,"mf90_01",8);		/*IFD serial number '9F1E'*/ 
 	memcpy(termconfig->TermCountryCode, COUNTRYCODE, 2);	/*Terminal country code '9F1A'*/
@@ -62,7 +63,7 @@ void TestSetTermConfig(TERMCONFIG *termconfig)
 	termconfig->bCardHolderConfirm = YES;	/*Whether to support cardholder confirmation 1*/
 	termconfig->bPreferedOrder = YES;		/*Whether to support the preferred display 1*/
 	termconfig->bPartialAID = YES;			/*Whether to support partial AID matching 1*/
-	termconfig->bMultiLanguage  = NO;		/*Whether to support multiple languages 0*/
+	termconfig->bMultiLanguage  = YES;		/*Whether to support multiple languages 0*/
 	termconfig->bCommonCharset = YES;		/*Whether to support public character sets 0*/	
 	termconfig->bIPKCValidtionCheck = YES;	/*Whether to check the validity of the issuer's public key authentication 1*/
 	termconfig->bContainDefaultDDOL = YES;	/*Whether to include the defaultDDOL 1*/
@@ -83,26 +84,26 @@ void TestSetTermConfig(TERMCONFIG *termconfig)
 	/**<Terminal Action Analysis*/
 	termconfig->bTerminalActionCodes = YES;	/*Whether to support terminal behavior code 1*/
 	termconfig->bDefActCodesBefore1stGenAC = NO;/*Is the default behavior code prior to FirstGenerateAC ?*/
-	termconfig->bDefActCodesAfter1stGenAC = YES;/*Is the default behavior code after FirstGenerateAC ?*/
+	termconfig->bDefActCodesAfter1stGenAC = NO;/*Is the default behavior code after FirstGenerateAC ?*/
 	/**<Completion Processing*/
-	termconfig->bForceOnline= YES;			/*Whether to allow forced online 1*/
+	termconfig->bForceOnline= NO;			/*Whether to allow forced online 1*/
 	termconfig->bForceAccept = NO;			/*Whether to allow forced acceptance of transactions 1*/
 	termconfig->bAdvices = YES;				/*Whether to support notification 0*/
 	termconfig->bIISVoiceReferal = YES;		/*Whether to support the voice reference initiated by the card issuer ?*/
 	termconfig->bBatchDataCapture = YES;	/*Whether to support batch data collection*/
 	termconfig->bDefaultTDOL = YES;			/*Is there a default? TDOL*/
-	termconfig->bAccountSelect = NO;		/*Whether to support account selection*/
+	termconfig->bAccountSelect = YES;		/*Whether to support account selection*/
 }
 
 
 void TestDownloadAID(TERMINALAPPLIST *TerminalApps)
 {
 	int i = 0;
-	int count = 20;
+	int count = 21;
 
 	APP_TRACE( "TestDownloadAID" );
 	memset(TerminalApps,0x00,sizeof(TERMINALAPPLIST));	
-	TerminalApps->bTermAppCount = 20;//AID length
+	TerminalApps->bTermAppCount = 21;//AID length
 	memcpy(TerminalApps->TermApp[0].AID, "\xA0\x00\x00\x00\x01\x10\x10", 7);//AID
 	TerminalApps->TermApp[0].AID_Length = 7;
 	memcpy(TerminalApps->TermApp[1].AID, "\xA0\x00\x00\x00\x03\x10\x10", 7);
@@ -143,7 +144,9 @@ void TestDownloadAID(TERMINALAPPLIST *TerminalApps)
 	TerminalApps->TermApp[18].AID_Length = 7;
 	memcpy(TerminalApps->TermApp[19].AID, "\xA0\x00\x00\x03\x33\x01\x01\x01", 8);
 	TerminalApps->TermApp[19].AID_Length = 8;
-	for(i=0; i<20; i++)
+	memcpy(TerminalApps->TermApp[20].AID, "\xA0\x00\x00\x03\x33\x01\x01", 7);
+	TerminalApps->TermApp[20].AID_Length = 7;
+	for(i=0; i<21; i++)
 	{
 		TerminalApps->TermApp[i].bTerminalPriority = 0x03;	//Terminal priority
 		TerminalApps->TermApp[i].bMaxTargetPercentageInt = 0x00;/*Offset randomly selected maximum target percentage*/
@@ -194,7 +197,7 @@ int upay_consum( void )
 	card_in->pin_input=1;
 	card_in->pin_max_len=12;
 	card_in->key_pid = KF_DUKPT;//1 KF_MKSK 2 KF_DUKPT
-	card_in->pin_key_index=0;//-1:The returned PIN block is not encrypted (The key index number injected by the key injection tool, such as PIN KEY is 0, and LINE KEY is 1.)
+	card_in->pin_key_index=-1;//-1:The returned PIN block is not encrypted (The key index number injected by the key injection tool, such as PIN KEY is 0, and LINE KEY is 1.)
 	card_in->pin_timeover=60000;
 	strcpy(card_in->title, title);
 	strcpy(card_in->card_page_msg, "Please insert/swipe");//Swipe interface prompt information, a line of 20 characters, up to two lines, automatic branch.
@@ -230,7 +233,7 @@ int upay_consum( void )
 	memset(card_out, 0, sizeof(st_read_card_out));
 	
 	ret = emv_read_card(card_in, card_out);
-
+	APP_TRACE( "-----------------------upay_consum-1-------------------------" );
 	//if(ret == READ_CARD_RET_MAGNETIC){					// Magnetic stripe cards
 	//	sdk_log_out("trackb:%s\r\n", card_out.track2);
 	//	sdk_log_out("trackc:%s\r\n", card_out.track3);

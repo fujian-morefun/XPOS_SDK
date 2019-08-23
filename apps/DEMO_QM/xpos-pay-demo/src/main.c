@@ -16,7 +16,7 @@
 #pragma data_alignment=8
 #define LOGOIMG "data\\logo1.bmp"
 
-#define APP_VER "paydemo-V1.0.8"
+#define APP_VER "paydemo-V1.0.9"
 
 #define _APP_TASK_SIZE		1024*2
 #define _APP_TASK_PRIO		_APP_TASK_MIN_PRIO + 3
@@ -67,10 +67,10 @@ static void app_init()
 	EMV_iKernelInit();//Init EMV
 #endif
 	showlogo();
-// 	if (lcd_get_sublcd_probe() == 1)//
-// 	{
-// 		lcd_set_index(1);
-// 	}
+	if (lcd_get_sublcd_probe() == 1)//
+	{
+		lcd_set_index(1);
+	}
 	sdk_main_page();     
 }
 

@@ -55,8 +55,8 @@ typedef PACKED struct tagBITMAPINFOHEADER{
 } BITMAPINFOHEADER,  *PBITMAPINFOHEADER;
 */
 
-#define _APP_TASK_SIZE		(1024+1024)					// Thread stack size
-#define _APP_TASK_PRIO		(_APP_TASK_MIN_PRIO + 3)		// Thread priority
+#define _APP_TASK_SIZE		(1024+1024+1024)			// Thread stack size
+#define _APP_TASK_PRIO		(_APP_TASK_MIN_PRIO + 3)	// Thread priority
 static OS_STK pTaskStk[_APP_TASK_SIZE];					// Thread stack
 
 /*

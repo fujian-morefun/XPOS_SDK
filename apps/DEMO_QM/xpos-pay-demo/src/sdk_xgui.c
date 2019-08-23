@@ -31,8 +31,12 @@ LIB_EXPORT int tms_update(const char *file);
 #define MAIN_MENU_PAGE	"main"
 
 
-#ifndef DEV_MF67
+#ifdef DEV_MF67
+	#define BLUETOOTH 1
+	#define SERIALPORT 1
+#else
 	#define COSUME 1	//MF67 memory is relatively small, remove the bank card EMV code
+	//#define TMS	1
 #endif
 
 
@@ -46,7 +50,9 @@ enum{
 
 static  const st_main_menu_item_def _menu_def[] = {
 	{MAIN_MENU_PAGE ,	"Test",			""},
+#ifdef COSUME
 	{MAIN_MENU_PAGE ,	"Sale",			""},
+#endif
 	{MAIN_MENU_PAGE ,	"CodePay",		""},
 	{MAIN_MENU_PAGE ,	"Version",		""},
 	{MAIN_MENU_PAGE ,	"Settings",		""},
@@ -55,7 +61,9 @@ static  const st_main_menu_item_def _menu_def[] = {
 	//{"Test" ,	"Print",		""},
 	//{"Test",	"magcard",		""},
 	//{"Test",	"Ic",			""},
+#ifdef COSUME
 	{"Test",	"RF",			""},
+#endif
 	{"Test",	"M1",			""},
 	//{"Test",	"Touch",		""},
 	//{"Test",	"Barcode",		""},
@@ -67,8 +75,17 @@ static  const st_main_menu_item_def _menu_def[] = {
 	{"Test",	"ShowBmp",		""},	
 	{"Test",    "Led",          ""},
 	{"Test",    "Voice",        ""},
+#ifdef BLUETOOTH 
 	{"Test",    "Bluetooth",    ""},
+#endif
+
+#ifdef SERIALPORT
 	{"Test",    "SerialPort",   ""},
+#endif
+
+#ifdef TMS
+	{"Test",    "TMS",			""},
+#endif
 
 	{"Settings",	"Wifi Set",	""},
 	{"Settings",	"keySound",		""},
@@ -87,17 +104,9 @@ static int _menu_proc(char *pid)
 
 	if (strcmp(pid , "Sale") == 0){
 #ifdef COSUME
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(0);
-// 		}
 		upay_consum();
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(1);
-// 		}
 #else
-		xgui_messagebox_show("RF Test", "Not support", "", "confirm" , 3000);		
+		xgui_messagebox_show("Sale", "Not support", "", "confirm" , 3000);		
 #endif
 	}
 	else if (strcmp(pid , "Version") == 0){
@@ -131,26 +140,25 @@ static int _menu_proc(char *pid)
 // 	}
 	else if (strcmp(pid , "RF") == 0)
 	{
-		if (osl_get_is_m67())
+#ifdef COSUME
+		if (lcd_get_sublcd_probe() == 1)
 		{
-			xgui_messagebox_show("RF Test", "Not support", "", "confirm" , 3000);		
-		} 
-		else
-		{
-			if (lcd_get_sublcd_probe() == 1)
-			{
-				lcd_set_index(0);
-			}
-			test_rf();
-			if (lcd_get_sublcd_probe() == 1)
-			{
-				lcd_set_index(1);
-			}
+			xgui_messagebox_show("RF Test", "See the big LCD", "", "confirm" , 300);		
+			lcd_set_index(0);
 		}
+		test_rf();
+		if (lcd_get_sublcd_probe() == 1)
+		{
+			lcd_set_index(1);
+		}
+#else
+		xgui_messagebox_show("RF Test", "Not support", "", "confirm" , 3000);		
+#endif
 	}
 	else if (strcmp(pid , "M1") == 0){
 		if (lcd_get_sublcd_probe() == 1)
 		{
+			xgui_messagebox_show("RF M1", "See the big LCD", "", "confirm" , 300);		
 			lcd_set_index(0);
 		}	
 		test_m1();
@@ -185,63 +193,41 @@ static int _menu_proc(char *pid)
 	}
 	else if (strcmp(pid , "Security") == 0)
 	{
+// 		if (lcd_get_sublcd_probe() == 1)
+// 		{
+// 			lcd_set_index(0);
+// 		}
+		securityTest();
+// 		if (lcd_get_sublcd_probe() == 1)
+// 		{
+// 			lcd_set_index(1);
+// 		}
+	}
+	else if (strcmp(pid , "ShowQr") == 0){
 		if (lcd_get_sublcd_probe() == 1)
 		{
+			xgui_messagebox_show("ShowQr", "See the big LCD", "", "confirm" , 300);		
 			lcd_set_index(0);
 		}
-		securityTest();
+		showQr2("0.01");
 		if (lcd_get_sublcd_probe() == 1)
 		{
 			lcd_set_index(1);
 		}
-	}
-	else if (strcmp(pid , "ShowQr") == 0){
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(0);
-// 		}
-		showQr2("0.01");
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(1);
-// 		}
 	}	
 	else if (strcmp(pid , "Http") == 0)	{
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(0);
-// 		}
 		sdk_http_test();
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(1);
-// 		}
 	}
 	else if (strcmp(pid , "Https") == 0)	{
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(0);
-// 		}
 		sdk_https_test();
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(1);
-// 		}
 	}	
 	else if (strcmp(pid , "File") == 0){
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(0);
-// 		}
 		fileTest();
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(1);
-// 		}
 	}
 	else if (strcmp(pid , "ShowBmp") == 0){
 		if (lcd_get_sublcd_probe() == 1)
 		{
+			xgui_messagebox_show("ShowBmp", "See the big LCD", "", "confirm" , 300);		
 			lcd_set_index(0);
 		}
 		showbmptest();
@@ -251,15 +237,7 @@ static int _menu_proc(char *pid)
 		}
 	}
 	else if(strcmp(pid, "Led") == 0){
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(0);
-// 		}
 		sdk_driver_led();
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(1);
-// 		}
 	}
 	else if (strcmp(pid, "Open Log") == 0)
 	{
@@ -271,39 +249,44 @@ static int _menu_proc(char *pid)
 	}
 	else if (strcmp(pid, "Bluetooth") == 0)
 	{
-		if (osl_get_is_m67())
-		{
-			BluetoothTest();
-		}  
-		else
-		{
-			xgui_messagebox_show("BluetoothTest", "Not support", "", "confirm" , 3000);		
-		}
+#ifdef BLUETOOTH
+		BluetoothTest();
+#else
+		xgui_messagebox_show("BluetoothTest", "Not support", "", "confirm" , 3000);	
+#endif
 	}
 	else if (strcmp(pid, "SerialPort") == 0)
 	{
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(0);
-// 		}
-		SerialPortTest();
-// 		if (lcd_get_sublcd_probe() == 1)
-// 		{
-// 			lcd_set_index(1);
-// 		}
-	}
-	else if (strcmp(pid, "Wifi Set") == 0)
-	{
+#ifdef SERIALPORT
 		if (lcd_get_sublcd_probe() == 1)
 		{
+			xgui_messagebox_show("SerialPortTest", "See the big LCD", "", "confirm" , 300);		
 			lcd_set_index(0);
 		}
-		xgui_main_menu_show2("Wifi Menu", "Wifi Menu", 60000);
+		SerialPortTest();
 		if (lcd_get_sublcd_probe() == 1)
 		{
 			lcd_set_index(1);
 		}
+#else
+		xgui_messagebox_show("SerialPortTest", "Not support", "", "confirm" , 3000);		
+#endif
 	}
+	else if (strcmp(pid, "Wifi Set") == 0)
+	{
+		xgui_main_menu_show2("Wifi Menu", "Wifi Menu", 60000);
+	}
+	else if (strcmp(pid, "TMS") == 0)
+	{
+#ifdef TMS
+		xgui_messagebox_show("TMS Update", "Waiting...", "", "confirm" , 3000);		
+		tms_update("data\\tms.bin");
+		mf_system_power_state(POWER_STATE_RESET);
+#else
+		xgui_messagebox_show("TMSTest", "Not support", "", "confirm" , 3000);		
+#endif
+	}
+
 
 	return 0;
 }
@@ -337,6 +320,10 @@ void standby_pagepaint()
 
 	char * pbmp;	
 
+	if (lcd_get_sublcd_probe() == 1)
+	{
+		lcd_set_index(0);
+	}
 	xgui_BeginBatchPaint();
 	XGUI_SET_WIN_RC;
 	xgui_ClearDC();
@@ -362,6 +349,10 @@ void standby_pagepaint()
 
 
 	xgui_EndBatchPaint();
+	if (lcd_get_sublcd_probe() == 1)
+	{
+		lcd_set_index(1);
+	}
 }
 
 static int get_power()
@@ -401,12 +392,12 @@ void standby_pagepaint2()
 	int atc_state = atc_signal();
 	int wifi_state = wifi_get_signal();
 
-	lcd_set_index(1);
+	//lcd_set_index(1);
 	xgui_BeginBatchPaint();
 	XGUI_SET_WIN_RC;
 	xgui_ClearDC();
 
-	logotop = XGUI_LINE_TOP_0-4;
+	logotop = XGUI_LINE_TOP_0-3;
 
 	logoleft = 5;
 	xgui_out_bits(logoleft, logotop, (unsigned char *)m_atc_signal_buff_128[atc_state] , SIGNAL_BMP_WIDTH_128 , SIGNAL_BMP_HEIGHT_128 , 0);
@@ -417,12 +408,12 @@ void standby_pagepaint2()
 	logoleft = BATTER_BMP_LEFT_128;
 	xgui_out_bits(logoleft, logotop, (unsigned char *)m_batter_buff_128[power_state] , BATTER_BMP_WIDTH_128 , BATTER_BMP_HEIGHT_128 , 0);
 	get_yyyymmdd_str(data);	
- 	xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_0+6);
+ 	xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_0+7);
  	get_hhmmss_str(data);	
- 	xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_1+2);
+ 	xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_1+3);
 
 	xgui_EndBatchPaint();
-	lcd_set_index(0);
+	//lcd_set_index(0);
 }
 
 
@@ -479,15 +470,15 @@ void sdk_main_page()
 
 				if (pMsg.WParam == KEY_OK || pMsg.WParam == KEY_QUIT)	
 				{
-					if (lcd_get_sublcd_probe() == 1)
-					{
-						lcd_set_index(1);
-					}
+// 					if (lcd_get_sublcd_probe() == 1)
+// 					{
+// 						lcd_set_index(1);
+// 					}
 					xgui_main_menu_show(MAIN_MENU_PAGE , 0);	// Loop processing menu
-					if (lcd_get_sublcd_probe() == 1)
-					{
-						lcd_set_index(0);
-					}	
+// 					if (lcd_get_sublcd_probe() == 1)
+// 					{
+// 						lcd_set_index(0);
+// 					}	
 
 					xgui_PostMessage(XM_GUIPAINT, 0 , 0);
 				}

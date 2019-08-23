@@ -232,7 +232,7 @@ int test_rf()
 				xgui_EndBatchPaint();
 			}
 			if (pMsg.MessageId == XM_KEYPRESS) {
-				if (pMsg.WParam == KEY_OK)	{
+				if (pMsg.WParam == KEY_OK || pMsg.WParam == KEY_QUIT)	{
 					break;
 				}
 			}
@@ -289,7 +289,7 @@ int test_m1()
 	xgui_PostMessage(XM_GUIPAINT, 0 , 0);
 	while(1){
 
-		if (xgui_GetMessageWithTime(&pMsg, 100) == MESSAGE_ERR_NO_ERR) {
+		if (xgui_GetMessageWithTime(&pMsg, 500) == MESSAGE_ERR_NO_ERR) {
 			if (pMsg.MessageId == XM_GUIPAINT) {
 
 				xgui_BeginBatchPaint();
@@ -303,7 +303,7 @@ int test_m1()
 				xgui_EndBatchPaint();
 			}
 			if (pMsg.MessageId == XM_KEYPRESS) {
-				if (pMsg.WParam == KEY_OK)	{
+				if (pMsg.WParam == KEY_OK || pMsg.WParam == KEY_QUIT)	{
 					break;
 				}
 			}
@@ -325,7 +325,7 @@ int test_m1()
 
 				uidlen = mf_rfid_getuid(uid);//get card sn
 
-				if(uidlen >=0){
+				if(uidlen >= 0){
 					Ex_Str_HexToAsc(uid , 8 , 0, tempbuf );
 					xgui_messagebox_show("CardID:" , tempbuf, "" , "confirm" , 0);
 					mf_rfid_mfcl_setkey( "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF" );

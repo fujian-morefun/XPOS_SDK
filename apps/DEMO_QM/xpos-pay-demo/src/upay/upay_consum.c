@@ -173,16 +173,13 @@ int upay_consum( void )
 	sprintf(samt, "%.02f", amt/100.00);
 	if (lcd_get_sublcd_probe() == 1)
 	{
+		xgui_messagebox_show("Scan code", "See the big LCD", "", "confirm" , 300);		
 		lcd_set_index(0);
 	}	
 	ret = showQr2(samt);	
-	if (lcd_get_sublcd_probe() == 1)
-	{
-		lcd_set_index(1);
-	}
 	if (ret == 1)//Scan the code successfully and press the confirm button
 	{
-		
+
 	}
 	else if (ret == 2)//Find a non-contact card
 	{
@@ -213,6 +210,11 @@ int upay_consum( void )
 		memset(card_out, 0, sizeof(st_read_card_out));
 
 		ret = emv_read_card(card_in, card_out);
+
+		if (lcd_get_sublcd_probe() == 1)
+		{
+			lcd_set_index(1);
+		}
 
 		if(EMVAPI_RET_ARQC == ret)
 		{
@@ -264,11 +266,9 @@ int upay_consum( void )
 		xgui_messagebox_show("Sale", "OK" , "" , "confirm" ,  15000);
 	}
 
-// 	xgui_lcd2_show_msg("", "");
-// 	mf_led_digit_show("");
-// 	if (lcd_get_sublcd_probe() == 1)
-// 	{
-// 		lcd_set_index(1);
-// 	}	
+	if (lcd_get_sublcd_probe() == 1)
+	{
+		lcd_set_index(1);
+	}
 }
 

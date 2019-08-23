@@ -17,7 +17,7 @@ static void sdk_show_msg(char *title, char *msg)
 	xgui_BeginBatchPaint();
 	xgui_ClearDC();
 	xgui_TextOut_Line_Center(title , XGUI_LINE_TOP_0);
-	xgui_TextOut(0, XGUI_LINE_TOP_2, msg);
+	xgui_TextOut(0, XGUI_LINE_TOP_1, msg);
 	xgui_EndBatchPaint();
 }
 
@@ -164,6 +164,7 @@ void sdk_driver_barcode()
 void VoiceTest()
 {
 	Play_Voice("payok");//payment suceesfull
+	//Play_Voice("NoSpike");
 }
 
 void pagepaint(char *title, char *msg)

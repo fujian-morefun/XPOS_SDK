@@ -21,7 +21,15 @@ static void _paint_msg(char* msg)
 		xgui_TextOut(0, xgui_GetLineTop(yPos) , msg);
 		pstr ++;
 		msg = pstr;
-		yPos ++;
+		if (lcd_get_sublcd_probe() == 1)
+		{
+			yPos ++;
+			yPos %= 2;
+		}
+		else
+		{
+			yPos ++;
+		}
 	}
 
 	xgui_TextOut(0, xgui_GetLineTop(yPos) , msg);
@@ -33,7 +41,7 @@ static void _lcdLight_paint(int nTime ,char * szMsg)
 	char szContent[128] = {0};
 	switch(nTime)	{
 	case 30:
-		sprintf(szContent,"-> 30 sec\n   1 min\n   3 min\n   10 min\n   30 min\n   %s",szMsg);
+		sprintf(szContent," ->30 sec\n   1 min\n   3 min\n   10 min\n   30 min\n   %s",szMsg);
 		break;
 	case 60:
 		sprintf(szContent,"   30 sec\n ->1 min\n   3 min\n   10 min\n   30 min\n   %s",szMsg);
@@ -68,6 +76,46 @@ static void _lcdLight_paint(int nTime ,char * szMsg)
 	xgui_EndBatchPaint();
 }
 
+static void _lcdLight_paint2(int nTime ,char * szMsg)
+{
+	char szContent[128] = {0};
+	switch(nTime)	{
+	case 30:
+		strcpy(szContent," ->30 sec\n   1 min");
+		break;
+	case 60:
+		strcpy(szContent,"   30 sec\n ->1 min");
+		break;
+	case 3 * 60:
+		strcpy(szContent," ->3 min\n   10 min");
+		break;
+	case 10 * 60:
+		strcpy(szContent,"   3 min\n ->10 min");
+		break;
+	case 30 * 60:
+		sprintf(szContent," ->30 min\n   %s",szMsg);
+
+		break;
+	case LCD_LIGHT_MAX:
+		sprintf(szContent,"   30 min\n ->%s",szMsg);
+		break;
+	default:
+		strcpy(szContent," ->30 sec\n   1 min");
+		break;
+	}
+
+
+	xgui_BeginBatchPaint();
+
+	xgui_ClearDC();
+
+	_paint_msg(szContent);
+
+	//xgui_Page_OP_Paint( "Cancel" , "Save");
+
+	xgui_EndBatchPaint();
+}
+
 int TimeSet_Show(int nLightTime , char * szMsg)
 {
 	int presskey;
@@ -78,7 +126,14 @@ int TimeSet_Show(int nLightTime , char * szMsg)
 	int i;
 	MESSAGE pMsg;
 
-	_lcdLight_paint(nLightTime , szMsg);
+	if (lcd_get_sublcd_probe() == 1)
+	{
+		_lcdLight_paint2(nLightTime , szMsg);
+	}
+	else
+	{
+		_lcdLight_paint(nLightTime , szMsg);
+	}
 
 	//获取当前值在数组中的索引，之后加减只对索引进行加减，刷新的时候再根据索引从数组中读取对应的值
 	for (i = 0; i < nTotalCount; ++ i)	{
@@ -97,11 +152,25 @@ int TimeSet_Show(int nLightTime , char * szMsg)
 				switch(presskey) {
 					case KEY_UP:case KEY_LEFT: case KEY_1 : case KEY_XING:
 						nCurIndex = (-- nCurIndex < 0 ? nTotalCount - 1 : nCurIndex);
-						_lcdLight_paint(time[nCurIndex] , szMsg);
+						if (lcd_get_sublcd_probe() == 1)
+						{
+							_lcdLight_paint2(time[nCurIndex] , szMsg);
+						}
+						else
+						{
+							_lcdLight_paint(time[nCurIndex] , szMsg);
+						}
 						break;
 					case KEY_DOWN:case KEY_RIGHT: case KEY_2 : case KEY_JING:
 						nCurIndex = (++ nCurIndex % nTotalCount);
-						_lcdLight_paint(time[nCurIndex] , szMsg);
+						if (lcd_get_sublcd_probe() == 1)
+						{
+							_lcdLight_paint2(time[nCurIndex] , szMsg);
+						}
+						else
+						{
+							_lcdLight_paint(time[nCurIndex] , szMsg);
+						}
 						break;
 					case KEY_QUIT:
 						return -1;
