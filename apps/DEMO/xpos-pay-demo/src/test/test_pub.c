@@ -96,7 +96,7 @@ int test_devinfo( void )
 }
 
 
-
+/*
 int test_magcard()
 {
 	MESSAGE pMsg;
@@ -263,7 +263,7 @@ int test_rf()
 	mf_rfid_tcl_close();
 	return 0;
 
-}
+}*/
 
 int test_m1()
 {

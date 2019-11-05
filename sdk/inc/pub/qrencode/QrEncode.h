@@ -1,7 +1,7 @@
 /************************************************************************/
 // Filename: QrEncode.h
 
-// Describe：简要描述CQR_Encode类的功能及相关定义
+// Describe：Brief description of CQR_Encode class functions and related definitions
 /************************************************************************/
 
 #pragma once
@@ -17,12 +17,12 @@ extern "C"{
 #define		HorizontalDPI	600
 #define		VerticalDPI		600
 
-//Qr条码的参数
+//QrBarcode parameters
 typedef PACKED struct QRParam
 {
-	int nVersion;		//版本号:1~40
-	int nLevel;			//纠错级别:0-低,1-中,2-较高,3-最高,
-	int moudleWidth;	//模块宽度（单位：像素）
+	int nVersion;		//version:1~40
+	int nLevel;			//Error correction level: 0-low, 1-medium, 2-high, 3-highest.
+	int moudleWidth;	//Module width (in units: pixels)
 } Param_QR_INFO; 
 
 LIB_EXPORT int mfGeneCodePic(char * chData, int iLen, Param_QR_INFO *QRParam , char * bitmap);

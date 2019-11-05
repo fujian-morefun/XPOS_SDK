@@ -169,6 +169,7 @@ extern "C"{
 	LIB_EXPORT extern int Emv_SetTerminalParam(const ST_TERMPARA *stTermPara);
 	LIB_EXPORT extern int Emv_GetTerminalParam(ST_TERMPARA *stTermPara);
 	LIB_EXPORT extern int Emv_SetTerminalParamRam(ST_TERMPARA *stTermPara);
+	LIB_EXPORT extern int Emv_GetTerminalParam_file(ST_TERMPARA *stTermPara);
 	/**< -----------------------------------------------------------------------------------------------------*/
 
 
@@ -187,6 +188,7 @@ extern "C"{
 #define EMV_CASHDEPOSIT    		0x21
 #define VISA_REFUND    			0x20
 #define RUPAY_MONEY_ADD			0x28		//圈存
+#define RUPAY_LEGACY_MONEY_ADD    0x33       //Legacy圈存
 #define RUPAY_VOID				0x34		//撤销
 #define EMV_PAYMENT        		0x50
 	/**< 银联或银行交易类型*/
@@ -215,9 +217,9 @@ extern "C"{
 #define MODE_RF_TYPE_MSD		0x04
 #define MODE_TYPE_EC			0x10		/*电子现金交易*/
 #define	MODE_TYPE_RF			0x20		/*非接触*/
-#define	MODE_TYPE_DPAS			0x22		/*非接触d-pas*/
-#define	MODE_TYPE_MS			0x24		/*非接触d-pas ms*/
-#define	MODE_TYPE_ZIP			0x34		/*非接触zip*/
+#define	MODE_TYPE_DPAS			0x30		/*非接触d-pas*/
+#define	MODE_TYPE_AMEX		    0x40		/*非接触AMEX*/
+
 	
 /**<结构体STEMVPROC数据nEmvRet的值*/
 #define EMV_RES_TRY_AGAIN		(-4)		/**< 请重新挥卡*/
@@ -227,6 +229,7 @@ extern "C"{
 #define EMV_RES_ACCEPT			(0)			/**< 交易接受*/
 #define EMV_RES_REQ_ONLINE		(1)			/**< 请求联机*/
 #define EMV_RES_2GACAAC			(2)			/**< 第二次GAC请求AAC*/
+#define EMV_RES_ACCEPT_DELAY_AUTH (3)      //AE的延时认证
 
 	/**<结构体STEMVPROC数据nOnlineRes的值*/
 #define EMV_ONLINE_SUCC			(0)			/**< 联机成功*/
@@ -289,13 +292,7 @@ extern "C"{
 		char szDDOL_b_DF14[252];			/**<(AID)缺省动态数据认证数据对象列表(变长)*/
 		char cDDOLLen;						/**< DDOL长度*/
 		char sEcLimit_9F7B[6];				/**< (EC)电子现金终端交易限额*/
-#ifdef DPAS
-		char cDF19len;
-#endif
 		char sRf_OfflineLimit_DF19[6];		/**< (RF TERM) 非接脱机最低限额*/
-#ifdef DPAS
-		char cDF20len;
-#endif
 		char sRF_TxnLimit_DF20[6];			/**< (RF TERM) 非接交易限额*/
 		char sRf_CVMLimit_DF21[6];			/**< (RF TERM) 非接CVM限额*/
 #ifdef AUTO_APPROVE
@@ -332,11 +329,7 @@ extern "C"{
 		char cRefCurrExp_aid_9F3D;			/**<(TERM)交易参考货币指数*/
 		char c9F1D_len;
 		char cRiskManage_aid_9F1D;			/**<(TERM)终端风险管理数据*/
-#ifdef DPAS
-		char cResv[29];		
-#else
-		char cResv[31+111];	
-#endif
+		char cResv[31];	
 #endif
 	}ST_TERMAID;
 
@@ -498,6 +491,7 @@ extern "C"{
 		int (*Beep)(int nMillisecond);
 		int (*ShankaDel)(int);
 		int (*SelectLan)(char *);					/**<语言选择界面函数指针*/
+		int (*DispOffPin)(int);				        /**<脱机PIN结果提示界面*/
 	}ST_UI;
 	/**<IC卡函数指针*/
 	typedef struct 
@@ -510,8 +504,8 @@ extern "C"{
 	/**内核交互API回调列表*/
 	typedef struct
 	{
-		void (*EXE_vSendOut)(char cIns,  int uiDataLen, char *pauData);		//内核输出		
-		void (*EXE_vObtain)(char cIns,  int uiDataLen, char *pauData);		//内核输入 
+		void (*EXE_vSendOut)(unsigned char cIns,  int uiDataLen, char *pauData);		//内核输出		
+		void (*EXE_vObtain)(unsigned char cIns,  int uiDataLen, char *pauData);		//内核输入 
 	}ST_EMV_EXPAND_INTERFACE;
 
 	/**< 设置函数指针接口*/
@@ -574,6 +568,7 @@ extern "C"{
 		unsigned char cPriority_87; 		    /**< 应用优先权标识符*/
 		uchar ucExtendSelect[11+1];				//扩展应用选择
 		int nExtendSelectLen;					//最大11字节
+		int nIndex;				/**<在终端AID列表中的索引*/
 	}ST_RF_ICCAID;
 	
 	/*量产外卡API接口*/
@@ -582,7 +577,7 @@ extern "C"{
 	{
 		uchar ucAid[MAXLEN_AID];	// AID
 		uchar ucAidLen;				// AID长度
-		uchar ucPartSelect;			// 部分匹配标识  0x00--完全匹配  0x01-部分匹配
+		uchar ucPartSelect;			// 部分匹配标识 0x00:部分匹配 0x01完全匹配
 		uchar ucKernelId;			// KernelId
 		uchar ucCheckKernelIdSign;	// 0--匹配不校验内核ID   1--匹配校验内核ID	
 	}EMV_stTermAIDList;
@@ -593,8 +588,8 @@ extern "C"{
 	//交易模式
 	#define  EMV_FLOWTYPE_M_CHIP			0x21	//PayPass Mchip芯片模式
 	#define  EMV_FLOWTYPE_M_STRIPE			0x22	//PayPass Stripe磁条模式
-	#define  EMV_FLOWTYPE_RUPAY_LONG_TAP	0x23	//RUPAY Long Tap
-	#define  EMV_FLOWTYPE_RUPAY_2_TAP		0x24	//RUPAY 2 Tap
+	#define  EMV_FLOWTYPE_R_LEGACY			0x23	//RUPAY Legacy模式
+	#define  EMV_FLOWTYPE_R_NON_LEGACY		0x24	//RUPAY Non_Legacy模式
 
 	#define  EMV_FLAG_ADD					     0x01 //添加 
 	#define  EMV_FLAG_DELETE				     0x02 //删除 

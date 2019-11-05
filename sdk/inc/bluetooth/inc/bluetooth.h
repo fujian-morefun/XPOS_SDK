@@ -7,7 +7,7 @@ LIB_EXPORT int bluetooth_recv_count();
 LIB_EXPORT int bluetooth_recv(char *buff, int size);
 LIB_EXPORT int bluetooth_send(char *buff, int size);
 LIB_EXPORT void bluetooth_drop();
-LIB_EXPORT void bluetooth_set_gkey_state(int state);		// 1 ∆•≈‰ 2 ≤ª∆•≈‰
+LIB_EXPORT void bluetooth_set_gkey_state(int state);		// 1 Match 2 Mismatch
 LIB_EXPORT int bluetooth_set_name(char *name);
 LIB_EXPORT int bluetooth_set_name_ex(char *name,char * mac);
 LIB_EXPORT int bluetooth_get_name(char *name);

@@ -91,6 +91,7 @@
 #define   EMV_TAG_9F24_IC_PAR				"\x9F\x24"		/**< PAR （主账户参考号）	*/
 #define   EMV_TAG_9F19_IC_TOKEN				"\x9F\x19"		/**< Token Data Object）	*/
 #define   EMV_TAG_DF61_IC_ODA				"\xDF\x61"		/**< 卡片增值功能 用以指示ODA	*/
+#define   EMV_TAG_9F7C_IC_PAR				"\x9F\x7c"		/**< 用户专用数据	*/
 
 
 /*
@@ -368,7 +369,9 @@
 
 //RUPAY
 //IC卡标签	
+#define RP_TAG_DF03_IC_SR_AI	"\xDF\x03"			// Service Availability Info
 #define RP_TAG_DF07_IC_SR_DIR	"\xDF\x07"			//Service Directory 
+#define RP_TAG_DF2E_IC_LOCAL_SR_CBL	"\xDF\x2E"			//Card Balance Limit – Local(Service)
 #define RP_TAG_DF33_IC_SRD		"\xDF\x33"			//Service Related Data
 #define RP_TAG_DF3B_IC_SRD		"\xDF\x3B"			//Application Usage Control Extension
 #define RP_TAG_DF61_IC_DSR_ID	"\xDF\x61"			//ICC Dynamic Signature Record Identifier
@@ -420,13 +423,22 @@
 #define AMEX_TAG_DF8605_DRL_DATA                         "\xDF\x86\x05"
              //用于存储DRL_for_XXXXb     格式 两个字节长度DRL选项+DRL_READER_CON_TRANS_LIMIT(6b)+DRL_READER_CON_FOOL_LIMIT(6b)+AMEX_TAG_DF8604_DRL_READER_CVM_LIMIT(6b)
 			 //后期改成文件下载是否更好
-#define AMEX_TAG_DF8606_TM_CHECK_INDICATE                "\xDF\x86\x06"     //B1b8   Reader Contactless Floor Limit check
-																		    //B1b7   Reader Contactless Transaction Limit check
+#define AMEX_TAG_DF8606_TM_CHECK_INDICATE                "\xDF\x86\x06"    //B1b8   Reader Contactless Floor Limit check
+																			//B1b7   Reader Contactless Transaction Limit check
 																			//B1b6   Reader CVM Required Limit check
 																			//B1b5   Reader zero Amount check
-																			//B1b4   Reader zero option Amount check
+																			//B1b4   Reader zero option Amount check  0/1
 																			//B1b3   Reader static check
-																			//B1B2   Reader TM Floor Limit check
+																			//B1b2   Reader TM Floor Limit check
+																			//B1b1   Reader static support   0/1
+#define AMEX_TAG_DF8607_TRACK2_DATA                  "\xDF\x86\x07"  		
+
+#define DPAS_TAG_DF8701_TRACK1_DATA                  "\xDF\x87\x01"  
+#define DPAS_TAG_DF8702_TRACK2_DATA                  "\xDF\x87\x02" 
+#define DPAS_TAG_9F80_DCVV2							 "\x9F\x80"  
+#define DPAS_TAG_9F7E_DCVV1							 "\x9F\x7E"  
+#define DPAS_TAG_9F7D_PAVN							 "\x9F\x7D"  			
+
 //EMV 公共自定义TAG
 #define DEF_TAG_ISS_RECOVER_SIGN	"\xDF\x84\x01"		//回收证书标识		0--不存在 1-存在
 #define DEF_TAG_TORN_RECORD_DATA	"\xDF\x84\x02"		//闪卡数据

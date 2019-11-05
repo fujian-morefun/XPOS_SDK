@@ -1,5 +1,5 @@
 /*! \file xgui_init.h
-	\brief gui 初始化
+	\brief gui Initialization
 *	\author lx
 *	\date 2014/02/08
 */
@@ -8,7 +8,7 @@
 #include "xgui_pub.h"
 
 /**
-* @brief gui 初始化
+* @brief gui Initialization
 * @return 
 */
 LIB_EXPORT void xgui_init();

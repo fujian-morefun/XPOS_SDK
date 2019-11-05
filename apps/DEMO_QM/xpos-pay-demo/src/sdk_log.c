@@ -10,6 +10,7 @@
 #include "xGui/inc/message.h"
 #include <stdio.h>
 #include "xGui/inc/pageproc.h"
+#include "driver/mf_supply_power.h"
 
 static int init = 0;
 static char buff[512];
@@ -49,28 +50,26 @@ static void _LogOut_Paint(int value)
 
 void openlog(int nOpen)
 {
-	//char set[512] = {0};
-	//char setbuf[512] = {0};
-	//int dl = 0;
+	char set[512] = {0};
+	char setbuf[512] = {0};
+	int dl = 0;
 
 	if (nOpen == 1)
 	{
-		//strcpy(set, "logto=1 malloc=0 pub_file=0 demo=0 mxml=0 print_dev=0 atc_gprs=0 gprs=0 atc_uart=0 modem=0 uninpay=0 pub=0 xgui=0 atc=0 net=0 httpdownload=0 tms=0 sc=0 app_pub=0 emv=0 rpc=0 product=0 wifi=0");
-		osl_log_resume();
+		strcpy(set, "logto=1 malloc=0 pub_file=0 demo=0 mxml=0 print_dev=0 atc_gprs=0 gprs=0 atc_uart=0 modem=0 uninpay=0 pub=0 xgui=0 atc=0 net=0 httpdownload=0 tms=0 sc=0 app_pub=0 emv=0 rpc=0 product=0 wifi=0");
 	} 
 	else
 	{
-		//strcpy(set, "logto=0 malloc=0 pub_file=0 demo=0 mxml=0 print_dev=0 atc_gprs=0 gprs=0 atc_uart=0 modem=0 uninpay=0 pub=0 xgui=0 atc=0 net=0 httpdownload=0 tms=0 sc=0 app_pub=0 emv=0 rpc=0 product=0 wifi=0");
-		osl_log_pause();
+		strcpy(set, "logto=0 malloc=0 pub_file=0 demo=0 mxml=0 print_dev=0 atc_gprs=0 gprs=0 atc_uart=0 modem=0 uninpay=0 pub=0 xgui=0 atc=0 net=0 httpdownload=0 tms=0 sc=0 app_pub=0 emv=0 rpc=0 product=0 wifi=0");
 	}
-// 	dl = strlen(set);
-// 	setbuf[0] = (dl >> 0) & 0xff;
-// 	setbuf[1] = (dl >> 8) & 0xff;
-// 	setbuf[2] = (dl >> 16) & 0xff;
-// 	setbuf[3] = (dl >> 24) & 0xff;
-// 	strcpy(setbuf+4, set);
-// 
-// 	osl_set_log_data(setbuf, dl+4);
+	dl = strlen(set);
+	setbuf[0] = (dl >> 0) & 0xff;
+	setbuf[1] = (dl >> 8) & 0xff;
+	setbuf[2] = (dl >> 16) & 0xff;
+	setbuf[3] = (dl >> 24) & 0xff;
+	strcpy(setbuf+4, set);
+
+	osl_set_log_data(setbuf, dl+4);
 }
 
 int LogOutSet_Show()
@@ -95,6 +94,7 @@ int LogOutSet_Show()
 				case KEY_OK:
 					//保存，再走quit退出
 					openlog(nOpen);
+					mf_system_power_state(POWER_STATE_RESET);
 					break;
 				case KEY_QUIT:
 					break;

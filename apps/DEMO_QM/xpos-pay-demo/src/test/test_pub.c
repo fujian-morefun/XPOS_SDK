@@ -109,7 +109,6 @@ int test_devinfo( void )
 int test_magcard()
 {
 	MESSAGE pMsg;
-	char * pbuff;
 
 	mf_magtek_flush();
 	xgui_PostMessage(XM_GUIPAINT, 0 , 0);
@@ -211,7 +210,6 @@ int test_rf()
 {
 
 	MESSAGE pMsg;
-	char * pbuff;
 	int rc;
 	
 	APP_TRACE("rf1\r\n");
@@ -280,18 +278,18 @@ int test_rf()
 
 int test_m1()
 {
-
+	//char buffer[128] = {0};
 	MESSAGE pMsg;
-	char * pbuff;
-	int rc;
-	rc = mf_rfid_init();
+	//int rc;
+	//rc = mf_rfid_init();
 
+	//strcpy(buffer, "Please press your M1 card");
 	xgui_PostMessage(XM_GUIPAINT, 0 , 0);
 	while(1){
 
 		if (xgui_GetMessageWithTime(&pMsg, 500) == MESSAGE_ERR_NO_ERR) {
 			if (pMsg.MessageId == XM_GUIPAINT) {
-
+				//pagepaint("M1Test", buffer, 0);
 				xgui_BeginBatchPaint();
 				XGUI_SET_WIN_RC;
 				xgui_ClearDC();
@@ -328,6 +326,7 @@ int test_m1()
 				if(uidlen >= 0){
 					Ex_Str_HexToAsc(uid , 8 , 0, tempbuf );
 					xgui_messagebox_show("CardID:" , tempbuf, "" , "confirm" , 0);
+					//sprintf(buffer, "CardID:%s", tempbuf);
 					mf_rfid_mfcl_setkey( "\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF" );
 					cmd = 0x60;//0x60:A key authentication;0x61:B key authentication
 					sector = 1;//0--15
@@ -339,40 +338,45 @@ int test_m1()
 						if(rc == 0)
 						{
 							Ex_Str_HexToAsc(databuff , datalen*2 , 0, tempbuf );
+							//sprintf(buffer, "Card Info:%s", tempbuf);
 							xgui_messagebox_show("Card info:" , tempbuf, "" , "confirm" , 0);
 							memcpy(databuff, "\x00\x11\x22\x33\x44\x55\x66\x77\x88\x99\x11\x22\x33\x44\x55\x66", 16);
 							datalen = 16;
 							rc = mf_rfid_mfcl_write(block, databuff, datalen);//Writes the data for the specified block
 							if(rc == 0)
 							{
-								xgui_messagebox_show("rf m1" , "write data succ", "" , "confirm" , 0);                                                                                                                                    
+								xgui_messagebox_show("rf m1" , "write data succ", "" , "confirm" , 0); 
+								//strcpy(buffer, "Write data succ");
 							}
 							else
 							{
-								xgui_messagebox_show("rf m1" , "write data fail", "" , "confirm" , 0);                                                                                                                                       
+								xgui_messagebox_show("rf m1" , "write data fail", "" , "confirm" , 0);    
+								//strcpy(buffer, "Write data fail");
 							}
 						}
 						else
 						{
-							xgui_messagebox_show("rf m1" , "read data fail", "" , "confirm" , 0);                                                                                      
+							xgui_messagebox_show("rf m1" , "read data fail", "" , "confirm" , 0);        
+							//strcpy(buffer, "Read data fail");
 						}
 					}
 					else
 					{
 						xgui_messagebox_show("rf m1" , "authentication fail", "" , "confirm" , 0);
+						//strcpy(buffer, "Authentication fail");
 					}
 				}
 				else
 				{
 					xgui_messagebox_show("rf m1" , "rf get cardid fail", "" , "confirm" , 0);
+					//strcpy(buffer, "Get Card SN fail");
 				}
 
 				xgui_PostMessage(XM_GUIPAINT, 0 , 0);
 			}
-
+			mf_rfid_mfcl_close();
 		}
 	}
-	mf_rfid_mfcl_close();
 	return 0;
 
 }

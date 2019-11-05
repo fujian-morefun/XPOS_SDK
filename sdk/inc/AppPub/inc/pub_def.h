@@ -2,13 +2,13 @@
 
 typedef struct 
 {
-	unsigned short 	usYear; 		//年 1900 -  2037
-	unsigned char  	ucMonth;		//月 1 - 12 
-	unsigned char  	ucDay;			//日 1 ~ 31
-	unsigned char  	ucDayOfWeek;		//星期 0-6
-	unsigned char  	ucHour;			//时 0 - 23
-	unsigned char  	ucMinite; 		//分 0 - 59
-	unsigned char  	ucSecond; 		//秒 0-59
+	unsigned short 	usYear; 		// 1900 -  2037
+	unsigned char  	ucMonth;		// 1 - 12 
+	unsigned char  	ucDay;			// 1 ~ 31
+	unsigned char  	ucDayOfWeek;		// 0-6
+	unsigned char  	ucHour;			// 0 - 23
+	unsigned char  	ucMinite; 		// 0 - 59
+	unsigned char  	ucSecond; 		// 0-59
 } mf_DATETIME; 
 
 typedef enum

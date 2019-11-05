@@ -19,10 +19,10 @@
 static st_tmf_param * m_tmf_param;
 static int first = 0;
 
-//#define COUNTRYCODE "\x01\x56"//CNY
+#define COUNTRYCODE "\x01\x56"//CNY
 //#define COUNTRYCODE "\x03\x56"//INR
 //#define COUNTRYCODE "\x09\x78"//EUR
-#define COUNTRYCODE "\x08\x40"//USD
+//#define COUNTRYCODE "\x08\x40"//USD
 
 
 
@@ -132,7 +132,7 @@ void TestDownloadAID(TERMINALAPPLIST *TerminalApps)
 	TerminalApps->TermApp[12].AID_Length = 7;
 	memcpy(TerminalApps->TermApp[13].AID, "\xA0\x00\x00\x00\x42\x20\x10", 7);
 	TerminalApps->TermApp[13].AID_Length = 7;
-	memcpy(TerminalApps->TermApp[14].AID, "\xA0\x00\x00\x00\x65\x10\x10", 7);
+	memcpy(TerminalApps->TermApp[14].AID, "\xA0\x00\x00\x00\x65\x10\x10",7);
 	TerminalApps->TermApp[14].AID_Length = 7;
 	memcpy(TerminalApps->TermApp[15].AID, "\xA0\x00\x00\x01\x21\x10\x10", 7);
 	TerminalApps->TermApp[15].AID_Length = 7;
@@ -142,7 +142,7 @@ void TestDownloadAID(TERMINALAPPLIST *TerminalApps)
 	TerminalApps->TermApp[17].AID_Length = 7;
 	memcpy(TerminalApps->TermApp[18].AID, "\xA0\x00\x00\x01\x52\x30\x10", 7);
 	TerminalApps->TermApp[18].AID_Length = 7;
-	memcpy(TerminalApps->TermApp[19].AID, "\xA0\x00\x00\x03\x33\x01\x01\x01", 8);
+	memcpy(TerminalApps->TermApp[19].AID, "\xA0\x00\x00\x05\x24\x10\x10", 7);
 	TerminalApps->TermApp[19].AID_Length = 8;
 	memcpy(TerminalApps->TermApp[20].AID, "\xA0\x00\x00\x03\x33\x01\x01", 7);
 	TerminalApps->TermApp[20].AID_Length = 7;
@@ -167,7 +167,7 @@ void TestDownloadAID(TERMINALAPPLIST *TerminalApps)
 		memcpy(TerminalApps->TermApp[i].abDDOL, "\x9F\x37\x04", 3);/* TDOL */
 		TerminalApps->TermApp[i].DDOL_Length = 0x03;/* TDOL Length */
 		TerminalApps->TermApp[i].TerminalType = 0x22;/* Terminal type: data format (n 3) */
-		memcpy(TerminalApps->TermApp[i].TerminalCap, "\xE0\xE1\xC8", 3);/* Terminal capability: data format (n 3) */		
+		memcpy(TerminalApps->TermApp[i].TerminalCap, "\xE0\xF8\xC8", 3);/* Terminal capability: data format (n 3) */		
 		TerminalApps->TermApp[i].cOnlinePinCap = 0x01;/* Terminal online pin capability */
 	}
 
@@ -182,22 +182,23 @@ int upay_consum( void )
 	st_read_card_in *card_in =NULL;
 	st_read_card_out *card_out =NULL;
 	st_card_info card_info={0};
- 	TERMCONFIG termconfig={0};
- 	TERMINALAPPLIST TerminalApps={0};
+ 	TERMCONFIG termconfig;
+ 	TERMINALAPPLIST TerminalApps;
 // 	CAPUBLICKEY pkKey={0};
 
 	APP_TRACE( "upay_consum" );
 	card_in=(st_read_card_in *)MALLOC(sizeof(st_read_card_in));
 	memset(card_in,0x00,sizeof(st_read_card_in));
 	//Set card_in
-
-	//bInputPin( m_InputPin );//Set offline PIN verification interface
+	memset(&TerminalApps,0,sizeof(TERMINALAPPLIST));
+	memset(&termconfig,0,sizeof(TERMCONFIG));
+	//EMV_SetInputPin( m_InputPin );//Set offline PIN verification interface
 
 	card_in->trans_type=EMV_SALE;
 	card_in->pin_input=1;
 	card_in->pin_max_len=12;
 	card_in->key_pid = KF_DUKPT;//1 KF_MKSK 2 KF_DUKPT
-	card_in->pin_key_index=-1;//-1:The returned PIN block is not encrypted (The key index number injected by the key injection tool, such as PIN KEY is 0, and LINE KEY is 1.)
+	card_in->pin_key_index=0;//-1:The returned PIN block is not encrypted (The key index number injected by the key injection tool, such as PIN KEY is 0, and LINE KEY is 1.)
 	card_in->pin_timeover=60000;
 	strcpy(card_in->title, title);
 	strcpy(card_in->card_page_msg, "Please insert/swipe");//Swipe interface prompt information, a line of 20 characters, up to two lines, automatic branch.
@@ -212,8 +213,9 @@ int upay_consum( void )
     }
         
     sprintf(card_in->amt, "%lld" , namt);
-
-        
+	
+	card_in->forceIC=1;
+	card_in->show_PAN=0;    
 	card_in->card_mode = READ_CARD_MODE_MAG | READ_CARD_MODE_IC | READ_CARD_MODE_RF;	// Card reading method
 	card_in->card_timeover = 60000;	// Card reading timeout ms
 	
@@ -227,19 +229,19 @@ int upay_consum( void )
 		EMV_PrmSetAIDPrm(&TerminalApps);//Set AID
 	// 	EMV_PrmSetCAPK(&pkKey);//Set CAPK	
 	}
-
 	APP_TRACE( "emv_read_card" );
 	card_out= (st_read_card_out *)MALLOC(sizeof(st_read_card_out));
+loop_card:
 	memset(card_out, 0, sizeof(st_read_card_out));
-	
+	dukpt_get_ksn(0, card_out->ksn);
 	ret = emv_read_card(card_in, card_out);
-	APP_TRACE( "-----------------------upay_consum-1-------------------------" );
+
+	APP_TRACE( "-----------------------upay_consum Ret:%d-------------------------",ret);
 	//if(ret == READ_CARD_RET_MAGNETIC){					// Magnetic stripe cards
 	//	sdk_log_out("trackb:%s\r\n", card_out.track2);
 	//	sdk_log_out("trackc:%s\r\n", card_out.track3);
 	//	sdk_log_out("pan:%s\r\n", card_out.pan);
 	//	sdk_log_out("expdate:%s\r\n", card_out.exp_data);
-
 	//	
 	//}
 	//else if(ret == INPUTCARD_RET_ICC){					// 
@@ -251,7 +253,30 @@ int upay_consum( void )
 	//else{
 	//	return ret;
 	//}
-	
+	if(EMVAPI_RET_FALLBACk==ret){
+		card_in->card_mode = READ_CARD_MODE_MAG;
+		card_in->forceIC=0;
+		memset(card_in->card_page_msg,0x00,sizeof(card_in->card_page_msg));
+		strcpy(card_in->card_page_msg,"please try to swipe");
+			goto loop_card;
+	}
+	else if(EMVAPI_RET_FORCEIC==ret){
+		if(card_in->card_mode == READ_CARD_MODE_MAG)
+			ret =EMVAPI_RET_ARQC;
+		else{
+			card_in->card_mode = READ_CARD_MODE_IC | READ_CARD_MODE_RF;
+			memset(card_in->card_page_msg,0x00,sizeof(card_in->card_page_msg));
+			strcpy(card_in->card_page_msg,"don't swipe,please tap/insert the card");
+			goto loop_card;
+		}
+	}
+	else if(EMVAPI_RET_OTHER==ret){
+		card_in->card_mode = READ_CARD_MODE_IC;
+		memset(card_in->card_page_msg,0x00,sizeof(card_in->card_page_msg));
+		strcpy(card_in->card_page_msg,"please tap the card");
+			goto loop_card;
+	}
+
 	if(EMVAPI_RET_ARQC == ret)
 	{
 		xgui_messagebox_show("", "Online Request" , "" , "ok" , 0);

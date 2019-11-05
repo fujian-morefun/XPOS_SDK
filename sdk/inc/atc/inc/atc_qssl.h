@@ -6,10 +6,10 @@ LIB_EXPORT int aq_ssl_init(int index, char * cacert, char * clientcert, char * c
 LIB_EXPORT int aq_ssl_connect(int index , char * ip , int port, void * func);
 LIB_EXPORT int aq_ssl_send(int index, char * pdata, int size);
 
-//到达size长度后才收
+//Receive after reaching size length
 LIB_EXPORT int aq_ssl_recv(int index, char * pdata, int size);
 
-//有多少收多少
+//How much do you charge 
 LIB_EXPORT int aq_ssl_recv2(int index, char * pdata, int size);
 LIB_EXPORT int aq_ssl_recv3(int index);
 

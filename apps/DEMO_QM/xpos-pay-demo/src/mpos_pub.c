@@ -95,88 +95,72 @@ static void mpay_pub_pack_json(char * val)
 	FREE(buff);
 }
 
-//STX(0x4D46)  Data length	 Instruction number  Variable data		ETX(0x02)		
-//2bytes		2bytes			 1 byte				variable		1bytes	
-int mpos_pub_send_pkt(st_pkt_info  * pkt)
+//STX(0x4D46)  Data length	 Instruction number  Command number Serial number Response code Variable data	ETX(0x02)	LRC	
+//2bytes		2 bytes			 1 byte				2 bytes			1 byte		 2 bytes	   variable		 1 byte	    1byte
+int mpos_pub_send_pkt(unsigned char * pdata  , int len , st_pkt_info  * pkt)
 {
-	//unsigned char check_sum = 0;
-	char head[7] = {0};
-	char end[3] = {0};
-	char * buf;
-	int count = 0;
-	char cmd[3] = {0};
-	char res[3] = {0};
-	char tbuf[256] = {0};
-	
-	APP_TRACE("mpos_pub_send_pkt");
+	unsigned char check_sum = 0;
+	unsigned char head[10];
+	unsigned char end[2];
+	int size = 6 + len;
+	int iSendLen = 0;
+	int i=0;
+	unsigned char * buf;
+	int count = sizeof(head) + len + sizeof(end);
 
-	buf = MALLOC(sizeof(head) + sizeof(tbuf) + sizeof(end));
+	buf = MALLOC(count);
 
 	head[0] = STX_CODE_1;
 	head[1] = STX_CODE_2;
 
-	sprintf(cmd, "%02d", pkt->func);
-	mpay_pub_pack_data(tbuf, "C", cmd);
-	res[0] = pkt->ret / 10 + '0';
-	res[1] = pkt->ret % 10 + '0';
-	mpay_pub_pack_data(tbuf, "R", res);
-	mpay_pub_pack_json(tbuf);
-	mpos_pub_set_len(&head[2] , strlen(tbuf));
-// 	head[4] = pkt->func;
-// 	head[5] = pkt->ret / 10 + '0';
-// 	head[6] = pkt->ret % 10 + '0';
- 
-	//mpos_pub_check_sum_update(&check_sum , head  + 2, sizeof(head) - 2);
+	mpos_pub_set_ll_len(&head[2] , size);
+	head[4] = 0x4F;
+	head[5] = pkt->func / 256;
+	head[6] = pkt->func % 256;
+	head[7] = pkt->seq;
+	head[8] = pkt->ret / 10 + '0';
+	head[9] = pkt->ret % 10 + '0';
 
-	//if(len > 0) mpos_pub_check_sum_update(&check_sum , pdata , len);
-	
-	//end[0] = ETX_CODE;
-	strcpy(end, ETX_CODE);
-	//mpos_pub_check_sum_update(&check_sum , end , 1);
-	//end[1] = check_sum;
-	memset(buf, 0, sizeof(buf));
-    memcpy(buf, head, strlen(head));
-	memcpy(buf+strlen(head), tbuf, strlen(tbuf));
-	memcpy(buf+strlen(head)+strlen(tbuf), end, strlen(end));
-	count = strlen(head) + strlen(tbuf) + strlen(end);
-	mpos_uart_send(buf, count);
+
+	mpos_pub_check_sum_update(&check_sum , head  + 2, sizeof(head) - 2);
+
+	if(len > 0) mpos_pub_check_sum_update(&check_sum , pdata , len);
+
+	end[0] = ETX_CODE;
+	mpos_pub_check_sum_update(&check_sum , end , 1);
+	end[1] = check_sum;
+	memcpy(buf,head,sizeof(head));
+	memcpy(buf+sizeof(head),pdata,len);
+	memcpy(buf+sizeof(head)+len,end,sizeof(end));
+	mpos_uart_send(buf , count);
 
 	{
-		//char tip[32];
-		//DATE_TIME_T dt={0};
-		//sprintf(tip , "mpos_send_pkt(%02d)[%03d]:%s\r\n" , pkt->func, count, buf);
-		//APP_TRACE("mpos_send_pkt(%02d)[%04d]:%s\r\n", pkt->func, count, buf);
-//		osl_GetDateTime( &dt);
-// 		sprintf(tip , "%02d:%02d:%02d SEND(%04d):" , dt.nHour,dt.nMinute,dt.nSecond, count);
-// 		APP_TRACE_BUFF_LOG(buf , count , tip);
+		char tip[32];
+		DATE_TIME_T dt={0};
+		sprintf(tip , "mpos_send_pkt(%02X %02X)[%03d]\r\n" , buf[5], buf[6] , count);
+		//APP_TRACE(tip);
+		osl_GetDateTime( &dt);
+		sprintf(tip , "%02d:%02d:%02d SEND(%05d):" , dt.nHour,dt.nMinute,dt.nSecond ,  count);
+		//APP_TRACE_BUFF_LOG(buf , count , tip);
 	}
 
 	FREE(buf);
 	return 0;
 }
 
-
 int mpos_pub_pkt_check(unsigned char * pdata , int len , st_pkt_info  *pkt)
 {	
-	struct json_object *rootobj=0;
-	char temp[5] = {0};
-
-	rootobj = (struct json_object *)json_tokener_parse(pdata);
-	if ((int)rootobj > 0)
-	{
-		mpay_pub_get_json(rootobj, "C", temp, 2);
-		APP_TRACE("cmd:%s\r\n" , temp);
-		pkt->func = atoi(temp);
-		pkt->pbuff = &pdata[0];
-		pkt->pbuff[len] = 0;
-		pkt->len = len;
-		pkt->ret = 0;
-
-		json_object_put(rootobj);
-	}
+	pkt->flag = pdata[0];
+	pkt->func = pdata[1] * 256 + pdata[2];
+	pkt->seq = pdata[3];
+	pkt->pbuff = &pdata[4];
+	pkt->len = len - 4;
+	pkt->ret = 0;
+	if(pkt->flag != 0x2F && pkt->flag != 0x3F && pkt->flag != 0x4F) return -2;
 
 	return 0;
 }
+
 
 
 void mpos_pub_pack_str(unsigned char * pbuff , unsigned char * str ,int size)
@@ -192,8 +176,8 @@ void mpos_pub_pack_str(unsigned char * pbuff , unsigned char * str ,int size)
 int mpos_pub_get_ll_len(unsigned char *pbuff)
 {
 	int len = 0;
-	len = (pbuff[0] & 0xf0) * 16 * 1000 + (pbuff[0] & 0x0f) * 100;
-	len +=	(pbuff[1] & 0xf0) * 16 * 10 + (pbuff[1] & 0x0f);
+	len = (pbuff[0] & 0xf0) / 16 * 1000 + (pbuff[0] & 0x0f) * 100;
+	len +=	(pbuff[1] & 0xf0) / 16 * 10 + (pbuff[1] & 0x0f);
 	return len;
 }
 

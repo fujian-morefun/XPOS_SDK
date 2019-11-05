@@ -138,15 +138,15 @@ static TModule_Version module_ver_files[] = {
 * crypto DES
 ******************************************************************************/
 /* uiMode */
-#define XM_alg_TDESENCRYPT	(uint)0x00000000	//使用TDES密钥加密
-#define XM_alg_TDESDECRYPT	(uint)0x00000001	//使用TDES密钥解密
-#define XM_alg_TDESTECBMODE	(uint)0x00000000	//使用TECB操作模式
-#define XM_alg_TDESTCBCMODE	(uint)0x00000100	//使用TCBC操作模式
-#define XM_alg_TAESMACMODE	(uint)0x00000200	//使用TCBC操作模式
-#define XM_alg_TDESDEFAULTMODE	XM_alg_TDESTECBMODE	//使用默认(TECB)
+#define XM_alg_TDESENCRYPT	(uint)0x00000000	//Encryption with TDES Key
+#define XM_alg_TDESDECRYPT	(uint)0x00000001	//Decryption using TDES key
+#define XM_alg_TDESTECBMODE	(uint)0x00000000	//Using TECB mode of operation
+#define XM_alg_TDESTCBCMODE	(uint)0x00000100	//Using TCBC mode of operation
+#define XM_alg_TAESMACMODE	(uint)0x00000200	//Using TCBC mode of operation
+#define XM_alg_TDESDEFAULTMODE	XM_alg_TDESTECBMODE	//Use default (TECB)
 
 /******************************************************************************
-* timer and RTC 类型定义
+* timer and RTC type definition
 ******************************************************************************/
 #define XM_SYSTEM_DATE		0x01  
 #define XM_SYSTEM_TIME		0x02 
@@ -154,13 +154,13 @@ static TModule_Version module_ver_files[] = {
 
 //typedef struct 
 //{
-//	ushort 	usYear; 		//年 1900 -  2037
-//	uchar  	ucMonth;		//月 1 - 12 
-//	uchar  	ucDay;			//日 1 ~ 31
-//	uchar  	ucDayOfWeek;		//星期 0-6
-//	uchar  	ucHour;			//时 0 - 23
-//	uchar  	ucMinite; 		//分 0 - 59
-//	uchar  	ucSecond; 		//秒 0-59
+//	ushort 	usYear; 		// 1900 -  2037
+//	uchar  	ucMonth;		// 1 - 12 
+//	uchar  	ucDay;			// 1 ~ 31
+//	uchar  	ucDayOfWeek;		// 0-6
+//	uchar  	ucHour;			// 0 - 23
+//	uchar  	ucMinite; 		// 0 - 59
+//	uchar  	ucSecond; 		// 0-59
 //} mf_DATETIME; 
 
 
@@ -180,8 +180,8 @@ static TModule_Version module_ver_files[] = {
 /*
 * LED 
 */
-#define MF_LED_PRN		0x0000CD01   //打印机 led 灯 标识
-#define MF_LED_KBD		0x0000CD02  //keyboard led 灯 标识
+#define MF_LED_PRN		0x0000CD01   //Printer LED lamp identification
+#define MF_LED_KBD		0x0000CD02  //keyboard led 
 
 #define MF_LED_TURNON		1
 #define MF_LED_TURNOFF		0
@@ -473,51 +473,51 @@ int mf_printer_setStep(int step) ;
 /******************************************************************************
 * COMMON
 ******************************************************************************/
-#define DOT_PER_LINE		384  /*热敏最大一行共384个点*/
-#define BYTE_PER_LINE		48 	//(384/8)  /*热敏最大一行共48个字节*/
-#define MAX_WRITE_LINES		32	 //最大一次性写 32 电行
-#define LINES_SPACE			8	//行间距
+#define DOT_PER_LINE		384  /*Thermosensitivity maximum line 384 points*/
+#define BYTE_PER_LINE		48 	//(384/8)  /*Thermosensitive maximum line of 48 bytes*/
+#define MAX_WRITE_LINES		32	 //Maximum one-time write 32 lines
+#define LINES_SPACE			8	//Row spacing
 
-#define MAX_PKG_SIZE		3840 // 48 * 80 点行, 字串的时候最大支持到 -1 - fonttype ==> 3835 字节的字符串。
+#define MAX_PKG_SIZE		3840 //48 * 80 lines, maximum support for - 1 - fonttype ==> 3835 bytes of string.。
 
 #define PRINTER_DEVPATH		"/dev/thermal_printer"
 #define PRINTER_SOCKET		"/tmp/prnt.sock"
-#define MAX_PRINTER_TIMEOUT		5000 /* 5 秒超时 */
+#define MAX_PRINTER_TIMEOUT		5000 /* 5 seconds until timeout */
 
 typedef enum  {
 	font_16x16 = 0,
 	font_24x24,
 	font_32x32,
-} font_type_t;  /*打印汉字串的字体*/
+} font_type_t;  /*Fonts for Printing Chinese Character Strings*/
 
 typedef enum  {
 	dot_8x16 = 0,
 	dot_16x24,
 	dot_16x32,
 	dot_24x32,
-} dot_type_t;  /*打印ascii字串的字体*/
+} dot_type_t;  /*Print fonts for ASCII strings*/
 
 typedef enum  {
 	align_top = 0,
 	align_middle,
 	align_bottom,
-} align_type_t;  /* 一行的基准线 */
+} align_type_t;  /*A line of baselines */
 
 typedef enum {
-	cmd_reset = 0,	/*打印机复位*/
-	cmd_lock,	/*独占打印机*/
-	cmd_unlock, /*释放打印机*/
-	cmd_string, /*打印字串*/
-	cmd_dot,	/*打印点阵*/
-	cmd_xml,	/*打印xml格式文档*/
-	cmd_ack,	/*响应应答*/
-	cmd_nak,	/*拒绝响应*/
-} printer_frame_t; /* 数据帧类型 */
+	cmd_reset = 0,	/*reset printers*/
+	cmd_lock,	/*Exclusive printer*/
+	cmd_unlock, /*Release printer*/
+	cmd_string, /*Print strings*/
+	cmd_dot,	/*Print dot matrix*/
+	cmd_xml,	/*Print XML format documents*/
+	cmd_ack,	/*Response response*/
+	cmd_nak,	/*Refusal to respond*/
+} printer_frame_t; /* Data frame type */
 
 typedef enum {
 	st_idle = 0,
 	st_busy,
-} printer_status_t; /* 打印机状态 */
+} printer_status_t; /* Printer status */
 
 typedef struct {
 	font_type_t fonttype;
@@ -528,9 +528,9 @@ typedef struct {
 
 typedef struct {
 	printer_frame_t type; 
-	uint len; //content 有效长度
+	uint len; //content Effective length
 	uchar content[MAX_PKG_SIZE];
-}  print_comm_t; //通讯体
+}  print_comm_t; //Communicator
 
 
 /************* xml format defination begin ****************/
@@ -568,7 +568,7 @@ typedef struct
 	align_type_t align;
 	int top;		
 	int left;	// < 48
-	char *content;  //以\0结尾的字串
+	char *content;  //Strings ending in0
 }mfml_string_t;
 
 //image section
@@ -578,7 +578,7 @@ typedef struct
 	int		height; //bytes 
 	uint 	top;   
 	uint 	left;  // < 48
-	uchar 	*content; //图像的内存地址. length should be width(bytes) * height(bytes)
+	uchar 	*content; //Memory address of image. length should be width(bytes) * height(bytes)
 }mfml_image_t;
 
 //canvas
@@ -589,7 +589,7 @@ typedef struct
 }mfml_canvas_t;
 
 
-//xml 格式打印 api。
+//xml Format Printing api。
 int mf_BeginPaint(mfml_canvas_t *canvas);
 int mf_DrawString(mfml_string_t *stString);
 int mf_DrawImage(mfml_image_t *stImage);
@@ -597,7 +597,7 @@ int mf_EndPaint(void);
 
 /************* xml format defination begin ****************/
 
-//成功返回 0， 错误返回 负值
+//Successful return of 0, error return of negative value
 int mf_resetPrinter(void);
 int mf_trylockPrinter(void);
 int mf_unlockPrinter(void);

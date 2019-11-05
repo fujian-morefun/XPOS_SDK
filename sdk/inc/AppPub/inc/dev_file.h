@@ -3,187 +3,192 @@
 
 #include "pub/pub.h"
 
-#define FILE_NOCREATEINDEX 0x00	/*不创建索引文件*/
-#define FILE_CREATEINDEX 0x01		/*创建索引文件*/
-#define MAX_FILENAME_LEN 256		/*文件名最大长度*/
+#define FILE_NOCREATEINDEX 0x00	/*Do not create index files*/
+#define FILE_CREATEINDEX 0x01		/*Create index files*/
+#define MAX_FILENAME_LEN 256		/*Maximum length of filename*/
 
 typedef struct tagRecFile
 {
-	unsigned int unMaxOneRecLen;	/*最大的单条记录长度*/  
-	unsigned int unIndex1Start;	/*索引字段1的起始位置*/
-	unsigned int unIndex1Len;		/*索引字段1的长度*/
-	unsigned int unIndex2Start; 	/*索引字段2的起始位置*/
-	unsigned int unIndex2Len;		/*索引字段2的长度*/
-	char cIsIndex;				/*是否需要建立索引文件，0x00不建立，0x01建立*/
-	char szFileName[MAX_FILENAME_LEN+1];		/*记录文件名,有效的记录文件名长度为8*/
+	unsigned int unMaxOneRecLen;	/*Maximum single record length*/  
+	unsigned int unIndex1Start;	/*Starting position of index field 1*/
+	unsigned int unIndex1Len;		/*Length of index field 1*/
+	unsigned int unIndex2Start; 	/*Starting position of index field 2*/
+	unsigned int unIndex2Len;		/*Length of Index Field 2*/
+	char cIsIndex;				/*Do you need to create index files, 0x00 is not established, 0x01 is established?*/
+	char szFileName[MAX_FILENAME_LEN+1];		/*Record file name, valid record file name length is */
 	char s[2];
 }STRECFILE;
 
 /******************************************************************************
-*	函数名称：Ex_File_CreatFile
-*	函数介绍：创建文件
-*	函数描述：
-*	入口参数：const STRECFILE *pstRecFile 文件头信息
-*	出口参数：
-*	返回值  ：
-*				SUCC 成功
-*				FAIL   失败
+*	Function name：Ex_File_CreatFile 
+*	Function Description: Creating Files
+*	Function description：
+*	Entry parameters:：const STRECFILE *pstRecFile 文件头信息
+*	Export parameters：
+*	 Return value  ：
+*			SUCC Success
+*			 FAIL Failure
 *******************************************************************************/
 LIB_EXPORT extern int Ex_File_CreatFile(const STRECFILE *pstRecFile);
 /******************************************************************************
-*	函数名称：Ex_File_DelFile
-*	函数介绍：删除文件
-*	函数描述：
-*	入口参数：const char *pszFileName 流水文件名
-*	出口参数：
-*	返回值  ：
-*		SUCC 成功
-*		FAIL   失败
+*	Function name：Ex_File_DelFile
+*	Function Description: Delete Files
+*	Function description:
+*	Entry parameters：const char *pszFileName Name of hydrological document
+*	Export parameters：
+*	Return value  ：
+*		SUCC Success
+*	    FAIL Failure
 *******************************************************************************/
 LIB_EXPORT extern int Ex_File_DelFile (const char *pszFileName);
 /******************************************************************************
-*	函数名称：Ex_File_GetRecSum
-*	函数介绍：按文件名打开文件，获取文件记录总数
-*	函数描述：
-*	入口参数：
-*		const char *pszFileName 流水文件名
-*	出口参数：
-*		int *pnRecSum 指向记录数量的指针
-*	返回值  ：
-*		SUCC 成功
-*		FAIL   失败
+*	Function name：Ex_File_GetRecSum
+*	Function Description: Open the file by file name, get the total number of file records
+*	Function description：
+*	Entry parameters：
+*		const char *pszFileName Name of hydrological document
+*	Export parameters：
+*		int *pnRecSum A pointer to the number of records
+*	Return value  ：
+*		SUCC Success
+*	    FAIL Failure
 *******************************************************************************/
 LIB_EXPORT extern int Ex_File_GetRecSum (const char *pszFileName, int *pnRecSum);
 /******************************************************************************
-*	函数名称：Ex_File_AddRecByName
-*	函数介绍：增加流水记录，对于创建记录是指定了需要建立索引文件的会相应增加索引记录。
-*	函数描述：
-*	入口参数：
-*		const char *pszFileName 流水文件名
-*		const char *pszRec 输入的流水记录
-*	出口参数：无
-*	返回值  ：
-*		SUCC 成功
-*		FAIL   失败
+* Function name: Ex_File_AddRecByName
+* Function introduction: Increase pipeline records, for creating records is to specify the need to create index files will increase index records accordingly.
+* Function description:
+* Entry parameters:
+*			const char * pszFileName: Name of hydrological document
+*           const char*pszRec: Input Pipeline Record
+* Export parameters: none
+* Return value:
+*		SUCC Success
+*	    FAIL Failure
 *******************************************************************************/
 LIB_EXPORT extern int Ex_File_AddRecByName (const char *pszFileName, const char *pszRec);
 /******************************************************************************
-*	函数名称：Ex_File_UpdateRecByName
-*	函数介绍：更新记录
-*	函数描述：修改记录，按指定的记录位置重写指定的记录。
-*				   同时对于创建记录是指定了需要建立索引文件的
-*				   会相应更新索引记录。
-*	入口参数：
-*		const char *pszFileName 记录文件名称
-*		const int nRecNo 要修改的记录号
-*		char *psRec 记录指针
-*	出口参数：
-*	返回值  ：
-*		SUCC 成功
-*		FAIL   失败
+* Function name: Ex_File_UpdateRecByName
+
+* Function Introduction: Updating Records
+
+* Function Description: Modify the record and rewrite the specified record according to the specified record location.
+*						At the same time, for creating records, it specifies the need to create indexed files.
+*						Index records are updated accordingly.
+* Entry parameters:
+*			 const char * pszFileName: record file name
+*			 const int nRecNo:The record number to be modified by
+*			 char * psRec Record Pointer
+* Export parameters:
+* Return value:
+*		SUCC Success
+*		FAIL Failure
 *******************************************************************************/
 LIB_EXPORT extern int Ex_File_UpdateRecByName (const char *pszFileName, const int nRecNo, const char *psRec);
 /******************************************************************************
-*	函数名称：Ex_File_ReadRecByName
-*	函数介绍：按记录号读取单条记录
-*	函数描述：
-*	入口参数：
-*		const char *pszFileName 记录文件名称
-*		const int nRecNo 要修改的记录号
-*		char *psRec 记录指针
-*	出口参数：
-*	返回值  ：
-*		SUCC 成功
-*		FAIL   失败
+* Function name: Ex_File_ReadRecByName
+* Function introduction: read single record by record number
+* Function description:
+* Entry parameters:
+*			const char * pszFileName: Record file name
+*			Const int nRecNo: Record number to be modified
+*			Char * psRec: Record Pointer
+* Export parameters:
+* Return value:
+*			SUCC Success
+*			FAIL Failure
 *******************************************************************************/
 LIB_EXPORT extern int Ex_File_ReadRecByName(const char *pszFileName, const int nRecNo, char *psRec);
 /******************************************************************************
-*	函数名称：DelRecByFileName
-*	函数介绍：按索引删除记录
-*	函数描述：根据索引字段1/索引字段2从指定的记录号开始查找并删除记录，
-*				   若同时指定索引字段1/索引字段2，则要同时满足这两个
-*				   条件的记录输出，不指定时用NULL,若符合索引条件的记录
-*				   存在重复的情况，输出第一条记录。
-*	入口参数：
-*		const char *pszFileName 记录文件名称
-* 		const char *psIndexStr1 索引字段1
-*		const char *psIndexStr2 索引字段2
-*	出口参数：
-*		无
-*	返回值  ：
+* Function name: DelRecByFileName
+* Function Description: Delete Records by Index
+* Function Description: Find and delete records from the specified record number according to index field 1/idex field 2.
+*						If you specify index field 1/index field 2 at the same time, you need to satisfy both.
+*						The output of the condition record is NULL when not specified. If the index condition is satisfied, the output of the condition record is NULL.
+*						In the case of duplication, the first record is output.
+* Entry parameters:
+*			 const char * pszFileName: Record file name
+*			 Const char * psIndexStr1: Index field 1
+*			Const char * psIndexStr2: Index field 2
+* Export parameters:
+*			no
+* Return value:
 *******************************************************************************/
 LIB_EXPORT extern int Ex_File_DelRecByName(const char *pszFileName, const char *psIndexStr1,const char *psIndexStr2);
 /******************************************************************************
-*	函数名称：Ex_File_ReadRecByHandle
-*	函数介绍：按记录号读流水记录。
-*	函数描述：
-*	入口参数：
-*		const int nFileHandle 打开的文件句柄
-*		const int nRecNo 要找的记录号
-*	出口参数：
-*		char *psRec 记录指针
-*	返回值  ：
-*		SUCC 成功
-*		FAIL   失败
+* Function name: Ex_File_ReadRecByHandle
+* Function Introduction: Read the pipelining record by record number.
+* Function description:
+* Entry parameters:
+*			const int nFileHandle: Open File Handle
+*			 const int nRecNo: The record number to be found
+* Export parameters:
+*			Char * psRec: Record Pointer
+* Return value:
+*			SUCC Success
+*			FAIL Failure
 *******************************************************************************/
 LIB_EXPORT extern int Ex_File_ReadRecByHandle (const int nFileHandle, const int nRecNo, char *psRec , const char *pszName);
 /******************************************************************************
-*	函数名称：Ex_File_UpdateRecByHandle
-*	函数介绍：更新记录
-*	函数描述：修改记录，按指定的记录位置重写指定的记录。
-*				   同时对于创建记录是指定了需要建立索引文件的
-*				   会相应更新索引记录。
-*	入口参数：
-*		int  nFileHandle 记录文件句柄
-*		const int nRecNo 要修改的记录号
-*		char *psRec 记录指针
-*	出口参数：
-*	返回值  ：
-*		SUCC 成功
-*		FAIL   失败
+* Function name: Ex_File_UpdateRecByHandle
+* Function Introduction: Updating Records
+* Function Description: Modify the record and rewrite the specified record according to the specified record location.
+*						At the same time, for creating records, it specifies the need to create indexed files.
+*						Index records are updated accordingly.
+
+* Entry parameters:
+*			 int nFileHandle: Record File Handle
+*			 const int nRecNo: Record number to be modified
+*			Char * psRec: Record Pointer
+* Export parameters:
+* Return value:
+*			SUCC Success
+*			FAIL Failure
+
 *******************************************************************************/
 LIB_EXPORT extern int Ex_File_UpdateRecByHandle (int nFileHandle, const int nRecNo, const char *psRec);
 /******************************************************************************
-*	函数名称：Ex_File_FindRec
-*	函数介绍：按索引查找记录
-*	函数描述：根据索引字段1/索引字段2从指定的记录号开始查找记录，
-*				   若同时指定索引字段1/索引字段2，则要同时满足这两个
-*				   条件的记录输出，不指定时用NULL,若符合索引条件的记录
-*				   存在重复的情况，输出第一条记录。
-*	入口参数：
-*		const char *pszFileName 记录文件名称
-* 		const char *psIndexStr1 索引字段1
-*		const char *psIndexStr2 索引字段2
-*		const int nBeginRecNo 指定的开始记录号
-*	出口参数：
-*		char *psRec 记录指针
-*		int *pnRecNo 符合条件的记录号
-*	返回值  ：
-*		SUCC 成功
-*		FAIL   失败
+* Function name: Ex_File_FindRec
+* Function Description: Find Records by Index
+* Function Description: Find records from the specified record number according to index field 1/index field 2.
+*						If you specify index field 1/index field 2 at the same time, you need to satisfy both.
+*						The output of the condition record is NULL when not specified. If the index condition is satisfied, the output of the condition record is NULL.
+*						In the case of duplication, the first record is output.
+* Entry parameters:
+*			Const char * pszFileName :record file name
+*			Const char * psIndexStr1: index field 1
+*		   Const char * psIndexStr2 :index field 2
+*		   Start record number specified by const int nBeginRecNo
+* Export parameters:
+*			Char * psRec Record Pointer
+*			int * pnRecNo eligible record number
+* Return value:
+*			SUCC Success
+*			FAIL Failure
 *******************************************************************************/
 LIB_EXPORT extern int Ex_File_FindRec(const char *pszFileName, const char *psIndexStr1,
 			   const char *psIndexStr2,const int nBeginRecNo, char *psRec, int *pnRecNo);
 /******************************************************************************
- *  	函数名称:	Ex_File_GetParam: 
- *	函数介绍:	从参数文件中读取参数信息
- *	入口参数:	nOff 参数偏移地址
- 					nLen 参数数据长度
- *	出口参数:     pszOutData 输出字符串指针
- * 	返回值  :		
+ * Function name: Ex_File_GetParam:
+ * Function Description: Read parameter information from parameter files
+ * Entry parameters: nOff parameter offset address
+					nLen parameter data length
+ * Export parameter: pszOutData output string pointer
+ * Return value
  ******************************************************************************/
 LIB_EXPORT int Ex_File_GetParam(char *pszFileName,char *pszOutData, int nOff, int nLen);
-//从带头的参数文件中读取参数信息
+
+//Read parameter information from the lead parameter file
 LIB_EXPORT int Ex_FileHead_GetParam(char *pszFileName,char *pszOutData, int nOff, int nLen);
 /******************************************************************************
- *  	函数名称:	Ex_File_SaveParam: 
- *	函数介绍:	保存参数到参数文件中
- *	入口参数:	pszFileName 文件名
- 					nOff 参数偏移地址
- 					nLen 参数数据长度
- 					pszInData 输入的字符串指针
- *	出口参数:     
- * 	返回值  :		SUCC
+ *  Function name:	Ex_File_SaveParam: 
+ *	Function Description: Save parameters to parameter files
+ *	Entry parameter:	pszFileName file name
+ 					nOff parameter offset address
+ 					nLen parameter data length
+ 					pszInData String pointer input by pszInData
+ *	Export parameters::     
+ * 	return  :		SUCC
  					FAIL
  ******************************************************************************/
 LIB_EXPORT extern int Ex_File_SaveParam(char *pszFileName,char *pszInData, int nOff, int nLen);

@@ -36,7 +36,7 @@ LIB_EXPORT void FreeEmvData(void);
 LIB_EXPORT YESORNO TagIsTermData(char *pszTag,int nLen);
 LIB_EXPORT int SaveEmvTlvData(TlvData elem,YESORNO bOverride);
 LIB_EXPORT int SetEmvData(int nIndex,char cTransType,int nEmvTransSerial);
-
+LIB_EXPORT int DelEmvData(char *pszTag,int nTaglen);
 LIB_EXPORT int ClearHashTableData(void);
 
 LIB_EXPORT void Rf_FreeEmvData(void);

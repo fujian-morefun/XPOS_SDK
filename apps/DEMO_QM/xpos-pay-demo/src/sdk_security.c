@@ -8,7 +8,7 @@
 
 static void showHexData(char*title,  char * data, int size)
 {
-	char msg[256]={0};
+	char msg[64]={0};
 	int i;
 
 	for(i = 0;i < size; i ++){

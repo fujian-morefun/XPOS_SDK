@@ -4,11 +4,11 @@
 #include "xgui_pub.h"
 
 typedef struct _gui_res{
-	int nResType;	        //resource type
-	int nWidth;		//resource width
-	int nHeight;	        //resource hight
-	int nID;		//resource ID
-	unsigned char *pData; //resource data
+	int nResType;	//资源类型
+	int nWidth;		//资源宽度
+	int nHeight;	//资源高度
+	int nID;		//资源ID
+	unsigned char *pData;//资源数据
 } GUIRES;
 
 struct _guires_list{

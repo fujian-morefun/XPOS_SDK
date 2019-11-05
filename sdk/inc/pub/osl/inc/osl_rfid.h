@@ -1,5 +1,5 @@
 /*! \file osl_rfid.h
-	\brief RFID功能
+	\brief RFIDfunction
 *	\author lx
 *	\date 2014/02/08
 */
@@ -13,7 +13,7 @@ extern "C"{
 #endif
 
 /**
-* @brief 获取卡id
+* @brief Access Card id
 * @param outUID
 * @return 
 */

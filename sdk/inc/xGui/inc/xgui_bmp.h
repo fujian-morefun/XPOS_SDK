@@ -1,5 +1,5 @@
 /*! \file xgui_bmp.h
-	\brief 图片功能
+	\brief Picture function
 *	\author lx
 *	\date 2014/02/08
 */
@@ -8,15 +8,15 @@
 #include "xgui_pub.h"
 
 /**
-* @brief 载入bmp图片
-* @param filename 文件名
-* @param width 图片宽度
-* @param height 图片高度
-* @return 图标位图缓冲区指针，在函数内分配，外部使用后需要释放
+* @brief Load the BMP image
+* @param filename file name
+* @param width bmp width
+* @param height bmp height
+* @returnIcon Bitmap Buffer Pointer, Allocated within Function, Released after External Use
 */
 LIB_EXPORT char * xgui_load_bmp(char * filename , int *width , int *height);
 
-//24bitbmp图片
+//24bitbmp
 LIB_EXPORT char * xgui_load_bmp24bit(char * filename , int *width , int *height);
 
 LIB_EXPORT char * xgui_load_bmp4bit(char * filename , int *width , int *height);

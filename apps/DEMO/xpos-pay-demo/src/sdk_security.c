@@ -12,7 +12,7 @@
 
 static void showHexData(char*title,  char * data, int size)
 {
-	char msg[256]={0};
+	char msg[64]={0};
 	int i;
 
 	for(i = 0;i < size; i ++){
@@ -33,11 +33,17 @@ void dukptTest()
 	char outdata[8]={0};
 	int gid = 0;
 	int i = 0;
+	static int init = 0;
 
-	//dukpt_init_key(gid, init_ksn, init_key);
+	if (init == 0)
+	{
+		dukpt_init_key(gid, init_ksn, init_key);
+		init = 1;
+	}
+
 	for(i=0; i<3; i++)
 	{
-		dukpt_get_ksn(gid, ksn);
+		dukpt_get_ksn(gid, ksn); 
 		showHexData("ksn", ksn, 10);
 
 		showHexData("indata_enc", indata, 8);
@@ -68,7 +74,7 @@ void mkskTest()
 
 	//Here you can check the kvc, it is main key plaintext encryption eight 0x00,
 	showHexData("MAIN KEY KVC", kvc , 4);
-
+	
 	// Simulate server encryption key
 	RunDes(MFSDK_ENCRYPT, ECB, (char *)pink, (char *)keyciphertext, TEST_KEY_SIZE, maink, TEST_KEY_SIZE);
 
@@ -104,8 +110,6 @@ void mkskTest()
 
 void securityTest()
 {
-	dukptTest();
-	//mkskTest();
-	
-
+	//dukptTest();
+	mkskTest();
 }

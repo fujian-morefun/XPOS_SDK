@@ -1,5 +1,5 @@
 /*! \file osl_task_stk_chk.h
-	\brief 任务栈检测
+	\brief Task Stack Detection
 *	\author lx
 *	\date 2014/02/08
 */
@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 /**
-* @brief 任务栈检测初始化
+* @brief Initialization of task stack detection
 * @return 
 */
 LIB_EXPORT void osl_task_stk_chk_init();

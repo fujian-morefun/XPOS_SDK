@@ -17,6 +17,10 @@
 #define MAX_UART_BUF		512
 #define RECV_BUFF_SIZE		512
 
+char *usb_buff = 0;
+char usb_buff1[16] = {0};
+
+
 static unsigned char UART_GetChar(int nSert)
 {
 	char cRet;
@@ -28,7 +32,6 @@ static unsigned char UART_GetChar(int nSert)
 
 void init_com()
 {
-	char *usb_buff = 0;
 	int uartHand = 0;
 
 	osl_log_pause();//close log out
@@ -42,6 +45,9 @@ void init_com()
 void close_com()
 {
 	UartClose(MPOS_PORT_COM);
+	free(usb_buff);
+	mf_appport_setfifo(usb_buff1, 8);
+
 	osl_log_resume();
 }
 
@@ -82,12 +88,12 @@ void _mpos_proc()
 		memset(recv_tmp_buff, 0x00, sizeof(recv_tmp_buff));
 		recv_count = UartRecv(MPOS_PORT_COM , recv_tmp_buff, MAX_UART_BUF, 0);
 
-		APP_TRACE("-------------------------------------\r\n");
-		APP_TRACE("-------------------------------------\r\n");
-		APP_TRACE("UartRecv(%d):%s", recv_count, recv_tmp_buff);
-		//APP_TRACE_BUFF(recv_tmp_buff, recv_count);
-		APP_TRACE("-------------------------------------\r\n");
-		APP_TRACE("-------------------------------------\r\n");
+// 		APP_TRACE("-------------------------------------\r\n");
+// 		APP_TRACE("-------------------------------------\r\n");
+// 		APP_TRACE("UartRecv(%d):%s", recv_count, recv_tmp_buff);
+// 		//APP_TRACE_BUFF(recv_tmp_buff, recv_count);
+// 		APP_TRACE("-------------------------------------\r\n");
+// 		APP_TRACE("-------------------------------------\r\n");
 		//xgui_messagebox_show("UartRecv", recv_tmp, "" , "" , 0);
 
 		memset(m_recv_buff, 0x00, sizeof(m_recv_buff));
@@ -107,30 +113,30 @@ void _mpos_proc()
 				else
 					m_recv_index = 0;			// Error, re-receive
 			}
-			else if (m_recv_index >= 2 && m_recv_index < 5){						// Low length
+			else if (m_recv_index == 2){						// Low length
 				m_recv_index++;
 			}
-			else if (m_recv_index == 5){						// High length
-				data_len = mpos_pub_get_len(&m_recv_buff[2]);
+			else if (m_recv_index == 3){						// High length
+				data_len = mpos_pub_get_ll_len(&m_recv_buff[2]) + 2;
 
 				if (data_len > RECV_BUFF_SIZE - 10)				// Length exceeded
 					m_recv_index = 0;
 				else
 					m_recv_index ++;
 			}
-			else if (m_recv_index > 5)	{						// Start receiving data	
+			else if (m_recv_index > 3)	{						// Start receiving data	
 				data_len --;
 				m_recv_index ++;
-				if (data_len == 0){							// Receiving completed
-					//check_sum = 0;
-					//mpos_pub_check_sum_update(&check_sum , m_recv_buff + 2 , m_recv_index - 3);
-					//if (m_recv_buff[m_recv_index -1] == ETX_CODE /*&& check_sum == m_recv_buff[m_recv_index -1]*/)	{	// Check the data correctly for some processing
-					mpos_func_proc(m_recv_buff + 6, m_recv_index - 6);
-					// 					}
-					// 					else{
-					// 						APP_TRACE_BUFF_TIP(m_recv_buff , m_recv_index , "recv check fail:");
-					// 						//APP_TRACE("check_sum:%02X", check_sum);						
-					// 					}
+				if (data_len == 0){								// Receiving completed
+					check_sum = 0;
+					mpos_pub_check_sum_update(&check_sum , m_recv_buff + 2 , m_recv_index - 3);
+					if (m_recv_buff[m_recv_index - 2] == ETX_CODE && check_sum == m_recv_buff[m_recv_index - 1])	{	// Check the data correctly for some processing
+						mpos_func_proc(m_recv_buff + 4, m_recv_index - 6);
+					 }
+					else{
+						//APP_TRACE_BUFF_TIP(m_recv_buff , m_recv_index , "recv check fail:");
+						//APP_TRACE("check_sum:%02X", check_sum);						
+					}
 
 					m_recv_index = 0;				// Start receiving again
 					memset(m_recv_buff,0x00,sizeof(m_recv_buff));

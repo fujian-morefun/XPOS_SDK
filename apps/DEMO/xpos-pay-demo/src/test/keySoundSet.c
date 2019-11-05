@@ -17,7 +17,7 @@ static void _keySound_Paint(int value)
 
 	xgui_TextOut(0, XGUI_LINE_TOP_0, value == 1 ? "KeySound:On" : "KeySound:Off");
 
-	xgui_TextOut(0, XGUI_LINE_TOP_2 , "Upwards key switch");
+	xgui_TextOut(0, XGUI_LINE_TOP_2 , "¡ü¡ýto switch");
 
 	xgui_Page_OP_Paint( "Cancel" , "OK");
 	

@@ -1,5 +1,5 @@
 /*! \file mfmalloc.h
-	\brief 内存分配接口
+	\brief Memory Allocation Interface
 *	\author lx
 *	\date 2014/02/07
 */
@@ -32,8 +32,8 @@ extern "C" {
 #define FREE(a)		mf_free(a, BUILD_SRC_FILF, BUILD_SRC_LINE)
 
 /**
-* @brief 设置MALLOC log开关
-* @param val 1 开 0 关
+* @brief Setting up MALLOC log switch
+* @param val 1 open 0 close
 * @return void
 */
 LIB_EXPORT void set_malloc_log(int val);

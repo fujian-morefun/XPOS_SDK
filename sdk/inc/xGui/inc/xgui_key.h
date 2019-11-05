@@ -1,5 +1,5 @@
 /*! \file xgui_key.h
-	\brief function of the key
+	\brief 按键功能
 *	\author lx
 *	\date 2014/02/08
 */
@@ -64,7 +64,7 @@
 
 
 /**
-* @brief Add button handlers
+* @brief 添加按键处理函数
 * @param pfunc
 * @return 
 */
@@ -72,5 +72,12 @@ LIB_EXPORT int xgui_key_proc_func_add(void * pfunc);
 
 LIB_EXPORT void xgui_key_reset_key();
 
+LIB_EXPORT void xgui_key_init();
 
+
+LIB_EXPORT void xgui_key_set_proc(int val);
+
+
+LIB_EXPORT int xgui_key_getlast();
+LIB_EXPORT int xgui_key_clrlast();
 

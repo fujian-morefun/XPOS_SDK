@@ -1,5 +1,5 @@
 /*! \file osl_hzk.h
-	\brief 字库点阵
+	\brief Font lattice
 *	\author lx
 *	\date 2014/02/08
 */
@@ -13,18 +13,18 @@ LIB_EXPORT int osl_hzk_is_gbk_char(unsigned char *ch1);
 LIB_EXPORT void osl_hzk_init();
 
 /**
-* @brief 读取中文点阵
+* @brief Reading Chinese Dot Matrix
 * @param type 0-12 1-16 2-24
-* @param hz 字符
-* @param pbuff 缓冲区
+* @param hz character
+* @param pbuff Buffer
 * @return 
 */
 LIB_EXPORT void osl_get_cn_bit(int type , unsigned char * hz ,  unsigned char *pbuff);
 /**
-* @brief 读取英文点阵
+* @brief Reading English Dot Matrix
 * @param type 0-12*24
-* @param phz 字符
-* @param pbuff 缓冲区
+* @param phz character
+* @param pbuff buffer
 * @return 
 */
 LIB_EXPORT void osl_get_en_bit(int type , unsigned char * phz , unsigned char *pbuff);

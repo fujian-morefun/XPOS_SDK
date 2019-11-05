@@ -7,10 +7,9 @@
 #include "xGui/inc/mtext.h"
 #include "xGui/inc/messagebox.h"
 #include "pub/osl/inc/osl_time.h"
-#include "pub/osl/inc/osl_scaner.h"
+#include "libapi_xpos/inc/libapi_system.h"
 #include "driver/uart.h"
 #include "input_public.h"
-#include "atc/inc/atc_qr.h"
 
 
 
@@ -73,11 +72,12 @@ int scan_page_proc(char *title, char *buff ,  int min  , int max , int timeover,
 	char *msg;
 	int it;
 	char tmp[32]={0};
-	st_qcamp_data qcamp_data = {0};
+
 
 	it = 0;	
 	tick1 = osl_GetTick();
 	len = strlen(buff);
+
 
 
 	if(osl_get_is_m69() == 1 ) {
@@ -127,7 +127,7 @@ int scan_page_proc(char *title, char *buff ,  int min  , int max , int timeover,
 					break;
 				}
 				else if (pMsg.WParam == KEY_F1 || pMsg.WParam == KEY_F2){
-					atc_qcamp_start_ex(0,0);
+					Sys_scaner_start(0,0);
 					state = 1;
 					xgui_PostMessage(XM_GUIPAINT, 0 , 0);
 				}
@@ -139,7 +139,7 @@ int scan_page_proc(char *title, char *buff ,  int min  , int max , int timeover,
 
 	}	
 
-	atc_qcamp_stop_ex();
+	Sys_scaner_stop();
 
 
 	if(input_type != NULL)	*input_type = it; 	

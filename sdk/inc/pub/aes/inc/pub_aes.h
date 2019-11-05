@@ -42,14 +42,14 @@ extern "C" {
 #include "pub\pub.h"
 
 	/**
-	* @brief 执行AES算法对文本加解密
-	* @param int mode 类型：加密AES_ENCRYPT，解密AES_DECRYPT
-	* @param In	待加密串指针
-	* @param Out 待输出串指针
-	* @param datalen 待加密串的长度，必须为16的倍数 同时Out的缓冲区大小应大于或者等于datalen
-	* @param Key 密钥(可为16位,24位,32位)支持3密钥
-	* @param keylen 密钥长度，多出24位部分将被自动裁减
-	* @return 是否加密成功 0加密成功 <0 计算失败
+	* @brief Setting up background processing functions using TMS threads
+	* @param int mode ￡oAES_ENCRYPT￡?AES_DECRYPT
+	* @param In	To-be-encrypted string pointer
+	* @param Out Output string pointer
+	* @param datalen The length of the string to be encrypted must be a multiple of 16 and the size of the buffer of Out should be greater or equal to datalen
+	* @param KeyKey (16 bits, 24 bits, 32 bits) supports 3 keys
+	* @param Key length, more than 24 bits will be automatically reduced
+	* @return Whether Encryption Success 0 Encryption Success < 0 Computing Failure
 	*/
 LIB_EXPORT int pub_aes_crypt_ecb(char*sin,unsigned int datalen, const char*skey,const unsigned char keylen, int mode,char*sout);
 

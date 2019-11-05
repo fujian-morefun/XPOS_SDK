@@ -2,7 +2,7 @@
 #include "pub/pub.h"
 
 enum{
-	READ_CARD_RET_CANCEL,
+	READ_CARD_RET_CANCEL,  
 	READ_CARD_RET_MAGNETIC,
 	READ_CARD_RET_IC,
 	READ_CARD_RET_RF,
@@ -27,13 +27,15 @@ typedef struct __st_read_card_in{
 	int pin_timeover;
 	int key_pid;
 	int pin_key_index;
+	int forceIC;
+	int show_PAN;
 	char ic_tags[256];
 	char card_page_msg[50];
 }st_read_card_in;
 
 
 typedef struct __st_read_card_out{
-	int card_type;
+	int card_type;  //0x01 READ_CARD_RET_MAGNETIC 0x02 READ_CARD_RET_IC 0x03 READ_CARD_RET_RF,  
 	char exp_data[8];
 	char ic_data[1024];
 	int ic_data_len;
@@ -49,30 +51,40 @@ typedef struct __st_read_card_out{
 	char vChName[45 +1];
 }st_read_card_out;
 
-//交易结果码
-#define EMVAPI_RET_TC	 0	 //TC批准
-#define EMVAPI_RET_ARQC	 1	 //请求联机
-#define EMVAPI_RET_AAC	 -1	 //交易拒绝
-#define EMVAPI_RET_AAR	 -2	 //交易终止
-#define EMVAPI_RET_CANCEL	-3	//用户取消
-#define EMVAPI_RET_TIMEOUT	-4	//交易超时
-
+//Transaction Result Code
+#define EMVAPI_RET_TC	 0	 //TC Approval
+#define EMVAPI_RET_ARQC	 1	 //Request Online
+#define EMVAPI_RET_AAC	 -1	 //Transaction rejection
+#define EMVAPI_RET_AAR	 -2	 //Termination of transaction
+#define EMVAPI_RET_CANCEL	-3	//User Cancel
+#define EMVAPI_RET_TIMEOUT	-4	//Transaction timeout
+#define EMVAPI_RET_FORCEIC	-5	//Transaction force IC
+#define EMVAPI_RET_OTHER	-6	//Contactless turn to other interface
+#define EMVAPI_RET_FALLBACk	-7	//Fallback
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	  者：zhiyu
-功    能：完整的读卡处理流程
-输入参数：card_in：读卡需要输入的参数	
-输出参数：card_out：读卡完成后输出的参数
-返    回：
-     	EMVAPI_RET_TC	 0	 //TC批准
-		EMVAPI_RET_ARQC	 1	 //请求联机
-		EMVAPI_RET_AAC	 -1	 //交易拒绝
-		EMVAPI_RET_AAR	 -2	 //交易终止
-		EMVAPI_RET_CANCEL	-3	//用户取消
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:zhiyu
+Functions:Process of emv card trans
+Input : card_in：The parameter of EMV trans
+Output : card_out：Out buffer of EMV trans
+return: 
+     	EMVAPI_RET_TC	 0	 //TC
+		EMVAPI_RET_ARQC	 1	 //ARQC
+		EMVAPI_RET_AAC	 -1	 //AAC
+		EMVAPI_RET_AAR	 -2	 //Terminate
+		EMVAPI_RET_CANCEL	-3	//Cancel
 *************************************************************************************/
 LIB_EXPORT int emv_read_card(st_read_card_in *card_in, st_read_card_out *card_out);
 
+
+LIB_EXPORT int emv_card_begin(st_read_card_in *card_in);
+LIB_EXPORT int emv_card_loop( int card_mode );
+LIB_EXPORT int emv_card_end( int ret, st_read_card_in *card_in,st_read_card_out *card_out);
+
 LIB_EXPORT void EMV_iKernelInit(void);
 
-LIB_EXPORT void bInputPin(int (*InputPin)(char *,char *,char ,char *));
+LIB_EXPORT void EMV_SetInputPin(int (*InputPin)(char *,char *,char ,char *));
+
+LIB_EXPORT void EMV_SetDispOffPin(void (*DispOffPin)(int)); 
+

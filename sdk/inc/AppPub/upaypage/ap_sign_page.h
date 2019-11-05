@@ -8,29 +8,29 @@
 
 
  typedef struct _procs{
-	 //界面绘制 水印
+	 //Interface Drawing Watermarking
 	 int (*page_paint)(const char *m_watermark);  
 	 int (*page_getbackcount)();  
-	 //是否允许取消
+	 //Is Cancellation Permissible
 	 int (*page_usecancel)(); 
 
-	 //取消是否提示
+	 //Cancel or not prompt
 	 int (*page_usecancelask)();  
 	 
-	 //取消获取水印
+	 //Cancellation of Watermark Acquisition
 	 int (*page_getwatermark)( char *outwatermark);
 
 
-	 //轨迹最少点数
+	 //Track Minimum Points
 	 int (*page_getwritepointcount)();  
 
-	 //是否使用收银员确认页面
+	 //Whether to use the cashier confirmation page or not
 	 int (*page_usesigntype)(); 
 
-	 //图片是否使用320*130分辨率
+	 //Does the picture use 320*130 resolution?
 	 int (*page_use320_130)(); 
 
-	 //轨迹最少笔画数
+	 //Minimum number of strokes in trajectory
 	 int (*page_getpointupcount)();  
 
 	 int (*page_buffwidth)();
@@ -38,30 +38,30 @@
 	 
  }ap_sign_procs;
 
- //设定处理函数
+ //Setting Processing Function
 LIB_EXPORT void ap_setprocs( ap_sign_procs *procs );
 
-//是否已签名
+//Have you signed or not?
 LIB_EXPORT int ap_sign_exist( const char *xlh );
 
-//签名处理
+//Signature Processing
 LIB_EXPORT int ap_sign_proc( const char *xlh,const char * date,const char * ckh );
 
-//签名处理
+//Signature Processing
 LIB_EXPORT int ap_sign_proc2( const char *xlh,const char * date,const char * ckh , int timeout );
 
 
-//获取打印字符串
+//Get the print string
 LIB_EXPORT extern const char * ap_sign_print(const char *xlh );
 
-//JBIG编码接口
+//JBIG Coding Interface
 LIB_EXPORT int ap_sign_encode( const char *xlh,char **jbigencode );
 
-//JBIG结果释放
+//JBIG Result Release
 LIB_EXPORT int ap_sign_encode_free( char *jbigencode );
 
 
-//清理签名数据
+//Clean up signature data
 LIB_EXPORT extern int ap_sign_clean();
 
 LIB_EXPORT extern void ap_sign_test();

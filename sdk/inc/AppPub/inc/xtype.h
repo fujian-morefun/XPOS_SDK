@@ -1,4 +1,4 @@
-//基本类型重定义
+//Basic type redefinition
 #ifndef _XTYPE_H_
 #define _XTYPE_H_
 
@@ -28,7 +28,7 @@
 #define TRUE					(1)
 #endif
 
-//API calling convention	函数调用约定
+//API calling convention	Function call Convention
 #ifdef WIN32
 #define APICC					__cdecl
 #else
@@ -49,9 +49,9 @@
 #define MAX(a,b)            (((a) < (b)) ? (b) : (a))
 #endif
 
-#define IN		//输入参数标识
-#define OUT		//输出参数标识
-#define INOUT	//输入输出参数标识
+#define IN		//Input parameter identification
+#define OUT		//Output parameter identification
+#define INOUT	//Identification of input and output parameters
 
 typedef int						XBOOL;
 typedef signed char				XINT8;
@@ -67,15 +67,15 @@ typedef double					XDOUBLE64;
 
 typedef enum
 {
-	X_ERR_OK,						//操作成功
-	X_ERR_ERROR,					//操作失败
-	X_ERR_LOAD_LIBRARY_FAILED,	//导入动态库失败
-	X_ERR_GET_PROC_ADDR_FAILED,	//获取动态库中的函数地址失败
-	X_ERR_INTERFACE_NO_EXIST,		//接口不存在
-	X_ERR_INVALID_PARAM,	//非法参数
-	X_ERR_FILE_OP,			//文件操作错误
-	X_ERR_NO_MEMORY,		//内存不足
-	X_ERR_NO_FLASH,			//FLASH不足
+	X_ERR_OK,						//Successful operation
+	X_ERR_ERROR,					//operation failed
+	X_ERR_LOAD_LIBRARY_FAILED,	//Failure to import dynamic libraries
+	X_ERR_GET_PROC_ADDR_FAILED,	//Failed to get function address in dynamic library
+	X_ERR_INTERFACE_NO_EXIST,		//Interface does not exist
+	X_ERR_INVALID_PARAM,	//illegal parameter
+	X_ERR_FILE_OP,			//File operation error
+	X_ERR_NO_MEMORY,		//insufficient memory
+	X_ERR_NO_FLASH,			//FLASH deficiency
 }X_ERROR_CODE_E;
 
 #define SCI_ALLOC				malloc
@@ -96,8 +96,8 @@ typedef enum
 #define SCI_Sleep		sys_msleep
 
 
-//将数据从array2拷到array1,
-//注意: array1 与 array都是数组，不能是指针。
+//Copy data from array2 to array1,
+//Note: Aray1 and array are arrays, not pointers。
 #define ARRAY_MEMCPY(array1, array2) memcpy(array1, array2, MIN(sizeof(array1), sizeof(array2)))
 
 typedef int IBOOL;

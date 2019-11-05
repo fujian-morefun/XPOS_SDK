@@ -40,7 +40,7 @@ typedef unsigned long int UINT4;
 typedef struct {
 	unsigned int bits;                           							/* length in bits of modulus */
 	unsigned char modulus[MAX_RSA_MODULUS_LEN];                    	/* modulus */
-	unsigned char exponent[MAX_RSA_MODULUS_LEN];           		/* public exponent 模填充时右填充,前面补0*/
+	unsigned char exponent[MAX_RSA_MODULUS_LEN];           		/* public exponent When filling the die, fill right and fill front with 0.*/
 } R_RSA_PUBLIC_KEY;
 
 typedef struct {
@@ -60,21 +60,25 @@ LIB_EXPORT int RSAPublicDecrypt PROTO_LIST
 ((unsigned char *, unsigned int *, unsigned char *, unsigned int,
   R_RSA_PUBLIC_KEY *));
 
-//中间填充字符，用chFill
+//Fill in the middle with chFill
 LIB_EXPORT int RSAPublicEncrypt_ex(unsigned char *output, unsigned int * outputLen, unsigned char *input, unsigned int inputLen, R_RSA_PUBLIC_KEY *publicKey, unsigned char chFill); 
 
-//广东环通支付PKCS#1的特殊填充要求
+//Special Filling Requirements of Guangdong Huantong Payment PKCS#1
 LIB_EXPORT int RSAPublicEncryptEx PROTO_LIST
 ((unsigned char *, unsigned int *, unsigned char *, unsigned int,
  R_RSA_PUBLIC_KEY *));
 
-//私钥解密，特殊填充（非PKCS标准），取后面非0数据
+//Private key decryption, special filling (non-PKCS standard), non-zero data from the back
 LIB_EXPORT int RSAPrivateDecryptEx PROTO_LIST 
 ((unsigned char *, unsigned int *, unsigned char *,unsigned int, R_RSA_PRIVATE_KEY *));
 
 LIB_EXPORT int RSAPublicDecrypt (unsigned char *output, unsigned int *outputLen, unsigned char *input, unsigned int inputLen, R_RSA_PUBLIC_KEY *publicKey);
 LIB_EXPORT int RSAPrivateEncrypt (unsigned char *output,unsigned int * outputLen,unsigned char *input,unsigned int inputLen,R_RSA_PRIVATE_KEY *privateKey);
 LIB_EXPORT int RSAPrivateDecrypt (unsigned char *output, unsigned int * outputLen, unsigned char *input, unsigned int inputLen, R_RSA_PRIVATE_KEY *privateKey);
+
+
+LIB_EXPORT int RSAPublicBlock (unsigned char *output, unsigned int * outputLen, unsigned char *input,unsigned int inputLen, R_RSA_PUBLIC_KEY *publicKey);
+LIB_EXPORT int RSAPrivateBlock (unsigned char *output, unsigned int * outputLen, unsigned char *input, 	unsigned int inputLen, R_RSA_PRIVATE_KEY *privateKey);
 
 #endif
 

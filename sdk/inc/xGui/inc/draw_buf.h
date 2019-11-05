@@ -9,7 +9,7 @@ extern "C" {
 
 int lcd_GetStateHeight();
 int lcd_GetAllHeight();
-
+LIB_EXPORT void lcd_set_lcd_type(int type);
 void lcd_set_mode(int mode);
 int lcd_OpenDevice(void);
 int lcd_GetWidth(void);
@@ -33,15 +33,22 @@ int lcd_GetStatePixel(int nX, int nY);
 //void lcd_ClearStateBuff(int nColor);
 void lcd_SetStateHLine(int nX, int nY, int nLength, int nColor);
 
-LIB_EXPORT void lcd_set_palette(int * cd1, int *cd2, int *cd3, int *cd4, int *cd5, int *cd6);
+LIB_EXPORT void lcd_set_palette(char * tab3to16);
 
 LIB_EXPORT void lcd_set_refresh();
 LIB_EXPORT void lcd_set_auxlcd_func(void * func);
+LIB_EXPORT int lcd_get_sublcd_probe();
 
 LIB_EXPORT int lcd_get_buff_width();
 LIB_EXPORT int lcd_get_all_height();
 LIB_EXPORT int lcd_get_color_size();
 
+enum{
+	LCD_INDEX_1,
+	LCD_INDEX_2,
+};
+LIB_EXPORT void lcd_set_index(int index);
+LIB_EXPORT int lcd_get_index();
 #if defined(__cplusplus)
 }
 #endif 

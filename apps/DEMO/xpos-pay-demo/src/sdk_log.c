@@ -40,7 +40,7 @@ static void _LogOut_Paint(int value)
 
 	xgui_TextOut(0, XGUI_LINE_TOP_0, value == 1 ? "LogOut:On" : "LogOut:Off");
 
-	xgui_TextOut(0, XGUI_LINE_TOP_2 , "Upwards key switch");
+	xgui_TextOut(0, XGUI_LINE_TOP_2 , "↑↓to switch");
 
 	xgui_Page_OP_Paint( "Cancel" , "OK");
 
@@ -94,6 +94,7 @@ int LogOutSet_Show()
 				case KEY_OK:
 					//保存，再走quit退出
 					openlog(nOpen);
+					Sys_Reboot();
 					break;
 				case KEY_QUIT:
 					break;

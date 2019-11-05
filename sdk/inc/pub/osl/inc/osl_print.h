@@ -1,5 +1,5 @@
 /*! \file osl_print.h
-	\brief 打印功能
+	\brief Printing function
 *	\author lx
 *	\date 2014/02/08
 */
@@ -32,103 +32,103 @@
 #define	PRINT_COL_TO(x)			"<print_col_to=" #x ">"
 
 /**
-* @brief 设置中文字体
-* @param v 字体
-* @return 设置字符
+* @brief Setting Chinese fonts
+* @param v Typeface
+* @return Setting Characters
 */
 LIB_EXPORT const char *  osl_print_cn_font_size(int v);
 /**
-* @brief 设置英文字体
-* @param v 字体
-* @return 设置字符
+* @brief Setting English Font
+* @param v Typeface
+* @return Setting Characters
 */
 LIB_EXPORT const char *  osl_print_en_font_size(int v);
 /**
-* @brief 中文放大
-* @param w 横向
-* @param h 纵向
-* @return 设置字符
+* @brief Chinese Enlargement
+* @param w transverse
+* @param h portrait
+* @return Setting Characters
 */
 LIB_EXPORT const char *  osl_print_cn_font_zoom(int w,int h);
 /**
-* @brief 英文放大
-* @param w 横向
-* @param h 纵向
-* @return 设置字符
+* @brief Enlargement in English
+* @param w transverse
+* @param h portrait
+* @return Setting Characters
 */
 LIB_EXPORT const char *  osl_print_en_font_zoom(int w,int h);
 /**
-* @brief 设置行间距
-* @param v 间距
-* @return 设置字符
+* @brief Set up row spacing
+* @param v spacing
+* @return Setting Characters
 */
 LIB_EXPORT const char *  osl_print_line_space(int v);
 /**
-* @brief 纵向走纸
-* @param v 行数
-* @return 设置字符
+* @brief Vertical Paper Walking
+* @param v Row number
+* @return Setting Characters
 */
 LIB_EXPORT const char *  osl_print_col_space(int v);
 /**
-* @brief 横向走纸
-* @param v 列数
-* @return 设置字符
+* @brief Horizontal Paper Walking
+* @param v Column number
+* @return Setting Characters
 */
 LIB_EXPORT const char *  osl_print_row_space(int v);
 /**
-* @brief 对齐方式
-* @param v 0左 1中 2右
-* @return 设置字符
+* @brief align
+* @param v 0 left 1medium 2right
+* @return Setting Characters
 */
 LIB_EXPORT const char *  osl_print_align(int v);
 /**
-* @brief 打印图片
-* @param imgfile 文件名
-* @return  设置字符
+* @brief print pictures
+* @param imgfile file name
+* @return  Setting Characters
 */
 LIB_EXPORT const char *  osl_print_img(const char *imgfile);
 /**
-* @brief 加热时间
-* @param v 时间
-* @return 设置字符
+* @brief heating time
+* @param v time
+* @return Setting Characters
 */
 LIB_EXPORT const char *  osl_print_heat_factor(int v);
 
 /**
-* @brief 获取打印缓冲区
+* @brief Get the print buffer
 * @return 
 */
 LIB_EXPORT char * osl_print_get();
 /**
-* @brief 添加内容到打印缓冲区
-* @param pbuff 内容
+* @brief Add content to print buffer
+* @param pbuff content
 * @return 
 */
 LIB_EXPORT void osl_print_add(const char * pbuff);
 /**
-* @brief 打印缓冲区释放
+* @brief Print Buffer Release
 * @return 
 */
 LIB_EXPORT void osl_print_free();
 
 
 /**
-* @brief 打印初始化
+* @brief Print initialization
 * @return 
 */
 LIB_EXPORT void osl_print_init();
 /**
-* @brief 打印输出
-* @param data 内容
-* @return 0成功
+* @brief Print Output
+* @param data content
+* @return 0 success
 */
 LIB_EXPORT int  osl_print_write(char * data);
 
 
 /**
-* @brief 设置原始文件内容
-* @param blockfile 文件
-* @return  设置字符
+* @brief Setting the content of the original file
+* @param blockfile file
+* @return  Setting Characters
 */
 LIB_EXPORT const char * osl_print_block(const char *blockfile);
 

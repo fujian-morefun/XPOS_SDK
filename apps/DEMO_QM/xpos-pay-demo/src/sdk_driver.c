@@ -12,6 +12,10 @@
 #include "xGui/inc/xgui_key.h"
 #include "mpos_func.h"
 
+#define LOGOIMG "data\\logo2.bmp"
+
+int g_playtag = 0;
+
 static void sdk_show_msg(char *title, char *msg)
 {
 	xgui_BeginBatchPaint();
@@ -167,45 +171,69 @@ void VoiceTest()
 	//Play_Voice("NoSpike");
 }
 
-void pagepaint(char *title, char *msg)
+void pagepaint(char *title, char *msg, int logo)
 {
 	int len = 0;
 	char temp[20] = {0};
-	
+	int logowidth;
+	int logoheight;
+	int logoleft;
+	int logotop;
+	int logocolor;
+
+	char * pbmp;
+
 	len = strlen(msg);
 
 	xgui_BeginBatchPaint();
 	XGUI_SET_WIN_RC;
 	xgui_ClearDC();
 
-	xgui_SetTitle(title);
-	if (len > 0 && len <= 15)
+
+	if (logo == 1)
 	{
-		xgui_TextOut_Line_Center(msg, XGUI_LINE_TOP_3);
-	}
-	else if (len>15 && len<=30)
+		pbmp = (char *)xgui_load_bmp_all(LOGOIMG , &logowidth , &logoheight, &logocolor);
+
+		logoleft = (xgui_GetWidth()-logowidth)/2;
+		logotop = XGUI_LINE_TOP_1+5;
+
+		if (pbmp != 0){
+			xgui_out_bits_bmp(logoleft, logotop, pbmp , logowidth , logoheight , 1 , logocolor);
+			FREE(pbmp);
+		}	
+	} 
+	else
 	{
-		memcpy(temp, msg, 15);
-		xgui_TextOut_Line_Center(temp, XGUI_LINE_TOP_3);
-		xgui_TextOut_Line_Center(msg+15, XGUI_LINE_TOP_4);
-	}
-	else if (len>30 && len<=45)
-	{
-		memcpy(temp, msg, 15);
-		xgui_TextOut_Line_Center(temp, XGUI_LINE_TOP_3);
-		memcpy(temp, msg+15, 15);
-		xgui_TextOut_Line_Center(temp, XGUI_LINE_TOP_4);
-		xgui_TextOut_Line_Center(msg+30, XGUI_LINE_TOP_5);
-	}
-	else if (len > 45)
-	{
-		memcpy(temp, msg, 15);
-		xgui_TextOut_Line_Center(temp, XGUI_LINE_TOP_3);
-		memcpy(temp, msg+15, 15);
-		xgui_TextOut_Line_Center(temp, XGUI_LINE_TOP_4);
-		memcpy(temp, msg+30, 15);
-		xgui_TextOut_Line_Center(temp, XGUI_LINE_TOP_5);
-		xgui_TextOut_Line_Center(msg+45, XGUI_LINE_TOP_6);
+		xgui_SetTitle(title);
+
+		if (len > 0 && len <= 15)
+		{
+			xgui_TextOut_Line_Center(msg, XGUI_LINE_TOP_3);
+		}
+		else if (len>15 && len<=30)
+		{
+			memcpy(temp, msg, 15);
+			xgui_TextOut_Line_Center(temp, XGUI_LINE_TOP_3);
+			xgui_TextOut_Line_Center(msg+15, XGUI_LINE_TOP_4);
+		}
+		else if (len>30 && len<=45)
+		{
+			memcpy(temp, msg, 15);
+			xgui_TextOut_Line_Center(temp, XGUI_LINE_TOP_3);
+			memcpy(temp, msg+15, 15);
+			xgui_TextOut_Line_Center(temp, XGUI_LINE_TOP_4);
+			xgui_TextOut_Line_Center(msg+30, XGUI_LINE_TOP_5);
+		}
+		else if (len > 45)
+		{
+			memcpy(temp, msg, 15);
+			xgui_TextOut_Line_Center(temp, XGUI_LINE_TOP_3);
+			memcpy(temp, msg+15, 15);
+			xgui_TextOut_Line_Center(temp, XGUI_LINE_TOP_4);
+			memcpy(temp, msg+30, 15);
+			xgui_TextOut_Line_Center(temp, XGUI_LINE_TOP_5);
+			xgui_TextOut_Line_Center(msg+45, XGUI_LINE_TOP_6);
+		}	
 	}
 
 	xgui_EndBatchPaint();
@@ -235,7 +263,7 @@ void BluetoothTest()
 		if (xgui_GetMessageWithTime(&pMsg, 300) == MESSAGE_ERR_NO_ERR) {
 
 			if (pMsg.MessageId == XM_GUIPAINT) {
-				pagepaint("BluetoothTest", buffer);
+				pagepaint("BluetoothTest", buffer, 0);
 			}
 			else if (pMsg.MessageId == XM_KEYPRESS){
 				if (pMsg.WParam == KEY_QUIT)
@@ -280,13 +308,16 @@ void SerialPortTest()
 	char buffer[20] = {0};
 	char time_cur[20];
 	char time_last[20];
+	char msg[128] = {0};
+	int logo = 1;
 
 	get_hhmmss_str(time_last);
 
 	init_com();
 	strcpy(buffer, "Waiting to Recv");
 	//strcpy(qr_data->amt, "1.00");
-	//strcpy(qr_data->data, "http://en.morefun-et.com");
+	//strcpy(qr_data->qrdata, "http://en.morefun-et.com");
+	//strcpy(mpos_qr_data->text, "payment successful!");
 	xgui_PostMessage(XM_GUIPAINT, 0 , 0);
 
 	while(1)
@@ -294,14 +325,42 @@ void SerialPortTest()
 		if (xgui_GetMessageWithTime(&pMsg, 300) == MESSAGE_ERR_NO_ERR) {
 
 			if (pMsg.MessageId == XM_GUIPAINT) {
-				if (strlen(qr_data->data) > 0)
+				if (strlen(qr_data->qrdata) > 0)
 				{
-					showQr(qr_data->amt, qr_data->data);
+					mf_led_digit_show(qr_data->amt);	
+					showQr(qr_data->amt, qr_data->qrdata);
 					//showQr("1.00", "http://en.morefun-et.com");
 				} 
+				else if (strlen(qr_data->text) > 0)
+				{
+					if (strstr(qr_data->text, "success") != 0 && g_playtag == 1)
+					{
+						Play_Voice("payok");
+						mf_led_digit_show("1");	
+					} 
+					else if (strstr(qr_data->text, "fail") != 0 && g_playtag == 1)
+					{
+						Play_Voice("payerr");
+						mf_led_digit_show("0");	
+					} 
+					g_playtag = 0;
+
+					sprintf(msg, "\n\n%s", qr_data->text);
+
+					xgui_messagebox_show(" ",  msg, "" , "" ,  500);
+					//memset(mpos_qr_data->text, 0, sizeof(mpos_qr_data->text));
+				}
 				else
 				{
-					pagepaint("SerialPortTest", buffer);
+					mf_led_digit_show("");	
+					if (logo < 3)
+					{
+						pagepaint("SerialPortTest", buffer, 0);
+					} 
+					else
+					{
+						pagepaint("SerialPortTest", buffer, 1);
+					}
 				}
 			}
 			else if (pMsg.MessageId == XM_KEYPRESS){
@@ -323,6 +382,8 @@ void SerialPortTest()
 		}
 		get_hhmmss_str(time_cur);
 		if ( strcmp(time_last,time_cur) != 0 ){
+			logo++;
+			logo %= 6;
 			strcpy(time_last, time_cur );
 			xgui_PostMessage(XM_GUIPAINT, 0 , 0);
 		}

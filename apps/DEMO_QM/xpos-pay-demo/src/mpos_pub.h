@@ -3,7 +3,9 @@
 #define MPOS_PORT_COM	APP_COM
 
 typedef struct __st_pkt_info{
-	char func;
+	int flag;
+	int func;
+	int seq;
 	char * pbuff;
 	int len;
 	int ret;
@@ -13,11 +15,12 @@ typedef struct __st_pkt_info{
 
 #define	STX_CODE_1 			0x4D
 #define	STX_CODE_2 			0x46
-#define	ETX_CODE			"ED"
+#define	ETX_CODE			0x02
+
 
 
 void mpos_pub_check_sum_update(unsigned char * check_value , unsigned char *buff , int length);
-int mpos_pub_send_pkt(st_pkt_info  * pkt);
+int mpos_pub_send_pkt(unsigned char * pdata  , int len , st_pkt_info  * pkt);
 int mpos_pub_pkt_check(unsigned char * pdata , int len , st_pkt_info  * pkt);
 void mpos_pub_pack_str(unsigned char * pbuff , unsigned char * str ,int size);
 

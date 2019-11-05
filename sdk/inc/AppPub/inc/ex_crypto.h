@@ -13,10 +13,10 @@
 extern "C" {
 #endif
 
-/*指数*/
+/*index*/
 #define XM_RSA_EXP_3	0x03
 #define XM_RSA_EXP_10001	0x010001
-/*模长*/
+/*Die length*/
 #define XM_MIN_RSA_MODULUS_BITS	1024
 #define XM_MAX_RSA_MODULUS_BITS	2048
 #define XM_MIN_RSA_MODULUS_LEN	128 //128 BYTES
@@ -24,7 +24,7 @@ extern "C" {
 
 #define XM_MIN_RSA_PRIME_LEN	XM_MIN_RSA_MODULUS_LEN
 #define XM_MAX_RSA_PRIME_LEN	XM_MAX_RSA_MODULUS_LEN
-/*加解密模式*/
+/*Encryption and decryption mode*/
 #define XM_RSA_ENCRYPT	0x00
 #define XM_RSA_DECRYPT	0x01
 
@@ -36,9 +36,9 @@ extern "C" {
 #define XM_RSA_X931_PADDING	5
 
 typedef struct {
-	uint uiBits; //公钥模长  xx bits
-	uchar ucModulus[XM_MAX_RSA_MODULUS_LEN];  //公钥内容, 后对齐，前补0x00
-	uchar ucExponent[XM_MAX_RSA_MODULUS_LEN]; //公钥指数内容
+	uint uiBits; //Public Key Module Length  xx bits
+	uchar ucModulus[XM_MAX_RSA_MODULUS_LEN];  //Public key content, post-alignment, pre-complement 0x00
+	uchar ucExponent[XM_MAX_RSA_MODULUS_LEN]; //Public Key Index Content
 } XM_RSA_PUBLIC_KEY;
 
 typedef struct {

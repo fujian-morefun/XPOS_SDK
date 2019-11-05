@@ -1,6 +1,6 @@
 #include "xGui/inc/mainmenu.h"
 #include "xGui/inc/2ddraw.h"
-#include "xGui/inc/ime.h"
+
 #include "xGui/inc/messagedatastruct.h"
 #include "xGui/inc/message.h"
 #include "xGui/inc/messagebox.h"
@@ -18,7 +18,7 @@
 #include "test/test_pub.h"
 #include "driver/mf_supply_power.h"
 #include "atc/inc/atc_pub.h"
-#include "wifi/inc/wifi_pub.h"
+
 #include "power_bmp.h"
 #include "atc_bmp.h"
 #include "wifi_bmp.h"
@@ -35,7 +35,7 @@ LIB_EXPORT int tms_update(const char *file);
 	#define BLUETOOTH 1
 	#define SERIALPORT 1
 #else
-	#define COSUME 1	//MF67 memory is relatively small, remove the bank card EMV code
+	#define EMV 1	//MF67 memory is relatively small, remove the bank card EMV code
 	//#define TMS	1
 #endif
 
@@ -50,9 +50,7 @@ enum{
 
 static  const st_main_menu_item_def _menu_def[] = {
 	{MAIN_MENU_PAGE ,	"Test",			""},
-#ifdef COSUME
 	{MAIN_MENU_PAGE ,	"Sale",			""},
-#endif
 	{MAIN_MENU_PAGE ,	"CodePay",		""},
 	{MAIN_MENU_PAGE ,	"Version",		""},
 	{MAIN_MENU_PAGE ,	"Settings",		""},
@@ -61,7 +59,7 @@ static  const st_main_menu_item_def _menu_def[] = {
 	//{"Test" ,	"Print",		""},
 	//{"Test",	"magcard",		""},
 	//{"Test",	"Ic",			""},
-#ifdef COSUME
+#ifdef EMV
 	{"Test",	"RF",			""},
 #endif
 	{"Test",	"M1",			""},
@@ -91,8 +89,8 @@ static  const st_main_menu_item_def _menu_def[] = {
 	{"Settings",	"keySound",		""},
 	{"Settings",	"lcdLight",		""},
 	{"Settings",	"powerTime",	""}, 
-	//{"Settings",	"TimeSet",		""},
-	//{"Settings",	"Open Log",		""},	
+	{"Settings",	"TimeSet",		""},
+	{"Settings",	"Open Log",		""},	
 };
 
 
@@ -103,14 +101,17 @@ static int _menu_proc(char *pid)
 	int pos = 0;
 
 	if (strcmp(pid , "Sale") == 0){
-#ifdef COSUME
-		upay_consum();
-#else
-		xgui_messagebox_show("Sale", "Not support", "", "confirm" , 3000);		
-#endif
+		if (osl_get_is_m67())
+		{
+			xgui_messagebox_show("Sale", "Not support", "", "confirm" , 3000);		
+		} 
+		else
+		{
+			upay_consum();
+		}
 	}
 	else if (strcmp(pid , "Version") == 0){
-		if (lcd_get_sublcd_probe() == 1)
+		if (osl_get_is_m66b() == 1)
 		{
 			xgui_messagebox_show( "Version" , (char *)APP_VISION+5 , "" , "confirm" , 0);
 		}
@@ -141,13 +142,13 @@ static int _menu_proc(char *pid)
 	else if (strcmp(pid , "RF") == 0)
 	{
 #ifdef COSUME
-		if (lcd_get_sublcd_probe() == 1)
+		if (osl_get_is_m66b() == 1)
 		{
 			xgui_messagebox_show("RF Test", "See the big LCD", "", "confirm" , 300);		
 			lcd_set_index(0);
 		}
 		test_rf();
-		if (lcd_get_sublcd_probe() == 1)
+		if (osl_get_is_m66b() == 1)
 		{
 			lcd_set_index(1);
 		}
@@ -156,13 +157,13 @@ static int _menu_proc(char *pid)
 #endif
 	}
 	else if (strcmp(pid , "M1") == 0){
-		if (lcd_get_sublcd_probe() == 1)
+		if (osl_get_is_m66b() == 1)
 		{
 			xgui_messagebox_show("RF M1", "See the big LCD", "", "confirm" , 300);		
 			lcd_set_index(0);
 		}	
 		test_m1();
-		if (lcd_get_sublcd_probe() == 1)
+		if (osl_get_is_m66b() == 1)
 		{
 			lcd_set_index(1);
 		}
@@ -193,24 +194,24 @@ static int _menu_proc(char *pid)
 	}
 	else if (strcmp(pid , "Security") == 0)
 	{
-// 		if (lcd_get_sublcd_probe() == 1)
+// 		if (osl_get_is_m66b() == 1)
 // 		{
 // 			lcd_set_index(0);
 // 		}
 		securityTest();
-// 		if (lcd_get_sublcd_probe() == 1)
+// 		if (osl_get_is_m66b() == 1)
 // 		{
 // 			lcd_set_index(1);
 // 		}
 	}
 	else if (strcmp(pid , "ShowQr") == 0){
-		if (lcd_get_sublcd_probe() == 1)
+		if (osl_get_is_m66b() == 1)
 		{
 			xgui_messagebox_show("ShowQr", "See the big LCD", "", "confirm" , 300);		
 			lcd_set_index(0);
 		}
 		showQr2("0.01");
-		if (lcd_get_sublcd_probe() == 1)
+		if (osl_get_is_m66b() == 1)
 		{
 			lcd_set_index(1);
 		}
@@ -225,13 +226,13 @@ static int _menu_proc(char *pid)
 		fileTest();
 	}
 	else if (strcmp(pid , "ShowBmp") == 0){
-		if (lcd_get_sublcd_probe() == 1)
+		if (osl_get_is_m66b() == 1)
 		{
 			xgui_messagebox_show("ShowBmp", "See the big LCD", "", "confirm" , 300);		
 			lcd_set_index(0);
 		}
 		showbmptest();
-		if (lcd_get_sublcd_probe() == 1)
+		if (osl_get_is_m66b() == 1)
 		{
 			lcd_set_index(1);
 		}
@@ -258,13 +259,13 @@ static int _menu_proc(char *pid)
 	else if (strcmp(pid, "SerialPort") == 0)
 	{
 #ifdef SERIALPORT
-		if (lcd_get_sublcd_probe() == 1)
+		if (osl_get_is_m66b() == 1)
 		{
 			xgui_messagebox_show("SerialPortTest", "See the big LCD", "", "confirm" , 300);		
 			lcd_set_index(0);
 		}
 		SerialPortTest();
-		if (lcd_get_sublcd_probe() == 1)
+		if (osl_get_is_m66b() == 1)
 		{
 			lcd_set_index(1);
 		}
@@ -320,39 +321,70 @@ void standby_pagepaint()
 
 	char * pbmp;	
 
-	if (lcd_get_sublcd_probe() == 1)
+	if (osl_get_is_m66b() == 1)
 	{
 		lcd_set_index(0);
 	}
+
+	//xgui_set_lcd_mode(1);
+
 	xgui_BeginBatchPaint();
 	XGUI_SET_WIN_RC;
 	xgui_ClearDC();
 
-	xgui_SetTitle("Pay Demo");
+	//xgui_SetTitle("Pay Demo");
 
 	{
-		logoleft = 15;
-		logotop = XGUI_LINE_TOP_1;
-
 		pbmp = (char *)xgui_load_bmp_all(LOGOIMG , &logowidth , &logoheight, &logocolor);
+		
+		logoleft = (xgui_GetWidth()-logowidth)/2;
+		if (osl_get_is_m66b())
+		{
+			logotop = XGUI_LINE_TOP_1+10;
+		} 
+		else if (osl_get_is_m69())
+		{
+			logotop = XGUI_LINE_TOP_1;
+		}
+		else
+		{
+			logotop = XGUI_LINE_TOP_0+5;
+		}
 
 		if (pbmp != 0){
-			xgui_out_bits_bmp(logoleft, logotop, pbmp , logowidth , logoheight , 0 , logocolor);
+			xgui_out_bits_bmp(logoleft, logotop, pbmp , logowidth , logoheight , 1 , logocolor);
 			FREE(pbmp);
 		}
 	}
 
-	get_yyyymmdd_str(data);	
-	xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_4);
-	get_hhmmss_str(data);	
-	xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_5);
-
+	if(osl_get_is_m68() || osl_get_is_m66b())
+	{
+		get_yyyymmdd_str(data);	
+		xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_5);
+		get_hhmmss_str(data);	
+		xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_6);
+	}
+	else if (LCD_IS_320_240)
+	{
+		get_yyyymmdd_str(data);	
+		xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_4);
+		get_hhmmss_str(data);	
+		xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_5);
+	}
+	else
+	{
+		get_yyyymmdd_str(data);	
+		xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_7);
+		get_hhmmss_str(data);	
+		xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_8);
+	}
 
 	xgui_EndBatchPaint();
-	if (lcd_get_sublcd_probe() == 1)
+	if (osl_get_is_m66b() == 1)
 	{
 		lcd_set_index(1);
 	}
+	mf_led_digit_show("");
 }
 
 static int get_power()
@@ -400,10 +432,10 @@ void standby_pagepaint2()
 	logotop = XGUI_LINE_TOP_0-3;
 
 	logoleft = 5;
-	xgui_out_bits(logoleft, logotop, (unsigned char *)m_atc_signal_buff_128[atc_state] , SIGNAL_BMP_WIDTH_128 , SIGNAL_BMP_HEIGHT_128 , 0);
+	xgui_out_bits(logoleft, logotop, (unsigned char *)m_atc_signal_buff_128[atc_state] , ATC_SIGNAL_BMP_WIDTH_128 , ATC_SIGNAL_BMP_HEIGHT_128 , 0);
 
 	logoleft = 30;
-	xgui_out_bits(logoleft, logotop, (unsigned char *)m_wifi_signal_buff_160[wifi_state] , SIGNAL_BMP_WIDTH_160 , SIGNAL_BMP_HEIGHT_160 , 0);
+	xgui_out_bits(logoleft, logotop, (unsigned char *)m_wifi_signal_buff_160[wifi_state] , WIFI_SIGNAL_BMP_WIDTH_160 , WIFI_SIGNAL_BMP_HEIGHT_160 , 0);
 
 	logoleft = BATTER_BMP_LEFT_128;
 	xgui_out_bits(logoleft, logotop, (unsigned char *)m_batter_buff_128[power_state] , BATTER_BMP_WIDTH_128 , BATTER_BMP_HEIGHT_128 , 0);
@@ -459,7 +491,7 @@ void sdk_main_page()
 // 				else
 // 				{
 					standby_pagepaint();
-					if (lcd_get_sublcd_probe() == 1)//Whether with a small LCD
+					if (osl_get_is_m66b() == 1)//MF66B with a small LCD
 					{
 						standby_pagepaint2();
 					}
@@ -470,12 +502,12 @@ void sdk_main_page()
 
 				if (pMsg.WParam == KEY_OK || pMsg.WParam == KEY_QUIT)	
 				{
-// 					if (lcd_get_sublcd_probe() == 1)
+// 					if (osl_get_is_m66b() == 1)
 // 					{
 // 						lcd_set_index(1);
 // 					}
 					xgui_main_menu_show(MAIN_MENU_PAGE , 0);	// Loop processing menu
-// 					if (lcd_get_sublcd_probe() == 1)
+// 					if (osl_get_is_m66b() == 1)
 // 					{
 // 						lcd_set_index(0);
 // 					}	

@@ -152,6 +152,7 @@
 #define QPBOC_ERR_APPSEL_MISSBFOC		    0x88  //应用选择丢失BF0C
 #define QPBOC_ERR_APPSEL_UNPACKBFOC		    0x89  //应用选择没有打包BF0C
 #define QPBOC_ERR_APPSEL_UNPACK61		    0x8A  //QPBOC测试应用选择中没有打包61
+#define QPBOC_ERR_APPSEL_PPSE6283	        0x8B  //QPBOC应用选择中返回6283
 /**< qpboc应用初始化*/
 #define	QPBOC_ERR_INITAPP                   0x90   //QPBOC应用初始化失败 <D1>
 #define QPBOC_ERR_INITAPP_PACKPDOL	        0x91  //QPboc中打包DOL数据出错 <D2>

@@ -4,6 +4,7 @@
 #include "xGui/inc/message.h"
 #include "xGui/inc/xgui_key.h"
 #include "pub/common/misc/inc/mfmalloc.h"
+#include "mpos_func.h"
 
 #define QR_WIDTH	getQR_WIDTH()
 #define QR_HEIGHT	getQR_HEIGHT()
@@ -46,7 +47,7 @@ int showQr(char *amt, char *data)
 	//char *data= "http://en.morefun-et.com";
 	int length = strlen(data);
 
-	if (lcd_get_sublcd_probe() == 1)
+	if (osl_get_is_m66b() == 1)
 	{
 		lcd_set_index(0);
 	}
@@ -193,7 +194,7 @@ int showQr(char *amt, char *data)
 		ret = -1;
 	}
 	FREE(bitmap);
-	if (lcd_get_sublcd_probe() == 1)
+	if (osl_get_is_m66b() == 1)
 	{
 		lcd_set_index(1);
 	}
@@ -218,8 +219,9 @@ int showQr2(char *title)
 	int left,top;
 	char *data= "http://en.morefun-et.com";
 	int length = strlen(data);
+	st_qr_data  * qr_data = mpos_func_get_qr_data();
 
-// 	if (lcd_get_sublcd_probe() == 1)
+// 	if (osl_get_is_m66b() == 1)
 // 	{
 // 		lcd_set_index(0);
 // 	}	
@@ -271,6 +273,8 @@ int showQr2(char *title)
 	xgui_PostMessage(XM_GUIPAINT, 0 , 0);
 
 	if(width > 0){
+
+		init_com();
 
 		while(1){
 			if (osl_CheckTimeover(tick1 , 60000) != 0)	{	//ÅÐ¶ÏÊÇ·ñ³¬Ê±ÍË³ö
@@ -344,17 +348,33 @@ int showQr2(char *title)
 					xgui_EndBatchPaint();
 				}
 				else if (pMsg.MessageId == XM_KEYPRESS){
-					if(pMsg.WParam == KEY_OK){
-						ret = 1;
+					/*if(pMsg.WParam == KEY_OK){
+						ret = -2;
 						break;
 					}
-					else if(pMsg.WParam == KEY_QUIT){
+					else */if(pMsg.WParam == KEY_QUIT){
 						ret = -2;
 						break;
 					}
 				}
 				xgui_proc_default_msg(&pMsg);
 			}
+
+			_mpos_proc();
+			if (strlen(qr_data->text) > 0)
+			{
+				if (strstr(qr_data->text, "success") != 0)
+				{
+					ret = 1;
+				} 
+				else if (strstr(qr_data->text, "fail") != 0)
+				{
+					ret = 0;
+				} 
+				memset(qr_data->text, 0, sizeof(qr_data->text));
+				break;
+			}
+
 			if (Rf_Check_CardIsExist() == 0)
 			{
 				ret = 2;
@@ -368,9 +388,10 @@ int showQr2(char *title)
 		ret = -1;
 	}
 	FREE(bitmap);
-// 	if (lcd_get_sublcd_probe() == 1)
+// 	if (osl_get_is_m66b() == 1)
 // 	{
 // 		lcd_set_index(1);
 // 	}
+
 	return ret;
 }

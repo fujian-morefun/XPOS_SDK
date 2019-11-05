@@ -1,7 +1,6 @@
 #include "sdk_xgui.h"
 #include "xGui/inc/mainmenu.h"
 #include "xGui/inc/2ddraw.h"
-#include "xGui/inc/ime.h"
 #include "xGui/inc/messagedatastruct.h"
 #include "xGui/inc/message.h"
 #include "xGui/inc/messagebox.h"
@@ -16,6 +15,7 @@
 #include "pub/common/misc/inc/mfmalloc.h"
 #include "libapi_xpos/inc/libapi_gui.h"
 #include "sdk_driver.h"
+#include "libapi_xpos/inc/libapi_emv.h"
 
 #define LOGOIMG "data\\logo2.bmp"
 
@@ -44,12 +44,13 @@ static  const st_main_menu_item_def _menu_def[] = {
 	{MAIN_MENU_PAGE ,	"Version",		""},
 	{MAIN_MENU_PAGE ,	"Test",			""},
 	{MAIN_MENU_PAGE ,	"Settings",		""},
+	{MAIN_MENU_PAGE ,	"Others",		""},
 
 	{"Test" ,	"DevInfo",		""},
 	{"Test" ,	"Print",		""},
-	{"Test",	"magcard",		""},
-	{"Test",	"Ic",			""},
-	{"Test",	"RF",			""},
+	//{"Test",	"magcard",		""},
+	//{"Test",	"Ic",			""},
+	//{"Test",	"RF",			""},
 	{"Test",	"M1",			""},
 //	{"Test",	"Touch",		""},
 	{"Test",	"Barcode",		""},
@@ -70,6 +71,8 @@ static  const st_main_menu_item_def _menu_def[] = {
 	{"Settings",	"TimeSet",		""},	
 	{"Settings",	"Open Log",		""},	
 	{"Settings",	"Set Dukpt Key",		""},	
+	{"Others",		"View AID",		""},
+	{"Others",		"View CAPK",	""},
 };
 
 /*static  const st_main_menu_item_def _menu_def[] = 
@@ -123,7 +126,8 @@ static int _menu_proc(char *pid)
 	else if (strcmp(pid , "Version") == 0){
 		sprintf(msg , "app:%s\r\n", APP_VER);
 		sprintf(msg + strlen(msg), "hardware:%s\r\n", sec_get_hw_ver());
-		sprintf(msg + strlen(msg), "fireware:%s", sec_get_fw_ver());
+		sprintf(msg + strlen(msg), "fireware:%s\r\n", sec_get_fw_ver());
+		sprintf(msg + strlen(msg), "emv:%s\r\n", EMV_GetVersion());
 		gui_messagebox_show( "Version" , msg , "" , "confirm" , 0);
 	}
 	else if (strcmp(pid , "CodePay") == 0){	
@@ -136,13 +140,13 @@ static int _menu_proc(char *pid)
 		sdk_print();
 	}
 	else if (strcmp(pid , "magcard") == 0){
-		test_magcard();
+		//test_magcard();
 	}
 	else if (strcmp(pid , "Ic") == 0){
-		test_IC();
+		//test_IC();
 	}
 	else if (strcmp(pid , "RF") == 0){
-		test_rf();
+		//test_rf();
 	}
 	else if (strcmp(pid , "M1") == 0){
 		test_m1();
@@ -206,7 +210,14 @@ static int _menu_proc(char *pid)
 	{
 		SetDukptKey();
 	}
-
+	else if (strcmp(pid, "View AID") == 0)
+	{
+		EMV_ShowAID_Prm();
+	}
+	else if (strcmp(pid, "View CAPK") == 0)
+	{
+		EMV_ShowCAPK_Prm();
+	}
 	return 0;
 }
 

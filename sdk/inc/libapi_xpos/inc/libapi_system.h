@@ -81,7 +81,7 @@ Output : Nothing
 return: USYS_PARAERROR = -2,   //Parameter Error
 		USYS_FAIL     = -1,  Fail
 		USYS_SUCCES   = 0，Success
-Remarks: API内部判断时间格式是否正确
+Remarks: Internal judgment of time format in API
 *************************************************************************************/
 LIB_EXPORT int Sys_SetDateTime(byte *DateTime);
 
@@ -293,5 +293,89 @@ Remarks: Nothing
 *************************************************************************************/
 LIB_EXPORT void Sys_driverlib_init();
 
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:luoxizhu
+Functions:Judging whether there is a secondary liquid crystal
+Input : Nothing
+Output : Nothing 
+return: Return 1 has a secondary liquid crystal
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT int  Sys_get_sublcd_probe();
+
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:luoxizhu
+Functions:Switching liquid crystal
+Input : index=0 Main liquid crystal  ,index =1 Paraliquid crystal
+Output : Nothing 
+return: Return 1 has a secondary liquid crystal
+Remarks: Nothing
+*************************************************************************************/
+
+LIB_EXPORT void Sys_lcd_set_index(int index);
+
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:luoxizhu
+Functions:Brighten the backlight by pressing the key
+Input : Nothing
+Output : Nothing 
+return: Return 1 has a secondary liquid crystal
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT void  Sys_power_key_set_light();
+
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:luoxizhu
+Functions:Get the shutdown time
+Input : Nothing
+Output : Nothing 
+return: Return shutdown time
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT  int Sys_lcd_PowerDownTime();
+
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:luoxizhu
+Functions:Set the shutdown time
+Input : ntime  shutdown time
+Output : Nothing 
+return: 
+Remarks: Nothing
+*************************************************************************************/
+
+LIB_EXPORT  void Sys_lcd_SetPowerDownTime(int ntime);
+
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:luoxizhu
+Functions:Get  Backlight time
+Input : Nothing
+Output : Nothing 
+return: Return Backlight time
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT  int Sys_lcd_BackLightTime();
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:luoxizhu
+Functions:Set Backlight time
+Input : ntime  Backlight time
+Output : Nothing 
+return: 
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT  void Sys_lcd_SetBackLightTime(int ntime);
 
 #endif /*__LIBAPI_SYSTEM_HEADER__*/

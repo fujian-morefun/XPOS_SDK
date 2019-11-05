@@ -186,7 +186,55 @@ Output : psBuf:Returns the tag value
 return: UEMV_PRM_FAIL=-1,
 		UEMV_PRM_OK=0 
 *************************************************************************************/
-LIB_EXPORT extern int EMV_GetDataByTag(byte *psTag, byte *psSrc, int nSrcLen,byte *psBuf, int *nBufLen);
+LIB_EXPORT int EMV_GetDataByTag(byte *psTag, byte *psSrc, int nSrcLen,byte *psBuf, int *nBufLen);
 
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:wuxp
+Functions:Get the EMV kernel version
+Input :  Nothing
+Output : Nothing
+return: emv version
+*************************************************************************************/
+LIB_EXPORT char * EMV_GetVersion(void);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:wuxp
+Functions:Set the online PIN interface
+Input :  Callback function
+Output : Nothing
+return: Nothing
+*************************************************************************************/
+LIB_EXPORT void EMV_SetInputPin(int (*InputPin)(char *,char *,char ,char *));
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:wuxp
+Functions:Set offline PIN prompt interface
+Input :  Callback function
+Output : Nothing
+return: Nothing
+*************************************************************************************/
+LIB_EXPORT void EMV_SetDispOffPin(void (*DispOffPin)(int)); 
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:wuxp
+Functions:Show AID
+Input :  Nothing
+Output : Nothing
+return: Nothing
+*************************************************************************************/
+LIB_EXPORT void EMV_ShowAID_Prm(void);
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:wuxp
+Functions:Show CAPK
+Input :  Nothing
+Output : Nothing
+return: Nothing
+*************************************************************************************/
+LIB_EXPORT void EMV_ShowCAPK_Prm(void);
 
 #endif

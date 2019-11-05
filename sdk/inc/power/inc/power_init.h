@@ -1,5 +1,5 @@
 /*! \file power_init.h
-	\brief 电源管理
+	\brief Power management
 *	\author lx
 *	\date 2014/02/08
 */
@@ -9,14 +9,14 @@
 
 
 /**
-* @brief 电源管理初始化
+* @brief Initialization of Power Management
 * @param 
 * @return 
 */
 LIB_EXPORT void power_init(void);
 
 /**
-* @brief 重新计时背光灭后休眠或关机时间
+* @brief Re-timed dormancy or shutdown time after backlight extinction
 * @param 
 * @return 
 */
@@ -24,15 +24,15 @@ LIB_EXPORT void resetpowersuspendtimeout();
 
 
 /**
-* @brief 是否关闭背光
-* @param 0不关闭背光  1自动关闭背光
+* @brief Whether to turn off the backlight
+* @param0 does not turn off the backlight 1 automatically turns off the backlight
 * @return 
 */
 LIB_EXPORT void setbacklightflag(int bpowersuspend);
 
 /**
-* @brief 是否自动休眠
-* @param 0关闭自动休眠  1自动休眠
+* @brief Whether to sleep automatically
+* @param 0 turn off automatic sleep 1 automatic sleep
 * @return 
 */
 LIB_EXPORT void setpowersuspend(int bpowersuspend);

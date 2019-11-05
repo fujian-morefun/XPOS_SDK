@@ -8,7 +8,8 @@
 #define GUI_IME_MODE_NUMBER			(1<<3)		//Allow input of numbers
 
 
-#define GUI_LINE_TOP(a)		(33 * a)
+//#define GUI_LINE_TOP(a)		(33 * a)
+#define GUI_LINE_TOP(a)						xgui_GetLineTop(a)
 
 #define GUI_GUIFIRST				0x000A0000
 #define GUI_GUIPAINT				0x000A0001
@@ -530,6 +531,24 @@ return: Nothing£¬Show attention to release pbits
 LIB_EXPORT void gui_out_bits_ex(int x, int y, unsigned char *pbits, int width , int height, int mode , int color);
 
 
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lxz
+Functions:display image
+Input : x				X coordinate
+		  y				Y coordinate	
+		  pbits			Image data
+		  width			Image width
+		  height		Picture height
+		  mode			0 Positive display, 1 Reverse display
+		  zoom			Amplification factor
+Output : Nothing
+return: Nothing£¬Show attention to release pbits
+*************************************************************************************/
+LIB_EXPORT void gui_out_bits_zoom(int x, int y, unsigned char *pbits, int width , int height, int mode, int zoom);
+
+
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:lx
@@ -564,3 +583,30 @@ return: Nothing
 *************************************************************************************/
 
 LIB_EXPORT void gui_settextstyle(int textStyle);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions:Display text on the screen ,Show only English
+Input :   pMsg		pmsg content
+		  top		top  coordinate
+		
+Output : Nothing			
+return: 0			success
+*************************************************************************************/
+LIB_EXPORT void  gui_textout_line_center(char *pMsg , int top);
+
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lxz
+Functions:Refresh the specified area
+Input : left		Left border
+		top		Upper boundary
+		right		Right border
+		bottom	Lower boundary
+		color  Refresh with specified color	
+Output : Nothing			
+return: 0			success
+*************************************************************************************/
+LIB_EXPORT void gui_clear_rect(int left, int top, int right, int bottom, int color);

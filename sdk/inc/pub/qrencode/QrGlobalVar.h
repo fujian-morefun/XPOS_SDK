@@ -3,7 +3,7 @@
 * Copyright(c) 2009-20XX, mf, All Rights Reserved
 * Author：  dzhanjie@163.com  
 * Created： 2012/08/20
-* Describe：全局变量                                         
+* Describe：global variable                                         
 ************************************************************************/
 
 #pragma once
@@ -16,27 +16,27 @@ extern "C"{
 
 #define NULL	0
 
-/*纠错级别*/
+/*Error Correct Level*/
 #define QR_LEVEL_L	0
 #define QR_LEVEL_M	1
 #define QR_LEVEL_Q	2
 #define QR_LEVEL_H	3
 
- /*数据类型*/
+ /*data type*/
 #define QR_MODE_NUMERAL		0
 #define QR_MODE_ALPHABET	1
 #define QR_MODE_8BIT		2
 #define QR_MODE_HANZI		3
 
- /*版本号*/
+ /*version number*/
 #define QR_VRESION_S	0  /*1 ~ 9*/
 #define QR_VRESION_M	1  /*10 ~ 26*/
 #define QR_VRESION_L	2  /*27 ~ 40*/
 
-#define MAX_ALLCODEWORD	 600  /*最大总码字数*/
-#define MAX_DATACODEWORD 500  /*最大数据码字数(40-L)*/
-#define MAX_CODEBLOCK	 400  /*最大码字块数*/
-#define MAX_MODULESIZE	 max_module_size  /*每边最大模块数*/
+#define MAX_ALLCODEWORD	 600  /*Maximum total number of codewords*/
+#define MAX_DATACODEWORD 500  /*Maximum number of data codewords(40-L)*/
+#define MAX_CODEBLOCK	 400  /*Maximum number of codeword blocks*/
+#define MAX_MODULESIZE	 max_module_size  /*Maximum number of modules per side*/
 
 enum
 {
@@ -44,10 +44,10 @@ enum
 	QRErrLevel_M = 1,
 	QRErrLevel_Q = 2,
 	QRErrLevel_H = 3
-}; //QR纠错级别
+}; //QR Error Correct Level
 
 
-/*大类型*/
+/*Large Type*/
 enum
 {
 	UT_TYPE_1D		= 0xC1,
@@ -55,7 +55,7 @@ enum
 	UT_TYPE_OCR		= 0xC3
 };
 
-//二维码类型
+//Two-Dimensional Code Type
 enum
 {
 	POS_PDF417			= 0,
@@ -64,7 +64,7 @@ enum
 	POS_DataMatrix      = 3,
 };
 
- /*QR边缘*/
+ /*QR edge*/
 #define QR_MARGIN	4 
 
 //typedef unsigned char unsigned char;
@@ -81,42 +81,31 @@ enum
 /************************************************************************/
 typedef PACKED struct tagRS_BLOCKINFO
 {
-	int ncRSBlock;		 /*纠错块数*/
-	int ncAllCodeWord;	 /*总码字数*/
-	int ncDataCodeWord;	 /*数据码字数*/
+	int ncRSBlock;		 /*Number of Error Correcting Blocks*/
+	int ncAllCodeWord;	 /*Total number of codewords*/
+	int ncDataCodeWord;	 /*Number of data codewords*/
 	
 } RS_BLOCKINFO, *LPRS_BLOCKINFO;
 
 
 /***********************************
- *QR信息结构
+ *QRInformation structure
  **********************************/
 typedef struct tagQR_VERSIONINFO
 {
-	int nVersionNo;	    /*版本号(1~40)*/
-	int ncAllCodeWord;  /*总码字数*/
-	int ncDataCodeWord[4];	/*四个纠错级别的数据码字数(0 = L, 1 = M, 2 = Q, 3 = H)*/ 
+	int nVersionNo;	    /*version number(1~40)*/
+	int ncAllCodeWord;  /*Total number of codewords*/
+	int ncDataCodeWord[4];	/*Number of data codewords at four error correction levels(0 = L, 1 = M, 2 = Q, 3 = H)*/ 
 	
-	int ncAlignPoint;	 /*校正图形数*/
-	int nAlignPoint[6];	 /*校正图形中心模块的行列坐标*/
+	int ncAlignPoint;	 /*Number of corrected graphs*/
+	int nAlignPoint[6];	 /*Correction of row and column coordinates of graphics center module*/
 	
-	RS_BLOCKINFO RS_BlockInfo1[4];  /*RS块信息(1)*/
-	RS_BLOCKINFO RS_BlockInfo2[4];  /*RS块信息(2)*/
+	RS_BLOCKINFO RS_BlockInfo1[4];  /*RS Block information(1)*/
+	RS_BLOCKINFO RS_BlockInfo2[4];  /*RS Block information(2)*/
 	
 } QR_VERSIONINFO, *LPQR_VERSIONINFO;
 
-/************************************************************************
-*
-*    QR码版本(1~40)及相关标准参数信息
-*	具体包括:
-*	int nVersionNo;	    版本号(1~40)
-*	int ncAllCodeWord;  总码字数(数据容量)
-*	int ncDataCodeWord[4];	四个纠错级别的数据码字数(0 = L, 1 = M, 2 = Q, 3 = H) 
-*	int ncAlignPoint;	 校正图形数
-*	int nAlignPoint[6];	 校正图形中心模块的行列坐标
-*	RS_BLOCKINFO RS_BlockInfo1[4];  RS块信息(1)--(r纠错容量,c码字总数,k数据码字数)
-*	RS_BLOCKINFO RS_BlockInfo2[4];  RS块信息(2)
-***************************************************************************************/
+
 static const  QR_VERSIONINFO QR_VersonInfo[] = {{0,/*Ver.0*/
 											0,   0,   0,   0,    0,
 											0,   0,   0,   0,   0,   0,   0,
@@ -572,7 +561,7 @@ static const  QR_VERSIONINFO QR_VersonInfo[] = {{0,/*Ver.0*/
 
 
 /************************************************************************
- *GF(2^8)指数a->整数换算表*/
+ *GF(2^8)Index a - > Integer Conversion Table*/
 static const unsigned char byExpToInt[] = {  1,   2,   4,   8,  16,  32,  64, 128,  29,  58, 116, 232, 205, 135,  19,  38,
 							 76, 152,  45,  90, 180, 117, 234, 201, 143,   3,   6,  12,  24,  48,  96, 192,
 							157,  39,  78, 156,  37,  74, 148,  53, 106, 212, 181, 119, 238, 193, 159,  35,
@@ -592,7 +581,7 @@ static const unsigned char byExpToInt[] = {  1,   2,   4,   8,  16,  32,  64, 12
 
 
 /************************************************************************
-* GF(2^8)整数->指数a换算表*/
+* GF(2^8)Integer - > Index a Conversion Table*/
 static const unsigned char byIntToExp[] = {  0,   0,   1,  25,   2,  50,  26, 198,   3, 223,  51, 238,  27, 104, 199,  75,
 							  4, 100, 224,  14,  52, 141, 239, 129,  28, 193, 105, 248, 200,   8,  76, 113,
 							  5, 138, 101,  47, 225,  36,  15,  33,  53, 147, 142, 218, 240,  18, 130,  69,
@@ -612,8 +601,8 @@ static const unsigned char byIntToExp[] = {  0,   0,   1,  25,   2,  50,  26, 19
 
 
 /************************************************************************
-*RS纠错多项式产生的误差校正因子a
-*纠错码字数---7~68个字数的纠错码生成多项式*/
+*RSError Correction Factor Generated by Error Correction Polynomiala
+*Error Correcting Code Word Number--Error Correcting Code Generation Polynomial of 7-68 Words Number*/
 static const unsigned char byRSExp7[]  = {87, 229, 146, 149, 238, 102,  21};
 static const unsigned char byRSExp10[] = {251,  67,  46,  61, 118,  70,  64,  94,  32,  45};
 static const unsigned char byRSExp13[] = { 74, 152, 176, 100,  86, 100, 106, 104, 130, 218, 206, 140,  78};

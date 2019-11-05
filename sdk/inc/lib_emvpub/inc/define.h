@@ -30,11 +30,12 @@
 
 //typedef unsigned char BYTE;
 
-#define EMV_VERSION			"EMV4.3G_2019-01-15_ZY"	//POS10Q认证版本
-#define EMV_PINPAD_VERSION	"EMV4.3G_PINPAD-V1.01"
+#define ENTRY_POINT_VERSION			"EntryPoint_2019-08-27_XP"
+#define EMV_VERSION			"EMV4.3H_2019-08-27_XP"	
+//#define EMV_PINPAD_VERSION	"EMV4.3G_PINPAD-V1.01"
 //#define  L2_APPROVE  1  //1 - L2认证时宏定义开启   0-默认提交生产用（SVN只上传为0的版本）此前第三方应用发现有卡片返回tag一样导致中止
 
-///#define AUTO_APPROVE	1//自动化测试开关 仅接触测试开启；非接关闭
+//#define AUTO_APPROVE	1 //自动化测试开关 （连BCTC的测试后台时开启）
 #ifndef AUTO_APPROVE
 //#define		QUICS	1	//QUICS宏定义
 #ifndef		QUICS		

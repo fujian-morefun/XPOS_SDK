@@ -17,4 +17,5 @@ typedef struct __st_ap_list{
 LIB_EXPORT void wf_proc_ap_line_test();
 LIB_EXPORT int wf_list_ap(st_ap_list * ap_list);
 LIB_EXPORT int wf_link_ap(st_ap_list * ap_list , char * pwd);
+LIB_EXPORT int wf_link_ap_ex(st_ap_list * ap_list , char * pwd,int flag);
 LIB_EXPORT int wf_unlink_ap();

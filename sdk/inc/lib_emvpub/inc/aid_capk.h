@@ -6,7 +6,7 @@ LIB_EXPORT int Emv_GetAIDList(void);
 LIB_EXPORT void Emv_FreeAIDList(void);
 
 LIB_EXPORT YESORNO IsAIDMatch(char *pszICCAID,int nICCAIDLen,int *nIndex);
-LIB_EXPORT YESORNO Rf_IsAIDMatch(char *pszICCAID,int nICCAIDLen,int iKernelId);
+LIB_EXPORT YESORNO Rf_IsAIDMatch(char *pszICCAID,int nICCAIDLen,int iKernelId,int *nIndex);
 
 //paypassÐÂÔö
 LIB_EXPORT void PP_FreeAIDListEx(void);

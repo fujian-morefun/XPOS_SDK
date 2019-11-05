@@ -18,111 +18,111 @@ extern "C"{
 #define AT_NO_ECHO  -2
 
 /**
-* @brief 设置apn
-* @param apn apn名称
-* @return 0成功
+* @brief Setting up APN
+* @param apn apn name
+* @return 0 success
 */
 LIB_EXPORT int ap_set_apn(char *apn);
 /**
-* @brief 读取imei
-* @param buff 缓冲区
-* @param len 缓冲区位置
-* @return 0成功
+* @brief Read IMEI
+* @param buff buffer
+* @param len Buffer location
+* @return 0 success
 */
 LIB_EXPORT int ap_get_imei(char *buff , int len);
 /**
-* @brief 读取模块版本
-* @param buff 缓冲区
-* @param len 缓冲区长度
-* @return 0成功
+* @brief Read Module Version
+* @param buff Buffer
+* @param len Buffer length
+* @return 0 success
 */
 LIB_EXPORT int ap_get_model_ver(char *buff , int len);
 /**
-* @brief 发送at命令等待返回
-* @param cmd 命令
-* @param timeover 超时时间
-* @param retstr 返回指令
-* @param len 指令长度
-* @param count 重发次数
-* @return 0成功
+* @brief Send at command and wait for return
+* @param cmd command
+* @param timeover timeout
+* @param retstr Return instruction
+* @param len Instruction Length
+* @param count Number of retransmissions
+* @return 0 success
 */
 LIB_EXPORT int ag_send_wait_return(char *cmd , int timeover , char * retstr , int len , int count);
 /**
-* @brief 设置回显
-* @param val 回显值
-* @return 0成功
+* @brief Set Echo
+* @param val Echo value
+* @return 0 success
 */
 LIB_EXPORT int ap_set_e_val(int val);
 LIB_EXPORT int ap_get_echo();
 /**
-* @brief 读取csq
-* @param csq_val 缓冲区
-* @return 0成功
+* @brief Read CSQ
+* @param csq_val buffer
+* @return 0 success
 */
 LIB_EXPORT int ap_get_csq(int *csq_val);
 /**
-* @brief 读取creg
-* @param creg_val 缓冲区
-* @return 0成功
+* @brief read creg
+* @param creg_val buffer 
+* @return 0 success
 */
 LIB_EXPORT int ap_get_creg(int *creg_val);
 /**
-* @brief 读取pin
-* @return 0成功
+* @brief read pin
+* @return 0 success
 */
 LIB_EXPORT int ap_get_cpin();
 /**
-* @brief 读取imei
-* @param buff 缓冲区
-* @param len 缓冲区长度
-* @return 0成功
+* @brief read imei
+* @param buff buffer
+* @param len buffer length
+* @return 0 success
 */
 LIB_EXPORT int ap_get_imsi(char *buff , int len);
 
 
 /**
-* @brief ATC初始化
+* @brief ATC initialization
 * @return 
 */
 LIB_EXPORT int atc_init();
 LIB_EXPORT void atc_win32_init();
 /**
-* @brief 获取是否已注册网络
-* @return 0未注册  1已注册
+* @brief Get whether the network has been registered
+* @return 0 unregistered  1 registered
 */
 LIB_EXPORT int atc_isreg();
 /**
-* @brief 获取csq 值
-* @return csq值
+* @brief Get the CSQ value
+* @return  CSQ value
 */
 LIB_EXPORT int atc_csq();
 /**
-* @brief 获取imei
-* @return imei值
+* @brief  Get the imei
+* @return imei value
 */
 LIB_EXPORT const char * atc_imei();
 /**
-* @brief 获取imsi
-* @return imsi值
+* @brief Getting IMSI
+* @return imsi value
 */
 LIB_EXPORT const char * atc_imsi();
 
 /**
-* @brief 获取信号格数
-* @return 0 未注册上网络  1-4信号格数
+* @brief Get the number of signal lattices
+* @return 0 Unregistered Internet  1-4 Signal Lattice Number
 */
 LIB_EXPORT int atc_signal();
 
 /**
-* @brief 获取CPIN状态
-* @return 0失败 1锁卡 2正常 3puk
+* @brief Get CPIN status
+* @return 0 Failure 1 Lock Card 2 Normal 3puk
 */
 LIB_EXPORT int atc_cpin();
 
 
 /**
-* @brief 获取模块版本号
-* @return 模块版本号
+* @brief Get the module version number
+* @return Module version number
 */
 LIB_EXPORT const char * atc_model_ver();
 
@@ -131,11 +131,11 @@ LIB_EXPORT int atc_lac();
 
 typedef enum
 {
-	MODULE_SIMCOM = 0,		//Simcom模块
-	MODULE_SPREADTRUM = 1,	//展讯模块(AT188MA)
-	MODULE_M62 = 2,			//M62模块 ,M35模块
+	MODULE_SIMCOM = 0,		//Simcom Modular
+	MODULE_SPREADTRUM = 1,	//Exhibition module(AT188MA)
+	MODULE_M62 = 2,			//M62 Modular  ,M35Modular
 	MODULE_AT139D = 3,		//AT139D
-	MODULE_MC509 = 4,		//华为MC509
+	MODULE_MC509 = 4,		//Huawei MC509
 	MODULE_A8500 = 5,		//A8500
 
 }MODULE_TYPE_E;
@@ -150,17 +150,17 @@ LIB_EXPORT MODULE_TYPE_E atc_getModuleType();
 LIB_EXPORT const char * atc_iccid();
 
 
-//设定外部缓冲区 AT+CCED=0,2  用于返回内容
+//Set the external buffer AT+CCED=0,2 to return content
 LIB_EXPORT void atc_setccedbuff(char *pbuff, int nbufflen);
 
 typedef struct _cceditem{
-	unsigned short	MCC;					//移动国家号码
-	unsigned char	MNC;					//移动网络号码
-	unsigned short	LAC;					//位置区域号
-	unsigned short	CELL;					//小区号
-	unsigned char	BSIC;					//基站标示码
-	unsigned char	BCCH_Freq_absolute;		//BCCH 信道号
-	unsigned char	RxLev;					//接收信号强度
+	unsigned short	MCC;					//Mobile country number
+	unsigned char	MNC;					//Mobile Network Number
+	unsigned short	LAC;					//Location area number
+	unsigned short	CELL;					//Block number
+	unsigned char	BSIC;					//Base Station Indicator Code
+	unsigned char	BCCH_Freq_absolute;		//BCCH Channel number
+	unsigned char	RxLev;					//Received signal strength
 }ccedItem;
 
 LIB_EXPORT ccedItem * atc_getcceditems( int *outcount);

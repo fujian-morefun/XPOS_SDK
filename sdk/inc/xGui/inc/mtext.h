@@ -1,5 +1,5 @@
 /*! \file mtext.h
-	\brief 多行文本功能
+	\brief Multi-line Text Functio
 *	\author lx
 *	\date 2014/02/08
 */
@@ -20,6 +20,8 @@
 #define TEXT_RET_TIMEOVER	3
 #define TEXT_RET_PRINT		4
 #define TEXT_RET_PAINT		5
+#define TEXT_RET_USER_KEY	6
+
 #define TEXT_RET_HANDOFF	-2
 
 typedef struct __st_textnode{
@@ -53,64 +55,70 @@ typedef struct __st_xmtext {
 	_TEXT_ST * m_pTextHead,* m_pTextTail, * m_pCurPage;
 	unsigned int m_nTErrorCode;
 	int linePerPage;
+	unsigned char * keylist;
+	int presskey;
+	int showtime;
+	char * leftstr;
+	char * rightstr;
+	char fristshow;
 }XMTEXT;
 
 	
 /**
-* @brief 创建多行文本
-* @param szText 文本内容
-* @param nStyle 文本样式
-* @param pRect 显示区域
-* @param nParam 超时时间
-* @return 文本结构
+* @brief Create multiline text
+* @param szText Text content
+* @param nStyle Text Style
+* @param pRect Display area
+* @param nParam timeout
+* @return Text structure
 */
 LIB_EXPORT XMTEXT * xgui_mtext_Create(char *szText,int nStyle ,RECT *pRect,int nParam );
 LIB_EXPORT XMTEXT * xgui_mtext_CreateEx(char * szText, int nStyle,  RECT * pRect, int nParam , char * title , void * pfun);
 
 /**
-* @brief 显示多行文本
-* @param pmt 文本结构
+* @brief Display multiline text
+* @param pmt Text structure
 * @return 
 */
 LIB_EXPORT void xgui_mtext_Show(XMTEXT* pmt);
 /**
-* @brief 文本显示处理
-* @param pmt 文本结构
-* @return 显示处理结果
+* @brief Text Display Processi
+* @param pmt Text structure
+* @return Display processing re
 */
 LIB_EXPORT int xgui_mtext_domodal(XMTEXT * pmt);
 
 /**
-* @brief 释放文本
-* @param pmt 文本结构
+* @brief Release text
+* @param pmt Text structure
 * @return 
 */
 LIB_EXPORT void xgui_mtext_delete(XMTEXT * pmt);
 
 /**
-* @brief 设置文本
-* @param pmt 文本结构
+* @brief Setting text
+* @param pmt Text structure
 * @param szText
-* @return 0成功
+* @return 0 success
 */
 LIB_EXPORT int xgui_mtext_SetText(XMTEXT* pmt,const char *szText);
 /**
-* @brief 读取当前文本长度
-* @param pmt 文本结构
+* @brief Read the current text 
+* @param pmt Text structure
 * @return 
 */
 LIB_EXPORT int xgui_mtext_GetTextLength(XMTEXT* pmt);
 /**
-* @brief 读取当前文本内容 
-* @param pmt 文本结构
-* @param szText 文本内容
-* @return 0成功
+* @brief Read the current text  
+* @param pmt Text structure
+* @param szText Text content
+* @return 0 success
 */
 LIB_EXPORT int xgui_mtext_GetText(XMTEXT* pmt,char * szText);
 /**
-* @brief 文本缓冲区指针 
-* @param pmt 文本结构
-* @return 文本指针
+* @brief Text Buffer Pointer 
+* @param pmt Text structure
+* @return Text pointer
 */
 LIB_EXPORT char * xgui_mtext_GetTextPtr(XMTEXT* pmt);
 

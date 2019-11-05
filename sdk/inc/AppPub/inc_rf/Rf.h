@@ -4,28 +4,28 @@
 
 #define  RF_INIT_ERROR (-5)
 /******************************************************************************
- *  函数名称:	Rf_PowerOn
- *	函数介绍:	给非接卡上电
- *	入口参数:	
- *	出口参数:     
- * 	返回值  :		
+ *  Function name:	Rf_PowerOn
+ * Function Introduction:	Power on the non-adapter card
+ * Entry parameters:
+ * Export parameters:
+ * Return value::		
  ******************************************************************************/
 LIB_EXPORT extern int Rf_PowerOn();
 
 /******************************************************************************
- *  函数名称:	Rf_PowerDown
- *	函数介绍:	给非接卡下电
- *	入口参数:	
- *	出口参数:     
- * 	返回值  :		
+* Function name: Rf_PowerDown
+* Function Introduction: Call off the non-receiving card
+* Entry parameters:
+* Export parameters:
+* Return value::		
  ******************************************************************************/
 LIB_EXPORT extern int Rf_PowerDown();
 /******************************************************************************
- *  函数名称:	Rf_Device_PowerOn
- *	函数介绍:	给非接设备上电
- *	入口参数:	
- *	出口参数:     
- * 	返回值  :		
+* Function name: Rf_Device_PowerOn
+* Function introduction: power on non-connected equipment
+* Entry parameters:
+* Export parameters:
+* Return value:	
  ******************************************************************************/
 LIB_EXPORT extern int Rf_Device_PowerOn(int nType);
 

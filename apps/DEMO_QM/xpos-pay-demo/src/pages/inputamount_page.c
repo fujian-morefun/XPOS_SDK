@@ -25,7 +25,7 @@ static void _inputamount_PaintAmount(char* amount)
 	//RECT oldrc;
 	//xgui_GetViewPort(&oldrc);
 	//XGUI_SET_WIN_RC;
-	if (lcd_get_sublcd_probe() == 1)
+	if (osl_get_is_m66b() == 1)
 	{
 		xgui_ClearRect(0, XGUI_LINE_TOP_1 , XGUI_WIN_WIDTH , XGUI_LINE_TOP_2, xgui_GetBgColor());
 		xgui_TextOut(XGUI_WIN_WIDTH - textWidth - 10, XGUI_LINE_TOP_1, amount);
@@ -35,7 +35,7 @@ static void _inputamount_PaintAmount(char* amount)
 		xgui_ClearRect(0, XGUI_LINE_TOP_2 , XGUI_WIN_WIDTH , XGUI_LINE_TOP_3, xgui_GetBgColor());
 		xgui_TextOut(XGUI_WIN_WIDTH - textWidth - 10, XGUI_LINE_TOP_2, amount);
 	}
-
+	mf_led_digit_show(amount);
 	//xgui_SetViewPort_RC(&oldrc); 
 }
 static void _setAmount(long long nAmount)
@@ -55,7 +55,7 @@ static void _inputamount_PanitAll(char* title, int nAmount)
 	//xgui_GetViewPort(&oldrc);
 	xgui_BeginBatchPaint();
 	xgui_Clear_Win();
-	if (lcd_get_sublcd_probe() == 0)
+	if (osl_get_is_m66b() == 0)
 	{
 		input_PaintTitle(title);
 	}

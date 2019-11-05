@@ -676,7 +676,7 @@ typedef enum
 
 //2.2.11 EMV class API
 
-#define  UMAX_TERMINAL_APPL    20        //The maximum number of applications supported by card terminals
+#define  UMAX_TERMINAL_APPL    21        //The maximum number of applications supported by card terminals
 #define  UMAX_EXCEPTION_BIN_COUNT	100  //Card BIN blacklist maximum number
 
 //EMV parameter operation returns an enumeration
@@ -837,7 +837,7 @@ typedef struct
 	byte LengthOfCAPKExponent;		/* Certification Authority Public Key Index Length */
 	byte CAPKExponent[3];			/* Certification Authority Public Key Index */
 	byte ChecksumHash[20];			/* Certification Authority Public Key Check Value */
-	byte CAPKExpDate[3];			/* Certification Authority Public Key Validity Period */
+	byte CAPKExpDate[4];			/* Certification Authority Public Key Validity Period */
 }CAPUBLICKEY;
 
 //EMV Callback

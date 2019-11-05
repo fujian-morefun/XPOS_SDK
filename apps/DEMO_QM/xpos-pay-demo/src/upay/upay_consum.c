@@ -13,11 +13,60 @@
 #include "pub/tracedef.h"
 #include "AppPub/mfd/mf_security.h"
 
+
+#ifdef DEV_MF67
+int upay_consum( void )
+{
+	const char *title = "SALE";
+	int ret;
+	long long amt;
+	char samt[20] = {0};
+
+	APP_TRACE( "upay_consum" );
+
+	amt = inputamount_page(title, 6, 90000);
+	if(amt <= 0)
+	{
+		return -1;
+	}
+
+	sprintf(samt, "%.02f", amt/100.00);
+
+	mf_led_digit_show(samt);
+
+	ret = showQr2(samt);	
+	if (ret == 1)//Scan the code successfully and press the confirm button
+	{
+		Play_Voice("payok");
+		mf_led_digit_show("1");	
+		xgui_messagebox_show("Sale", "OK" , "" , "confirm" ,  3000);
+		close_com();
+		return 0;
+	}
+	else if (ret == 2)
+	{
+		xgui_messagebox_show("Sale", "Find a card" , "" , "confirm" ,  3000);
+		close_com();
+		return 0;
+	} 
+	else
+	{
+		Play_Voice("payerr");
+		mf_led_digit_show("0");	
+		xgui_messagebox_show("Sale", "ERR" , "" , "confirm" ,  3000);
+		close_com();
+		return 0;
+	}
+}
+
+#else
+
 static int first = 0;
 
-#define COUNTRYCODE "\x01\x56"//CNY
+//#define COUNTRYCODE "\x01\x56"//CNY
 //#define COUNTRYCODE "\x03\x56"//INR
 //#define COUNTRYCODE "\x09\x78"//EUR
+#define COUNTRYCODE "\x08\x40"//USD
 
 void TestSetTermConfig(TERMCONFIG *termconfig)
 {
@@ -147,6 +196,7 @@ void TestDownloadAID(TERMINALAPPLIST *TerminalApps)
 
 }
 
+
 int upay_consum( void )
 {
 	const char *title = "SALE";
@@ -171,15 +221,27 @@ int upay_consum( void )
 	}
 
 	sprintf(samt, "%.02f", amt/100.00);
-	if (lcd_get_sublcd_probe() == 1)
+	if (osl_get_is_m66b() == 1)
 	{
 		xgui_messagebox_show("Scan code", "See the big LCD", "", "confirm" , 300);		
 		lcd_set_index(0);
-	}	
+	}
+
+	mf_led_digit_show(samt);
+
 	ret = showQr2(samt);	
 	if (ret == 1)//Scan the code successfully and press the confirm button
 	{
+		Play_Voice("payok");
+		xgui_messagebox_show("Sale", "OK" , "" , "confirm" ,  300);
+		if (osl_get_is_m66b() == 1)
+		{
+			lcd_set_index(1);
+			xgui_messagebox_show("Sale", "OK" , "" , "confirm" ,  3000);
+		}
+		mf_led_digit_show("1");	
 
+		return 0;
 	}
 	else if (ret == 2)//Find a non-contact card
 	{
@@ -211,7 +273,7 @@ int upay_consum( void )
 
 		ret = emv_read_card(card_in, card_out);
 
-		if (lcd_get_sublcd_probe() == 1)
+		if (osl_get_is_m66b() == 1)
 		{
 			lcd_set_index(1);
 		}
@@ -263,12 +325,10 @@ int upay_consum( void )
 		FREE(card_in);
 		FREE(card_out);
 
-		xgui_messagebox_show("Sale", "OK" , "" , "confirm" ,  15000);
-	}
-
-	if (lcd_get_sublcd_probe() == 1)
-	{
-		lcd_set_index(1);
+		Play_Voice("payok");
+		xgui_messagebox_show("Sale", "OK" , "" , "confirm" ,  3000);
+		mf_led_digit_show("1");	
 	}
 }
 
+#endif

@@ -10,20 +10,20 @@
 
 typedef  unsigned int ( *TIMERFUNCTION)(void *);
 
-//定时器数据结构描述
+//Description of Timer Data Structure
 typedef struct	__timer_entry_tag{
 
-	unsigned int nTimerNo;	//定时器编号
-	unsigned int nTaskId;		//定时器所处的优先级		
-	TIMERFUNCTION pWorkFunction;	//定时器工作线程
-	void *pParam;		//定时器工作线程参数
-	unsigned int nPeriod; //定时周期
+	unsigned int nTimerNo;	//Timer number
+	unsigned int nTaskId;		//Priority of Timer		
+	TIMERFUNCTION pWorkFunction;	//Timer Work Thread
+	void *pParam;		//Timer Work Thread Parameters
+	unsigned int nPeriod; //Timing period
 	unsigned int nCurTime;
-	unsigned int nMode;	//定时器执行模式
-	unsigned int nStatus;	//定时器状态
+	unsigned int nMode;	//Timer execution mode
+	unsigned int nStatus;	//Timer status
 } TIMERENTRYTAG;
 
-//定时器链表项
+//Timer list item
 typedef struct __timer_entry_node{
 	TIMERENTRYTAG *pTimerEntry;	
 	struct __timer_entry_node *pNext;

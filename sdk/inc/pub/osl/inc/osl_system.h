@@ -1,5 +1,5 @@
 /*! \file osl_system.h
-	\brief 系统功能
+	\brief system function
 *	\author lx
 *	\date 2014/02/08
 */
@@ -37,24 +37,24 @@ extern "C"{
 #endif
 
 /**
-* @brief 获取程序路径
-* @param outpath 路径
-* @param nMaxLen 路径大小
+* @brief Get the program path
+* @param outpath Route
+* @param nMaxLen Path size
 * @return 
 */
 LIB_EXPORT void osl_getAppPath( char *outpath ,int nMaxLen);
 
 //
 /**
-* @brief 文件名前面填充程序路径
-* @param szFileName 文件名
-* @param outpath 路径
-* @param nMaxLen 路径大小
-* @return 填充好的路径
+* @brief Fill in the program path before the file name
+* @param szFileName file name
+* @param outpath Route
+* @param nMaxLen  Path size
+* @return Filled paths
 */
 LIB_EXPORT const char * osl_fillAppPath( const char *szFileName,char *outpath ,int nMaxLen);
 
-//设置序列号
+//Setting Sequence Number
 LIB_EXPORT void osl_setTerminalID(char* tid );
 
 LIB_EXPORT int osl_check_sn_sig();
@@ -63,9 +63,9 @@ LIB_EXPORT int osl_check_sc_sig();
 LIB_EXPORT int osl_check_tms_lock();
 LIB_EXPORT void osl_setTmsLock(int flag);
 
-//读取序列号
+//Read Sequence Number
 /**
-* @brief 读取序列号
+* @brief Read Sequence Number
 * @param outdata
 * @param nMaxLen
 * @return 
@@ -73,18 +73,18 @@ LIB_EXPORT void osl_setTmsLock(int flag);
 LIB_EXPORT const char* osl_getTerminalID( char *outdata ,int nMaxLen );
 
 
-//读取带厂商编号+终端类型 序列号（银联21号文）
+//Read serial number with manufacturer number + terminal type (UnionPay No. 21)
 /**
-* @brief 读取序列号
+* @brief Read Sequence Number
 * @param outdata
 * @param nMaxLen
 * @return 
 */
 LIB_EXPORT int get_vendor_TerminalID(char*outdata ,int nMaxLen);
 
-//读取公钥开关和厂品代码
+//Read Public Key Switches and Factory Codes
 /**
-* @brief 读取公钥代码
+* @brief Read public key code
 * @param outdata
 * @param nMaxLen
 * @return 
@@ -115,14 +115,14 @@ LIB_EXPORT void osl_get_psn(char * psn);
 
 
 /**
-* @brief 设置应用是否忙
-* @param val 忙状态
+* @brief Set whether the application is busy
+* @param val Busy state
 * @return 
 */
 LIB_EXPORT void osl_set_app_busy(char val);
 /**
-* @brief 读取应用是否忙
-* @return 忙状态
+* @brief Read application busy
+* @return Busy state
 */
 LIB_EXPORT char osl_get_app_busy();
 
@@ -141,9 +141,9 @@ LIB_EXPORT int osl_get_scan_support();
 LIB_EXPORT void osl_set_scan_support(int scan_support);
 
 LIB_EXPORT const char* osl_getTerminalID_real( char *outdata ,int nMaxLen );
-LIB_EXPORT const char* get_vendor_type();//设备类型 02：传统POS 03：mPOS 04：智能POS 
-LIB_EXPORT const char* get_vendor_code();//终端入网认证编号 MF90入网编号P3278
-LIB_EXPORT int get_vendor_factor(char*SrcFactor,int nSrclen,char *sEnFactor);//加密随机因子
+LIB_EXPORT const char* get_vendor_type();//Device Type 02: Traditional POS 03: mPOS 04: Intelligent POS 
+LIB_EXPORT const char* get_vendor_code();//Terminal Access Authentication Number MF90 Access Number P3278
+LIB_EXPORT int get_vendor_factor(char*SrcFactor,int nSrclen,char *sEnFactor);//Encryption Random Factor
 
 #ifdef __cplusplus
 }

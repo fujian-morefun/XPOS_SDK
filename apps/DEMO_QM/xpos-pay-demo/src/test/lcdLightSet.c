@@ -21,7 +21,7 @@ static void _paint_msg(char* msg)
 		xgui_TextOut(0, xgui_GetLineTop(yPos) , msg);
 		pstr ++;
 		msg = pstr;
-		if (lcd_get_sublcd_probe() == 1)
+		if (osl_get_is_m66b() == 1)
 		{
 			yPos ++;
 			yPos %= 2;
@@ -126,7 +126,7 @@ int TimeSet_Show(int nLightTime , char * szMsg)
 	int i;
 	MESSAGE pMsg;
 
-	if (lcd_get_sublcd_probe() == 1)
+	if (osl_get_is_m66b() == 1)
 	{
 		_lcdLight_paint2(nLightTime , szMsg);
 	}
@@ -152,7 +152,7 @@ int TimeSet_Show(int nLightTime , char * szMsg)
 				switch(presskey) {
 					case KEY_UP:case KEY_LEFT: case KEY_1 : case KEY_XING:
 						nCurIndex = (-- nCurIndex < 0 ? nTotalCount - 1 : nCurIndex);
-						if (lcd_get_sublcd_probe() == 1)
+						if (osl_get_is_m66b() == 1)
 						{
 							_lcdLight_paint2(time[nCurIndex] , szMsg);
 						}
@@ -163,7 +163,7 @@ int TimeSet_Show(int nLightTime , char * szMsg)
 						break;
 					case KEY_DOWN:case KEY_RIGHT: case KEY_2 : case KEY_JING:
 						nCurIndex = (++ nCurIndex % nTotalCount);
-						if (lcd_get_sublcd_probe() == 1)
+						if (osl_get_is_m66b() == 1)
 						{
 							_lcdLight_paint2(time[nCurIndex] , szMsg);
 						}

@@ -14,9 +14,9 @@ typedef struct{
 
 typedef struct   
 {  
-	HashData *elem;/**<数据元素存储基址，动态分配数组  */
-	int nCount; /**<当前数据元素个数  */
-	int nSizeindex; /**<hashsize[nSizeindex]为当前容量*/
+	HashData *elem;/**<Data elements store base addresses and dynamically allocate arrays  */
+	int nCount; /**<Number of current data elements  */
+	int nSizeindex; /**<hashsize[nSizeindex]For current capacity*/
 	unsigned int (*Hash_Fun)(char *pszBuf);
 }HashTable;  
 

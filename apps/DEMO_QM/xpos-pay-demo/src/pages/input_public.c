@@ -40,7 +40,7 @@ void input_PaintHeader(char* header)
 	char sTip[30]={0};
 	nLine = 0;
 
-	if (lcd_get_sublcd_probe() == 1)
+	if (osl_get_is_m66b() == 1)
 	{
 		memset(sTip,0x00,sizeof(sTip));
 		memcpy(sTip,header, 16);
