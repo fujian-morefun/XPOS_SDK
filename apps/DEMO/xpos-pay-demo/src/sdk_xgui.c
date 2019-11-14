@@ -278,7 +278,6 @@ void standby_pagepaint()
 }
 
 
-
 void sdk_main_page()
 {
 	MESSAGE pMsg;
@@ -289,6 +288,8 @@ void sdk_main_page()
 	int ret = -1;
 
 	get_hhmmss_str(time_last);
+
+	capability_init();
 
 	sdk_timer_init();
 #ifdef WIN32
@@ -327,6 +328,10 @@ void sdk_main_page()
 					xgui_main_menu_show(MAIN_MENU_PAGE , 0);	// 循环处理菜单
 
 					xgui_PostMessage(XM_GUIPAINT, 0 , 0);
+				}
+				else if ( pMsg.WParam == KEY_1)
+				{
+					capability_page();
 				}
 			}
 			else{

@@ -53,15 +53,6 @@ static char newchar(char oldchar,int keycode)
 	}
 }
 
-#ifdef LCD_320_240
-	#define LINE_SIZE		20
-	#define	LINE_PER_PAGE	4	
-#else
-	#define LINE_SIZE	16
-	#define	LINE_PER_PAGE	2
-#endif
-
-
 int scan_page_proc(char *title, char *buff ,  int min  , int max , int timeover, int scan_time ,int input_mode,int *input_type)
 {
 	MESSAGE pMsg;
