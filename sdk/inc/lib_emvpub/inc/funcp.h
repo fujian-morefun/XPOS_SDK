@@ -12,5 +12,7 @@ LIB_EXPORT ST_EMV_EXPAND_INTERFACE* emvpub_interface(void);
 LIB_EXPORT STCOMM * emvpub_icop(void);
 LIB_EXPORT STICS* emvpub_ics(void);
 LIB_EXPORT int emvpub_read_ics();
+//LIB_EXPORT int RF_setParam(ST_RF_PROC *st_pr_proc);
+//LIB_EXPORT ST_RF_PROC* RF_getParam(void);
 #endif
 

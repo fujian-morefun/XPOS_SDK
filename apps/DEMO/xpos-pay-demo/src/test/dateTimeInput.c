@@ -1,22 +1,22 @@
+#include "dateTimeInput.h"
 #include "xGui/inc/message.h"
 #include "pub/osl/inc/osl_log.h"
 #include "xGui/inc/xgui_key.h"
 #include "xGui/inc/draw_buf.h"
 #include <stdio.h>
 #include <xGui/inc/pageproc.h>
-#include "dateTimeInput.h"
 
 static void _dateTime_Paint(DATETIME_ST * pdt)
 {
-	int nFourNumWidth;		//4个数字的宽度
-	int nTwoNumWidth;		//2个数字的宽度
-	int nTipWidth;			//时间之间提示语的宽度
-	int tipTopPos;			//年月日等提示语的起始点
-	int tipLeftPos;			//年月日等提示语的起始点
-	int textLeftPos;		//文本左起始点
-	int nTextHeight;		//文本高度
+	int nFourNumWidth;		//4 number width
+	int nTwoNumWidth;		//2 number width
+	int nTipWidth;			//Prompt width between time
+	int tipTopPos;			//The top starting point of the year, month, and day prompts
+	int tipLeftPos;			//The left starting point of the year, month, and day prompts
+	int textLeftPos;		//Left starting point of text
+	int nTextHeight;		//Text height
 	char buf[32] = {0};
-	char* dateTimeTip[] = {"-","-", " ", ":", ":", ""};
+	char* dateTimeTip[] = {"-","-", "  ", ":", ":", "  "};
 //	RECT oldrc;
 //	RECT newRc;
 	int i = 0;
@@ -32,8 +32,8 @@ static void _dateTime_Paint(DATETIME_ST * pdt)
 
 	nFourNumWidth = xgui_GetTextWidth("0000");
 	nTwoNumWidth = xgui_GetTextWidth("00");
-	nTipWidth = xgui_GetTextWidth("年");
-	nTextHeight = xgui_GetTextHeight("年");
+	nTipWidth = xgui_GetTextWidth("-");
+	nTextHeight = xgui_line_height();
 
 //	xgui_GetViewPort(&oldrc);
 //	xgui_SetViewPort_RC(&newRc);	//set dc viewport
@@ -41,36 +41,36 @@ static void _dateTime_Paint(DATETIME_ST * pdt)
 	xgui_SetTextStyle(UTEXT_SOLID);
 	xgui_BeginBatchPaint();
 	
-	//设置背景白，字体黑
+	//Set background white, font black
 	//xgui_SetTextBgColor(0);
 	//xgui_SetTextColor(255);
 	xgui_ClearDC();
 
-	//处理年月日，以2013年10月11日为例
+	//Processing date, taking October 11, 2013 as an example
 	for (i = 0; i < 6; ++ i)	{
 		if (i == pdt->m_currentSel)		{
-			//当前选中项为黑底白字
+			//The currently selected item is white on a black background
 			xgui_SetTextBgColor(XGUI_COLOR_FORE);
 			xgui_SetTextColor(XGUI_COLOR_BACK);
 		}
 
 		if (i == 0)		{
 			sprintf(buf, "%4d", pdt->nYear);
-			textLeftPos = 0;						//2013  放在最左边
-			tipTopPos = 0;							//年	放在首行
-			tipLeftPos = textLeftPos + nFourNumWidth;		//年	左起始点=2013左起始点+2013占用宽度
+			textLeftPos = 0;						//2013  On the far left
+			tipTopPos = 0;							//Year  On the first line
+			tipLeftPos = textLeftPos + nFourNumWidth;		//Year		Left Starting Point = 2013 Left Starting Point + 2013 Occupied Width
 		}
 		else if (i == 1)		{
 			sprintf(buf, "%2d", pdt->nMonth);
-			textLeftPos = 0 + nFourNumWidth + nTipWidth;	//10	左起始点=2013左起始点+2013占用宽度+“年”占用宽度
-			tipTopPos = 0;									//月	放在首行
-			tipLeftPos = textLeftPos + nTwoNumWidth;				//月	左起始点=10左起始点+10占用宽度
+			textLeftPos = 0 + nFourNumWidth + nTipWidth;	//10	Left starting point = 2013 left starting point + 2013 occupation width + "year" occupation width
+			tipTopPos = 0;									//Month On the first line
+			tipLeftPos = textLeftPos + nTwoNumWidth;		//Month Left Starting Point = 10 Left Starting Point + 10 Occupied Width
 		}
 		else if (i == 2)		{
 			sprintf(buf, "%2d", pdt->nDay);
-			textLeftPos = 0 + nFourNumWidth + 2 * nTipWidth + nTwoNumWidth;	//11	左起始点=2013左起始点+2013占用宽度+10占用宽度+“年”“月”占用宽度
-			tipTopPos = 0;														//日	首行
-			tipLeftPos = textLeftPos + nTwoNumWidth;									//日	左起始点=11左起始点+11占用宽度
+			textLeftPos = 0 + nFourNumWidth + 2 * nTipWidth + nTwoNumWidth;	//11	Left starting point = 2013 left starting point + 2013 occupation width + 10 occupation width + "year" "month" occupation width
+			tipTopPos = 0;													//Day	On the first line
+			tipLeftPos = textLeftPos + nTwoNumWidth;						//Day	Left starting point = 11 Left starting point + 11 Occupied width
 		}
 		else if (i == 3)		{
 			sprintf(buf, "%4d", pdt->nHour);
@@ -104,11 +104,11 @@ static void _dateTime_Paint(DATETIME_ST * pdt)
 	xgui_ResumeTextStyle();
 	xgui_SetTextBgColor(XGUI_COLOR_BACK);
 	xgui_SetTextColor(XGUI_COLOR_FORE);
-	xgui_Page_OP_Paint("Cancel", "OK");
+	xgui_Page_OP_Paint("cancel", "confirm");
 	xgui_EndBatchPaint();
 }
 
-//选中下一个，可循环。选中项切换时，同时设置当前选中项状态为首次接收按键消息
+//Select the next one to cycle. When the selected item is switched, it also sets the status of the currently selected item to receive key messages for the first time.
 static void _incCurrentSel(DATETIME_ST* pdt)
 {
 	if (pdt == 0) {
@@ -119,7 +119,7 @@ static void _incCurrentSel(DATETIME_ST* pdt)
 	pdt->firstTimePress = 0;
 }
 
-//选中上一个，可循环。选中项切换时，同时设置当前选中项状态为首次接收按键消息
+//Select the previous one to cycle. When the selected item is switched, it also sets the status of the currently selected item to receive key messages for the first time.
 static void _desCurrentSel(DATETIME_ST* pdt)
 {
 	if (pdt == 0) {
@@ -135,6 +135,7 @@ static void _desCurrentSel(DATETIME_ST* pdt)
 
 	pdt->firstTimePress = 0;
 }
+
 static void _dealInputNumKey(DATETIME_ST* pdt, int keyValue)
 {
 	if (pdt == 0) {
@@ -146,7 +147,7 @@ static void _dealInputNumKey(DATETIME_ST* pdt, int keyValue)
 	case 1:	case 2:	case 3:	case 4:	case 5:
 	case 6: case 7: case 8: case 9: case 0:
 		{
-			if (pdt->m_currentSel == 0)	//年
+			if (pdt->m_currentSel == 0)	//year
 			{
 				if (pdt->firstTimePress == 0)
 				{
@@ -163,7 +164,7 @@ static void _dealInputNumKey(DATETIME_ST* pdt, int keyValue)
 					_incCurrentSel(pdt);
 				}
 			}
-			else if (pdt->m_currentSel == 1)	//月
+			else if (pdt->m_currentSel == 1)	//month
 			{
 				if (pdt->firstTimePress == 0)
 				{
@@ -186,7 +187,7 @@ static void _dealInputNumKey(DATETIME_ST* pdt, int keyValue)
 
 			
 			}
-			else if (pdt->m_currentSel == 2)	//日
+			else if (pdt->m_currentSel == 2)	//day
 			{
 				if (pdt->firstTimePress == 0)
 				{
@@ -211,7 +212,7 @@ static void _dealInputNumKey(DATETIME_ST* pdt, int keyValue)
 
 				
 			}
-			else if (pdt->m_currentSel == 3)	//时
+			else if (pdt->m_currentSel == 3)	//hour
 			{
 				if (pdt->firstTimePress == 0)
 				{
@@ -235,7 +236,7 @@ static void _dealInputNumKey(DATETIME_ST* pdt, int keyValue)
 
 			
 			}
-			else if (pdt->m_currentSel == 4)	//分
+			else if (pdt->m_currentSel == 4)	//minute
 			{
 				if (pdt->firstTimePress == 0)
 				{
@@ -258,7 +259,7 @@ static void _dealInputNumKey(DATETIME_ST* pdt, int keyValue)
 
 				
 			}
-			else if (pdt->m_currentSel == 5)	//秒
+			else if (pdt->m_currentSel == 5)	//second
 			{
 				if (pdt->firstTimePress == 0)
 				{
@@ -290,10 +291,10 @@ static int checkDateTime(DATETIME_ST * pdt)
 {
 	int monlen[13] ={0,31,28,31,30,31,30,31,31,30,31,30,31};
 	int leap=0;
-	if (pdt->nYear<2000 || pdt->nYear>2099) return 1;		// 年
-	if (pdt->nMonth<=0 || pdt->nMonth>12) return 2;		// 月
-	if (pdt->nYear % 4 == 0  && pdt->nMonth==2) leap= 1;	// 是闰年的2月
-	if (pdt->nDay<=0 || pdt->nDay>(monlen[pdt->nMonth]+leap)) return 3;	//日
+	if (pdt->nYear<2000 || pdt->nYear>2099) return 1;		// year
+	if (pdt->nMonth<=0 || pdt->nMonth>12) return 2;			// month
+	if (pdt->nYear % 4 == 0  && pdt->nMonth==2) leap= 1;	// It's February of the following year
+	if (pdt->nDay<=0 || pdt->nDay>(monlen[pdt->nMonth]+leap)) return 3;	//day
 	
 
 	return 0;
@@ -330,7 +331,7 @@ static int dateTime_Key(DATETIME_ST* pdt, int presskey)
 	
 	return 0;
 }
-int dateTimeInput_Show(DATETIME_ST * pdt)
+int _dateTimeInput_Show(DATETIME_ST * pdt)
 {
 	int presskey;
 	MESSAGE pMsg;
@@ -361,7 +362,7 @@ int dateTimeInput_Show(DATETIME_ST * pdt)
 				case KEY_OK:
 					if(checkDateTime(pdt) != 0)
 					{
-						xgui_messagebox_show("提示",  "输入格式错误", "", "返回", 100000);
+						xgui_messagebox_show("prompt",  "Input format error", "", "cancel", 100000);
 						memcpy(pdt,&npdt,sizeof(DATETIME_ST));
 						_dateTime_Paint(pdt);
 						break;

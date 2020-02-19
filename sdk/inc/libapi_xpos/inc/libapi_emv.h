@@ -188,6 +188,23 @@ return: UEMV_PRM_FAIL=-1,
 *************************************************************************************/
 LIB_EXPORT int EMV_GetDataByTag(byte *psTag, byte *psSrc, int nSrcLen,byte *psBuf, int *nBufLen);
 
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:ruansj
+Functions:Process of pack emv tag
+Input : pTagName:		tag name
+		TagValue:		tag value 
+		iTagValueLen :  tag value length		
+Output:
+		psBuf :		Returns TLV packed data
+		nBufLen:	Returns length of packed data
+return: 
+     	0	 //SUCC
+		-1	 //FAIL
+*************************************************************************************/
+LIB_EXPORT int EMV_PackTLVData(byte *pTagName,byte *TagValue, int iTagValueLen, byte *psBuf,int *nBufLen);
+
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:wuxp
@@ -200,12 +217,30 @@ LIB_EXPORT char * EMV_GetVersion(void);
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:ruansj
+Functions: Set ReadingCard Tip CallBack Function
+Input :  Callback function   
+Output : int param value  1--Indicate contact transactions  2--Indicate contactless transactions
+return: Nothing
+*************************************************************************************/
+LIB_EXPORT void EMV_SetReadingCardDisp(void (*ReadingCardDisp)(int));
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:wuxp
-Functions:Set the online PIN interface
+Functions:Set the Offline PIN interface
 Input :  Callback function
 Output : Nothing
 return: Nothing
-*************************************************************************************/
+*//*
+Callback(InputPin):(char *psCardNo,char *psAmt,char cMsgType,char *psPin)//Enter password interface function pointer
+Input:	char *psCardNo   (PAN)
+		char *psAmt      (Amount)
+		char cMsgType    1--PIN_LAST   2--PIN_AGAIN   3--PIN_NOMAL
+Output:	char *psPin      (Entered password)
+return: int	 0--OK   >0--Length of password entered  -ERR_PIN_EMPTY--bypass -ERR_TIMEOUT--timeout -ERR_USR_CANCEL--CANCEL -ERR_KEY_INVALID--INVALID  
+*/
+/*************************************************************************************/
 LIB_EXPORT void EMV_SetInputPin(int (*InputPin)(char *,char *,char ,char *));
 
 /*************************************************************************************
@@ -215,7 +250,13 @@ Functions:Set offline PIN prompt interface
 Input :  Callback function
 Output : Nothing
 return: Nothing
-*************************************************************************************/
+*//*
+Callback(DispOffPin):
+Input:int param value 0--PIN OK  N--Number of re-verifications
+Output:Nothing
+return:Nothing
+*/
+/*************************************************************************************/
 LIB_EXPORT void EMV_SetDispOffPin(void (*DispOffPin)(int)); 
 
 /*************************************************************************************
@@ -236,5 +277,6 @@ Output : Nothing
 return: Nothing
 *************************************************************************************/
 LIB_EXPORT void EMV_ShowCAPK_Prm(void);
+
 
 #endif

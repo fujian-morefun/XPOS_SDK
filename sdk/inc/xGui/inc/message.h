@@ -88,7 +88,7 @@ extern "C"{
 #define XM_PRODUCT_TEST			0x000E0011
 
 #define XM_SCAN_OK				0x000E0021
-
+#define XM_BT_LINK_RND			0x000E0031
 #define XM_USERLAST				0x000EFFFF
 
 

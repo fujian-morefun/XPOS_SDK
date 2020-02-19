@@ -46,7 +46,8 @@ static void _pack_8583()
 void TestSetTermConfig(TERMCONFIG *termconfig)
 {
 	//char szBuf[100] = {0};
-
+	if(termconfig==0)
+		return;
 	APP_TRACE( "TestSetTermConfig" );
 
 	memset(termconfig,0x00,sizeof(TERMCONFIG));	
@@ -99,11 +100,14 @@ void TestSetTermConfig(TERMCONFIG *termconfig)
 void TestDownloadAID(TERMINALAPPLIST *TerminalApps)
 {
 	int i = 0;
-	int count = 21;
+	int count = UMAX_TERMINAL_APPL;
+
+	if(TerminalApps==0)
+		return;
 
 	APP_TRACE( "TestDownloadAID" );
 	memset(TerminalApps,0x00,sizeof(TERMINALAPPLIST));	
-	TerminalApps->bTermAppCount = 21;//AID length
+	TerminalApps->bTermAppCount = UMAX_TERMINAL_APPL;//The maximum number of AID
 	memcpy(TerminalApps->TermApp[0].AID, "\xA0\x00\x00\x00\x01\x10\x10", 7);//AID
 	TerminalApps->TermApp[0].AID_Length = 7;
 	memcpy(TerminalApps->TermApp[1].AID, "\xA0\x00\x00\x00\x03\x10\x10", 7);
@@ -142,35 +146,52 @@ void TestDownloadAID(TERMINALAPPLIST *TerminalApps)
 	TerminalApps->TermApp[17].AID_Length = 7;
 	memcpy(TerminalApps->TermApp[18].AID, "\xA0\x00\x00\x01\x52\x30\x10", 7);
 	TerminalApps->TermApp[18].AID_Length = 7;
-	memcpy(TerminalApps->TermApp[19].AID, "\xA0\x00\x00\x05\x24\x10\x10", 7);
-	TerminalApps->TermApp[19].AID_Length = 8;
-	memcpy(TerminalApps->TermApp[20].AID, "\xA0\x00\x00\x03\x33\x01\x01", 7);
-	TerminalApps->TermApp[20].AID_Length = 7;
-	for(i=0; i<21; i++)
+	memcpy(TerminalApps->TermApp[19].AID, "\xA0\x00\x00\x03\x33\x01\x01", 7);
+	TerminalApps->TermApp[19].AID_Length = 7;
+	memcpy(TerminalApps->TermApp[20].AID, "\xA0\x00\x00\x05\x24\x10\x10", 7);
+	TerminalApps->TermApp[20].AID_Length = 7;	
+	memcpy(TerminalApps->TermApp[21].AID, "\xA0\x00\x00\x05\x24\x10\x11", 7);
+	TerminalApps->TermApp[21].AID_Length = 7;	
+	for(i=0; i<UMAX_TERMINAL_APPL; i++)
 	{
 		TerminalApps->TermApp[i].bTerminalPriority = 0x03;	//Terminal priority
-		TerminalApps->TermApp[i].bMaxTargetPercentageInt = 0x00;/*Offset randomly selected maximum target percentage*/
-		TerminalApps->TermApp[i].bTargetPercentageInt = 0x00;/*Randomly selected target percentage*/
-		memcpy(TerminalApps->TermApp[i].abTFL_International, "\x00\x00\x3A\x98", 4);/* Terminal minimum */
-		memcpy(TerminalApps->TermApp[i].abThresholdValueInt, "\x00\x00\x13\x88", 4);/*Offset randomly selected threshold*/
-		memcpy(TerminalApps->TermApp[i].abTerminalApplVersion, "\x00\x96", 2);/* Terminal application version */
-		memcpy(TerminalApps->TermApp[i].TAC_Default, "\x00\x00\x00\x00\x00", 5);/* TAC Default data format (n5) */ 
-		memcpy(TerminalApps->TermApp[i].TAC_Denial, "\x00\x00\x00\x00\x00", 5);/* TAC Refuse: data format (n5) */
-		memcpy(TerminalApps->TermApp[i].TAC_Online, "\x00\x00\x00\x00\x00", 5);/* TAC Online: data format (n5) */
+		TerminalApps->TermApp[i].bTargetPercentageInt = 0x00;/*Randomly selected target percentage DF17*/
+		memcpy(TerminalApps->TermApp[i].TAC_Default, "\x00\x00\x00\x00\x00", 5);/* TAC Default data format (n5) DF11*/ 
+		memcpy(TerminalApps->TermApp[i].TAC_Denial, "\x00\x00\x00\x00\x00", 5);/* TAC Refuse: data format (n5) DF12*/
+		memcpy(TerminalApps->TermApp[i].TAC_Online, "\x00\x00\x00\x00\x00", 5);/* TAC Online: data format (n5) DF13*/
 		memcpy(TerminalApps->TermApp[i].abTrnCurrencyCode, COUNTRYCODE, 2);/* Currency code tag: 5F2A */
 		memcpy(TerminalApps->TermApp[i].abTerminalCountryCode, COUNTRYCODE, 2);/* Country code terminal tag: 9F1A */
 		TerminalApps->TermApp[i].abTrnCurrencyExp = 0x02;/* tag: 5F36 */
-		memcpy(TerminalApps->TermApp[i].abEC_TFL, "\x00\x00\x00\x20\x00", 6);/* Terminal electronic cash transaction limit tag: 9F7B n12*/
-		memcpy(TerminalApps->TermApp[i].abRFOfflineLimit, "\x00\x00\x00\x20\x00", 6);/*Contactless offline minimum :DF19*/
-		memcpy(TerminalApps->TermApp[i].abRFTransLimit, "\x00\x00\x02\x00\x00", 6);/*Contactless transaction limit:DF20*/
 		memcpy(TerminalApps->TermApp[i].abRFCVMLimit, "\x00\x00\x00\x10\x00", 6);/*Terminal performs CVM quota: DF21*/
-		memcpy(TerminalApps->TermApp[i].abDDOL, "\x9F\x37\x04", 3);/* TDOL */
+		memcpy(TerminalApps->TermApp[i].abDDOL, "\x9F\x37\x04", 3);/* TDOL DF14*/
 		TerminalApps->TermApp[i].DDOL_Length = 0x03;/* TDOL Length */
 		TerminalApps->TermApp[i].TerminalType = 0x22;/* Terminal type: data format (n 3) */
 		memcpy(TerminalApps->TermApp[i].TerminalCap, "\xE0\xF8\xC8", 3);/* Terminal capability: data format (n 3) */		
-		TerminalApps->TermApp[i].cOnlinePinCap = 0x01;/* Terminal online pin capability */
 	}
 
+	for(i=0; i<20; i++)
+	{
+		TerminalApps->TermApp[i].bMaxTargetPercentageInt = 0x00;/*Offset randomly selected maximum target percentage DF16*/
+		memcpy(TerminalApps->TermApp[i].abTFL_International, "\x00\x00\x3A\x98", 4);/* Terminal minimum 9F1B//*/
+		memcpy(TerminalApps->TermApp[i].abThresholdValueInt, "\x00\x00\x13\x88", 4);/*Offset randomly selected threshold DF15*/
+		memcpy(TerminalApps->TermApp[i].abTerminalApplVersion, "\x00\x96", 2);/* Terminal application version 9F09 9F08 */
+		memcpy(TerminalApps->TermApp[i].abEC_TFL, "\x00\x00\x00\x20\x00", 6);/* Terminal electronic cash transaction limit tag: 9F7B n12*/
+		memcpy(TerminalApps->TermApp[i].abRFOfflineLimit, "\x00\x00\x00\x20\x00", 6);/*Contactless offline minimum :DF19*/
+		memcpy(TerminalApps->TermApp[i].abRFTransLimit, "\x00\x00\x02\x00\x00", 6);/*Contactless transaction limit:DF20*/
+		TerminalApps->TermApp[i].cOnlinePinCap = 0x01;/* Terminal online pin capability DF18*/
+	}
+
+	for(i=20; i<UMAX_TERMINAL_APPL; i++)
+	{
+		memcpy(TerminalApps->TermApp[i].abTerminalApplVersion, "\x00\x02", 2);/* Terminal application version 9F09 9F08 */
+		memcpy(TerminalApps->TermApp[i].abTFL_International, "\x00\x01\x86\xA0", 4);/* Terminal minimum 9F1B//*/
+		memcpy(TerminalApps->TermApp[i].abThresholdValueInt, "\x00\x00\x00\x00", 4);/*Offset randomly selected threshold DF15*/
+		TerminalApps->TermApp[i].bMaxTargetPercentageInt = 0x05;/*Offset randomly selected maximum target percentage DF16*/
+		TerminalApps->TermApp[i].cOnlinePinCap = 0x31;/* Terminal online pin capability DF18*/
+		memcpy(TerminalApps->TermApp[i].abEC_TFL, "\x00\x00\x01\x00\x00", 6);/* Terminal electronic cash transaction limit tag: 9F7B n12*/
+		memcpy(TerminalApps->TermApp[i].abRFOfflineLimit, "\x00\x00\x01\x00\x00", 6);/*Contactless offline minimum :DF19*/
+		memcpy(TerminalApps->TermApp[i].abRFTransLimit, "\x00\x00\x05\x00\x00", 6);/*Contactless transaction limit:DF20*/
+	}
 }
 
 int upay_consum( void )
@@ -183,14 +204,13 @@ int upay_consum( void )
 	st_read_card_out *card_out =NULL;
 	st_card_info card_info={0};
  	TERMCONFIG termconfig;
- 	TERMINALAPPLIST TerminalApps;
+ 	TERMINALAPPLIST *TerminalApps=NULL;
 // 	CAPUBLICKEY pkKey={0};
 
 	APP_TRACE( "upay_consum" );
 	card_in=(st_read_card_in *)MALLOC(sizeof(st_read_card_in));
 	memset(card_in,0x00,sizeof(st_read_card_in));
 	//Set card_in
-	memset(&TerminalApps,0,sizeof(TERMINALAPPLIST));
 	memset(&termconfig,0,sizeof(TERMCONFIG));
 	//EMV_SetInputPin( m_InputPin );//Set offline PIN verification interface
 
@@ -198,7 +218,9 @@ int upay_consum( void )
 	card_in->pin_input=1;
 	card_in->pin_max_len=12;
 	card_in->key_pid = KF_DUKPT;//1 KF_MKSK 2 KF_DUKPT
-	card_in->pin_key_index=0;//-1:The returned PIN block is not encrypted (The key index number injected by the key injection tool, such as PIN KEY is 0, and LINE KEY is 1.)
+	card_in->pin_mksk_gid=-1;//The key index of MKSK; -1 is not encrypt
+	card_in->pin_dukpt_gid=0;//The key index of DUKPT PIN KEY
+	card_in->data_dukpt_gid=1;//The key index of DUPKT Track data KEY	
 	card_in->pin_timeover=60000;
 	strcpy(card_in->title, title);
 	strcpy(card_in->card_page_msg, "Please insert/swipe");//Swipe interface prompt information, a line of 20 characters, up to two lines, automatic branch.
@@ -224,16 +246,28 @@ int upay_consum( void )
 		first = 1;
 		TestSetTermConfig(&termconfig);
  		EMV_TermConfigInit(&termconfig);//Init EMV terminal parameter
-		TestDownloadAID(&TerminalApps);
-		EMV_PrmClearAIDPrmFile();
-		EMV_PrmSetAIDPrm(&TerminalApps);//Set AID
+		TerminalApps=(TERMINALAPPLIST*)MALLOC(sizeof(TERMINALAPPLIST));
+		if(TerminalApps)
+		{
+			memset(TerminalApps,0,sizeof(TERMINALAPPLIST));
+			TestDownloadAID(TerminalApps);
+			EMV_PrmClearAIDPrmFile();
+			EMV_PrmSetAIDPrm(TerminalApps);//Set AID
+			FREE(TerminalApps);
+		}
+
 	// 	EMV_PrmSetCAPK(&pkKey);//Set CAPK	
 	}
 	APP_TRACE( "emv_read_card" );
 	card_out= (st_read_card_out *)MALLOC(sizeof(st_read_card_out));
+    if(card_out==0)
+	{
+		FREE(card_in);
+		return FAIL;
+	}
 loop_card:
 	memset(card_out, 0, sizeof(st_read_card_out));
-	dukpt_get_ksn(0, card_out->ksn);
+	dukpt_prepare_key(0, card_out->pin_ksn);
 	ret = emv_read_card(card_in, card_out);
 
 	APP_TRACE( "-----------------------upay_consum Ret:%d-------------------------",ret);
@@ -273,13 +307,14 @@ loop_card:
 	else if(EMVAPI_RET_OTHER==ret){
 		card_in->card_mode = READ_CARD_MODE_IC;
 		memset(card_in->card_page_msg,0x00,sizeof(card_in->card_page_msg));
-		strcpy(card_in->card_page_msg,"please tap the card");
+		strcpy(card_in->card_page_msg,"please insert card");
 			goto loop_card;
 	}
 
 	if(EMVAPI_RET_ARQC == ret)
 	{
 		xgui_messagebox_show("", "Online Request" , "" , "ok" , 0);
+		EMV_online_cardemv_free();
 	}
 	else if(EMVAPI_RET_TC == ret)
 	{
@@ -315,13 +350,13 @@ loop_card:
 	APP_TRACE("expdate:%s\r\n", card_out->exp_data);
 	APP_TRACE_BUFF_TIP(card_out->pin_block, sizeof(card_out->pin_block), "pin_block:");
 	osl_Sleep(50);
-	APP_TRACE_BUFF_TIP(card_out->ksn, sizeof(card_out->ksn), "KSN:");
+	APP_TRACE_BUFF_TIP(card_out->pin_ksn, sizeof(card_out->pin_ksn), "KSN:");
 	osl_Sleep(50);	
 	APP_TRACE("vChName:%s\r\n", card_out->vChName);
 	APP_TRACE("ic_data_len:%d\r\n", card_out->ic_data_len);
 	APP_TRACE_BUFF_TIP(card_out->ic_data, card_out->ic_data_len, "ic_data:");
-
-	xgui_messagebox_show("track2", card_out->track2 , "" , "ok" , 0);
+	//Due to interface memory limitations, large data log output, can not use APP_TRACE, should use APP_TRACE_BUFF_TIP.
+	//xgui_messagebox_show("track2", card_out->track2 , "" , "ok" , 0);
 	xgui_messagebox_show("pan", card_out->pan , "" , "ok" , 0);
 	xgui_messagebox_show("expdate", card_out->exp_data , "" , "ok" , 0);
 

@@ -329,6 +329,11 @@ int upay_consum( void )
 		xgui_messagebox_show("Sale", "OK" , "" , "confirm" ,  3000);
 		mf_led_digit_show("1");	
 	}
+
+	if (osl_get_is_m66b() == 1)
+	{
+		lcd_set_index(1);
+	}
 }
 
 #endif

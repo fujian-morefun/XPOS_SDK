@@ -37,13 +37,13 @@ void dukptTest()
 
 	if (init == 0)
 	{
-		dukpt_init_key(gid, init_ksn, init_key);
+		dukpt_init_ipek(gid, init_ksn, init_key);
 		init = 1;
 	}
 
 	for(i=0; i<3; i++)
 	{
-		dukpt_get_ksn(gid, ksn); 
+		dukpt_prepare_key(gid, ksn); 
 		showHexData("ksn", ksn, 10);
 
 		showHexData("indata_enc", indata, 8);

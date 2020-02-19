@@ -85,7 +85,8 @@ static  const st_main_menu_item_def _menu_def[] = {
 	{"Test",    "TMS",			""},
 #endif
 
-	{"Settings",	"Wifi Set",	""},
+	{"Settings",	"Net Select",	""},
+	{"Settings",	"Wifi Set",		""},
 	{"Settings",	"keySound",		""},
 	{"Settings",	"lcdLight",		""},
 	{"Settings",	"powerTime",	""}, 
@@ -456,7 +457,7 @@ void sdk_main_page()
 	char time_cur[20];
 	char time_last[20];
 	int i;
-	//st_qr_data  * mpos_qr_data = mpos_func_get_qr_data();
+	st_qr_data  * mpos_qr_data = mpos_func_get_qr_data();
 
 	get_hhmmss_str(time_last);
 
@@ -476,9 +477,9 @@ void sdk_main_page()
 // 	{
 // 		init_com();
 // 	}
-	//strcpy(mpos_qr_data->amt, "1.00");
-	//strcpy(mpos_qr_data->data, "http://en.morefun-et.com");
-	//strcpy(mpos_qr_data->data, "00020101021244510013sa.com.stcpay0106STCPAY02116123795286403051111k5204606053036825405100.05502015802SA5919Food 123 brand name60010624350390013sa.com.stcpay021010109944661004true63048BBD");
+	strcpy(mpos_qr_data->amt, "1.00");
+	//strcpy(mpos_qr_data->qrdata, "http://en.morefun-et.com");
+	strcpy(mpos_qr_data->qrdata, "00020101021244510013sa.com.stcpay0106STCPAY02116123795286403051111k5204606053036825405100.05502015802SA5919Food 123 brand name60010624350390013sa.com.stcpay021010109944661004true63048BBD");
 	xgui_PostMessage(XM_GUIPAINT, 0 , 0);
 	while(1){
 		if (xgui_GetMessageWithTime(&pMsg, 500) == MESSAGE_ERR_NO_ERR) {
@@ -499,7 +500,7 @@ void sdk_main_page()
 			}
 			else if (pMsg.MessageId == XM_KEYPRESS /*&& osl_get_is_m67()==0*/) {//MF67 Shield button function
 				argot_keyinput(pMsg.WParam);
-
+				osl_set_app_busy(1);
 				if (pMsg.WParam == KEY_OK || pMsg.WParam == KEY_QUIT)	
 				{
 // 					if (osl_get_is_m66b() == 1)
@@ -514,6 +515,7 @@ void sdk_main_page()
 
 					xgui_PostMessage(XM_GUIPAINT, 0 , 0);
 				}
+				osl_set_app_busy(0);
 			}
 			else{
 				xgui_proc_default_msg(&pMsg);

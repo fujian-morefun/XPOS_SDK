@@ -21,6 +21,11 @@ void fileTest()
 	if(fp>=0){
 		mf_file_write(fp, str, strlen(str));		// write 10 byte "1234567890"
 		mf_file_close(fp);
+		gui_messagebox_show( "FileTest" , "Write OK" , "" , "confirm" , 0);
+	}
+	else
+	{		
+		gui_messagebox_show( "FileTest" , "Open File Fail" , "" , "confirm" , 0);
 	}
 
 	fp = mf_file_open(FILE_NAME, FILE_READ_FLAG, FILE_READ_MODE);
@@ -37,6 +42,12 @@ void fileTest()
 		sdk_log_out("buff2:%s\r\n", buff);  // log out "90"
 
 		mf_file_close(fp);
-	}
 
+		gui_messagebox_show( "FileTest" , "Read OK" , "" , "confirm" , 0);
+
+	}
+	else
+	{		
+		gui_messagebox_show( "FileTest" , "Open File Fail" , "" , "confirm" , 0);
+	}
 }

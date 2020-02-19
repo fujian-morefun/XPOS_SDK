@@ -343,11 +343,24 @@ static void http_test()
 	APP_TRACE("connect server ret= %d,%s:%d\r\n" , ret , ip , port);
         
 	if(ret == 0){
-		mf_sock_send(COMM_SOCK , (unsigned char *)buff ,  strlen(buff));	// 		Send http request
-		ret = http_recv(COMM_SOCK, recv, sizeof(recv), 30000);		// Receive http response
-		sprintf(buff, "recv buff:%s", recv);
-		APP_TRACE(buff);
-		xgui_messagebox_show("Http" , "recv ok", "" , "confirm" , 0);
+		ret = mf_sock_send(COMM_SOCK , (unsigned char *)buff ,  strlen(buff));	// 		Send http request
+		if(ret == 0){
+			ret = http_recv(COMM_SOCK, recv, sizeof(recv), 30000);		// Receive http response
+			if (ret < 0)
+			{
+				xgui_messagebox_show("Http" , "Receive Fail", "" , "confirm" , 0); 
+			}
+			else
+			{
+				sprintf(buff, "recv buff:%s", recv);
+				APP_TRACE(buff);
+				xgui_messagebox_show("Http" , "recv ok", "" , "confirm" , 0);
+			}
+		}
+		else
+		{
+			xgui_messagebox_show("Http" , "Send Fail", "" , "confirm" , 0);              
+		}
 	}
     else
     {
@@ -394,7 +407,8 @@ static void https_test()
 
 		//mf_ssl_mbedtls(1);//Use TLS 1.2
 		APP_TRACE("--------------------mf_ssl_init---------------------------" );
-		mf_ssl_init(COMM_SOCK ,0,0,0,0);
+		ret = mf_ssl_init(COMM_SOCK ,0,0,0,0);
+		if(ret != 0) return;
 // #ifndef WIN32
 // 		if(aq_set_cfg("sslversion",m_comm_sock,"1") != 0) return;
 // #endif
@@ -426,11 +440,24 @@ static void https_test()
 	APP_TRACE("connect server ret= %d,%s:%d\r\n" , ret , ip , port);
 	
 	if(ret == 0){
-		mf_ssl_send(COMM_SOCK , buff ,  strlen(buff));		// 		Send http request
-		ret = https_recv(COMM_SOCK, recv, sizeof(recv), 30000);		// Receive http response
-		sprintf(buff, "recv buff:%s", recv);
-		APP_TRACE(buff);
-		xgui_messagebox_show("Https" , "Recv OK", "" , "confirm" , 0);
+		ret = mf_ssl_send(COMM_SOCK , buff ,  strlen(buff));		// 		Send http request
+		if(ret == 0){
+			ret = https_recv(COMM_SOCK, recv, sizeof(recv), 30000);		// Receive http response
+			if (ret < 0)
+			{
+				xgui_messagebox_show("Https" , "Receive Fail", "" , "confirm" , 0); 
+			}
+			else
+			{
+				sprintf(buff, "recv buff:%s", recv);
+				APP_TRACE(buff);
+				xgui_messagebox_show("Https" , "Recv OK", "" , "confirm" , 0);
+			}
+		}
+		else
+		{
+			xgui_messagebox_show("Https" , "Send Fail", "" , "confirm" , 0);              
+		}
 	}
 	else
 	{

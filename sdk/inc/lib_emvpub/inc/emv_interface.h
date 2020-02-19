@@ -4,7 +4,6 @@
 #include "define.h"
 #include "pub/pub.h"
 #include "ex_crypto.h"
-//#include "pub_define.h"
 
 #ifdef __cplusplus
 extern "C"{
@@ -136,6 +135,7 @@ extern "C"{
 	#define POSENTMODE_FALLBACK 0x04
 	#define POSENTMODE_IC		0x05
 	#define POSENTMODE_QPBOC	0x07
+	#define	POSENTMODE_RF_MS	0x91
 	#define POSENTMODE_RF		0x98
 	/**<终端参数*/
 	typedef struct {
@@ -221,8 +221,17 @@ extern "C"{
 #define	MODE_TYPE_AMEX		    0x40		/*非接触AMEX*/
 
 	
+//API 返回值
+#define UNSUPPORT	(-6)
+#define TERMINATE	(-7)
+#define GOTOCONTACT (-8)
+#define GOTOOTHER	(-9)
+#define	GOTOUPCARD	(-10)
+#define GOTO_TRYAGAIN		(-11)		//重新挥卡
+#define GOTO_CDV_TRYAGAIN	(-12)		//移动设备重新挥卡
+#define GOTOOTHERCARD	(-16)		
+#define EMV_RES_FALLBACK		(-4)		/**< fallback*/
 /**<结构体STEMVPROC数据nEmvRet的值*/
-#define EMV_RES_TRY_AGAIN		(-4)		/**< 请重新挥卡*/
 #define EMV_RES_UNKNOW			(-3)		/**< 未知结果*/
 #define EMV_RES_AAR				(-2)		/**< */
 #define EMV_RES_REFUSE			(-1)		/**< 交易拒绝*/
@@ -535,9 +544,27 @@ extern "C"{
 	LIB_EXPORT extern int GetEmvData(char *pszTag,char *pszData,int *nDataLen);
 	LIB_EXPORT extern int PackEmvData(char * packData, char * psTag,int nFlag,int * pnLen);
 	
-	/**< 获取EMV错误码*/
-	LIB_EXPORT extern unsigned int Emv_GetErrCode(void);
-	LIB_EXPORT extern int EmvGetErrCode(char cErrcode);
+	/*************************************************************************************
+	Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+	Author:wuxp
+	Functions:Match error code
+	Input :  iErrcode:Error code
+	Output : Nothing
+	return: 0: no Match
+	1: Match
+	*************************************************************************************/
+	LIB_EXPORT unsigned int Emv_ISErrCode(unsigned int iErrcode);
+
+	/*************************************************************************************
+	Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+	Author:wuxp
+	Functions:Get error information
+	Input :  pErrMSG:buf
+	Output : Nothing
+	return: FAIL/SUCC
+	*************************************************************************************/
+	LIB_EXPORT int EMV_Get_ErrMSG(char* pErrMSG);
+
 	/**< TVR TSI*/
 	LIB_EXPORT extern YESORNO GetTVRIsSet(int nMask);
 	LIB_EXPORT extern YESORNO GetTSIIsSet(int nMask);
@@ -663,6 +690,33 @@ extern "C"{
 	LIB_EXPORT extern int SaveEmvData(char *pszTag,char *pszData,int nLen,YESORNO bOverride);
 	LIB_EXPORT extern int EMV_iSetCAPubKey(ST_CAPK*stCAPK);
 	/**< --------------------------------------------------------------------------------------------------*/
+
+
+/**< --------------------------------------------------------------------------------------------------*/
+/*提取一组通用非接触状态结构体,结构体和ST_VCPS_PROC一直，增加兼容*/
+typedef struct {   //一般设置前6个即可
+	char checkStatus;
+	char checkRCTL;
+	char checkCVMLimit;
+	char checkFloorLimit;
+	char optionAmtZore;
+	char checkAmtZore;
+	char szFloorLimit_b_9F1B[6+1];//保证4字节对齐
+	char sRf_OfflineLimit_DF19[6+1];
+	char sRF_TxnLimit_DF20[6+1];//保证4字节对齐
+	char sRf_CVMLimit_DF21[6+1];
+	char checkCash;
+	char checkCashBack;
+	char checkOnPIN;
+	char checkSig;
+	char checkExcpt;
+	char cDF19Check;			
+	char c9F1BCheck;
+	char bSet;//是否被设置过 正式应用上不被设置，则按照默认值配置 从而不影响正常使用
+}ST_RF_PROC;
+
+LIB_EXPORT extern int RF_setParam(ST_RF_PROC *st_pr_proc);
+LIB_EXPORT extern ST_RF_PROC* RF_getParam(void);
 
 #ifdef __cplusplus
 }

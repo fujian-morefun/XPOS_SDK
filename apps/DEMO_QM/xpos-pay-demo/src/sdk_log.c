@@ -92,7 +92,6 @@ int LogOutSet_Show()
 					_LogOut_Paint(nOpen);
 					break;
 				case KEY_OK:
-					//保存，再走quit退出
 					openlog(nOpen);
 					mf_system_power_state(POWER_STATE_RESET);
 					break;

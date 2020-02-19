@@ -5,14 +5,14 @@
 
 
 typedef struct __st_datetime{
-	int nYear;				//年
-	int nMonth;				//月
-	int nDay;				//日
-	int nHour;				//时
-	int nMinute;			//分
-	int nSecond;			//秒
-	int m_currentSel;		//当前焦点，0-年，1-月，2-日，3-时，4-分，5-秒
-	char firstTimePress;	//当前焦点是否是获取到焦点后第一次输入,0-是，1-否
+	int nYear;				//year
+	int nMonth;				//thmon
+	int nDay;				//day
+	int nHour;				//hour
+	int nMinute;			//minute
+	int nSecond;			//second
+	int m_currentSel;		//Current focus, 0-year, 1-month, 2-day, 3-hour, 4-minute, 5-second
+	char firstTimePress;	//Whether the current focus is the first input after getting focus, 0-yes, 1-no
 }DATETIME_ST;
 
-int dateTimeInput_Show(DATETIME_ST * pdt);
+int _dateTimeInput_Show(DATETIME_ST * pdt);

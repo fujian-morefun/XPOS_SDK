@@ -116,7 +116,7 @@ int upay_print_proc( st_card_info *card_info )
 
 	osl_print_write(osl_print_get());		// Output to printer
 	
-	xgui_messagebox_show("", "printing...", "", "ok", 0);
+	//xgui_messagebox_show("", "printing...", "", "ok", 0);
 
 	osl_print_free();
 

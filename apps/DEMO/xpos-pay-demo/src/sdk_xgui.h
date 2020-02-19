@@ -1,4 +1,4 @@
 #pragma once
 void sdk_main_page();
 
-#define APP_VER "paydemo-V1.1.0"
+#define APP_VER "paydemo-V1.1.6"

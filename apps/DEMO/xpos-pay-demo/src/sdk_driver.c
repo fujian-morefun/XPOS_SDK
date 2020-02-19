@@ -207,7 +207,7 @@ void SetDukptKey()
 			if (ret == 32)
 			{
 				Util_Asc2Bcd(key_str, key, 32);
-				dukpt_init_key(0, ksn, key);
+				dukpt_init_ipek(0, ksn, key);
 
 				xgui_messagebox_show("SetKey" , "Set DUKPT Init Key OK!", "" , "confirm" , 0);
 			}

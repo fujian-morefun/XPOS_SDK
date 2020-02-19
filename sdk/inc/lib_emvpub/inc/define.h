@@ -12,7 +12,7 @@
 #include<time.h>
 /**<api*/
 
-//#include "mf_basic.h"
+#include "mf_basic.h"
 #include "pub_define.h"
 
 #include "emv_tag.h"
@@ -30,19 +30,12 @@
 
 //typedef unsigned char BYTE;
 
-#define ENTRY_POINT_VERSION			"EntryPoint_2019-08-27_XP"
-#define EMV_VERSION			"EMV4.3H_2019-08-27_XP"	
+#define ENTRY_POINT_VERSION			"EntryPoint_2020-01-06_XP"
+#define EMV_VERSION			"EMV4.3H_2020-01-06_XP"	
 //#define EMV_PINPAD_VERSION	"EMV4.3G_PINPAD-V1.01"
 //#define  L2_APPROVE  1  //1 - L2认证时宏定义开启   0-默认提交生产用（SVN只上传为0的版本）此前第三方应用发现有卡片返回tag一样导致中止
 
 //#define AUTO_APPROVE	1 //自动化测试开关 （连BCTC的测试后台时开启）
-#ifndef AUTO_APPROVE
-//#define		QUICS	1	//QUICS宏定义
-#ifndef		QUICS		
-#define		VCPS		//vcps宏定义
-#endif
-#endif
-#define AMEX
 
 #define MAXLEN_PAN 19
 #define MAXLEN_TRACK2 37
@@ -71,19 +64,22 @@ typedef enum {
 #define TIMEOUT		(-3)
 #define GOTO		(-4)
 #define UNKNOW		(-5)
-#define UNSUPPORT	(-6)
-#define TERMINATE	(-7)
-#define GOTOCONTACT (-8)
-#define GOTOOTHER	(-9)
-#define	GOTOUPCARD	(-10)
-#define GOTO_TRYAGAIN		(-11)		//重新挥卡
-#define GOTO_CDV_TRYAGAIN	(-12)		//移动设备重新挥卡
+//#define UNSUPPORT	(-6)
+//#define TERMINATE	(-7)
+//#define GOTOCONTACT (-8)
+//#define GOTOOTHER	(-9)
+//#define	GOTOUPCARD	(-10)
+//#define GOTO_TRYAGAIN		(-11)		//重新挥卡
+//#define GOTO_CDV_TRYAGAIN	(-12)		//移动设备重新挥卡
 #define L1_ERROR	(-13)				//L1错误码--保存L1错误码,L1的错误码是负值,可能会和nRet重复
-
 #define GOTO_DPAS_ZIP	(-14)
 #define GOTO_DPAS_MS	(-15)
-#define GOTOOTHERCARD	(-16)
+//#define GOTOOTHERCARD	(-16)
 #define RP_GOTO_2_TAP	(-17)
+#define EMV_ERR_ICCOP_ERR (-18) //APDU未收到返回，L1层错，需要重新寻卡
+#define EC_ONLY_ERR_RET	(-19)	// 判断到纯电子现金返回
+#define EMV_ERR_INITAPP	(-20)	//初始化应用错误 
+
 //#define ASSERT_FAIL(e) \
 //	if ((e) == FAIL)\
 //	{\
@@ -110,11 +106,8 @@ typedef enum {
 //#define MAXLEN_AUTHDATA   1500  
 #define MAXLEN_AUTHDATA   2048+512		//paypass案例脱机签名数据2048--恢复IC卡公钥计算hash空间2048+512
 
-#ifdef M919_DEVICE
-	#define MAXNUM_AIDLIST 5		//根据PBOC3.0终端送检指南要求，终端AID最多不超过20个
-#else
-	#define MAXNUM_AIDLIST 20		//根据PBOC3.0终端送检指南要求，终端AID最多不超过20个
-#endif
+#define MAXNUM_AIDCONTAIN  80	//终端支持的AID个数限制
+#define MAXNUM_AIDLIST 8		//候选列表AID个数限制
 
 
 #ifdef WIN32

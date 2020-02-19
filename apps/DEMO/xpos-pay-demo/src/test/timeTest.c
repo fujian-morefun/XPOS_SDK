@@ -8,11 +8,10 @@
 int timeTest()
 {
 	int nRet = 0;
-	//测试数据
 	DATETIME_ST testDateTime = {0};
 	DATE_TIME_T rtcDateTime = {0};
 
-	//读取当前时间，作为默认时间
+	//Read the current time as the default time
 	osl_GetDateTime(&rtcDateTime);
 	testDateTime.nYear = rtcDateTime.nYear;
 	testDateTime.nMonth = rtcDateTime.nMonth;
@@ -21,7 +20,7 @@ int timeTest()
 	testDateTime.nMinute = rtcDateTime.nMinute;
 	testDateTime.nSecond = rtcDateTime.nSecond;
 
-	nRet = dateTimeInput_Show(&testDateTime);
+	nRet = _dateTimeInput_Show(&testDateTime);
 
 	
 	if (nRet == 1)
@@ -36,7 +35,7 @@ int timeTest()
 		rtcDateTime.nSecond = testDateTime.nSecond;
 
 		osl_SetDateTime(&rtcDateTime);
-		//保存，并再次从rtc读取显示
+		//Save and read from rtc again and display 
 		osl_Sleep(50);
 		memset(&rtcDateTime, 0x00, sizeof(DATE_TIME_T));
 		osl_GetDateTime(&rtcDateTime);

@@ -40,7 +40,7 @@ static void _LogOut_Paint(int value)
 
 	xgui_TextOut(0, XGUI_LINE_TOP_0, value == 1 ? "LogOut:On" : "LogOut:Off");
 
-	xgui_TextOut(0, XGUI_LINE_TOP_2 , "¡ü¡ýto switch");
+	//xgui_TextOut(0, XGUI_LINE_TOP_2 , "Up to switch");
 
 	xgui_Page_OP_Paint( "Cancel" , "OK");
 

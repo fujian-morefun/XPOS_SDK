@@ -92,7 +92,7 @@
 #define   EMV_TAG_9F19_IC_TOKEN				"\x9F\x19"		/**< Token Data Object）	*/
 #define   EMV_TAG_DF61_IC_ODA				"\xDF\x61"		/**< 卡片增值功能 用以指示ODA	*/
 #define   EMV_TAG_9F7C_IC_PAR				"\x9F\x7c"		/**< 用户专用数据	*/
-
+#define   EMV_TAG_9F25_IC_PAR				"\x9F\x25"		/**< 用户专用数据	*/
 
 /*
 * 终端TERM数据元标签
@@ -221,6 +221,7 @@
 #define BCTC_TAG_DF8102_TDOL					"\xDF\x81\x02"//自动化测试工具 default TDOL
 #define BCTC_TAG_DF8106_TIMEOUT					"\xDF\x81\x06"//自动化测试工具 0 表示进行交易；FF 表示退出程序；其他表示等待对应时间（单位：秒），随后再次发送交易启动报文
 #define BCTC_TAG_DF8103_LOADTYPE				"\xDF\x81\x03"//自动化测试工具 下载参数指示位，可选出现：B8-B6：RFU B5：删除所有交易日志 B4：回收公钥 B3：黑名单 B2：AID B1：CAPK
+#define BCTC_TAG_DFC10B_EFFECT	 				"\xDF\xC1\x0B"//自动化测试工具 用于表示执行ODA 结果
 
 //EMV_Entry_Point
 #define EMV_TAG_9F2A_IC_KERN_ID				"\x9F\x2A"		// Kernel Identifier 
@@ -437,7 +438,9 @@
 #define DPAS_TAG_DF8702_TRACK2_DATA                  "\xDF\x87\x02" 
 #define DPAS_TAG_9F80_DCVV2							 "\x9F\x80"  
 #define DPAS_TAG_9F7E_DCVV1							 "\x9F\x7E"  
-#define DPAS_TAG_9F7D_PAVN							 "\x9F\x7D"  			
+#define DPAS_TAG_9F7D_PAVN							 "\x9F\x7D"  
+#define DPAS_TAG_DF8606_TM_CHECK_INDICATE            "\xDF\x86\x06"
+
 
 //EMV 公共自定义TAG
 #define DEF_TAG_ISS_RECOVER_SIGN	"\xDF\x84\x01"		//回收证书标识		0--不存在 1-存在

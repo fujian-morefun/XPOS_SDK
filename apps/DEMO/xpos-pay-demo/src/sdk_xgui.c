@@ -73,6 +73,7 @@ static  const st_main_menu_item_def _menu_def[] = {
 	{"Settings",	"Set Dukpt Key",		""},	
 	{"Others",		"View AID",		""},
 	{"Others",		"View CAPK",	""},
+	{"Others",		"View emv",	""},
 };
 
 /*static  const st_main_menu_item_def _menu_def[] = 
@@ -127,7 +128,6 @@ static int _menu_proc(char *pid)
 		sprintf(msg , "app:%s\r\n", APP_VER);
 		sprintf(msg + strlen(msg), "hardware:%s\r\n", sec_get_hw_ver());
 		sprintf(msg + strlen(msg), "fireware:%s\r\n", sec_get_fw_ver());
-		sprintf(msg + strlen(msg), "emv:%s\r\n", EMV_GetVersion());
 		gui_messagebox_show( "Version" , msg , "" , "confirm" , 0);
 	}
 	else if (strcmp(pid , "CodePay") == 0){	
@@ -218,6 +218,10 @@ static int _menu_proc(char *pid)
 	{
 		EMV_ShowCAPK_Prm();
 	}
+	else if (strcmp(pid , "View emv") == 0){
+		sprintf(msg + strlen(msg), "%s\r\n", EMV_GetVersion());
+		gui_messagebox_show( "View emv" , msg , "" , "confirm" , 0);
+	}
 	return 0;
 }
 
@@ -289,8 +293,6 @@ void sdk_main_page()
 
 	get_hhmmss_str(time_last);
 
-	capability_init();
-
 	sdk_timer_init();
 #ifdef WIN32
 	//upay_consum();
@@ -328,10 +330,6 @@ void sdk_main_page()
 					xgui_main_menu_show(MAIN_MENU_PAGE , 0);	// 循环处理菜单
 
 					xgui_PostMessage(XM_GUIPAINT, 0 , 0);
-				}
-				else if ( pMsg.WParam == KEY_1)
-				{
-					capability_page();
 				}
 			}
 			else{
