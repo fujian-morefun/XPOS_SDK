@@ -94,7 +94,26 @@ static  const st_main_menu_item_def _menu_def[] = {
 	{"Settings",	"Open Log",		""},	
 };
 
+static int getversions( char *buff)
+{
+	int i = 0;
 
+	i += sprintf(buff + i, "api:%s\r\n", libapi_version());
+	i += sprintf(buff + i, "apppub:%s\r\n", apppub_version());
+	i += sprintf(buff + i, "atc:%s\r\n", atc_version());
+	i += sprintf(buff + i, "json:%s\r\n", json_version());
+	i += sprintf(buff + i, "net:%s\r\n", net_version());
+	i += sprintf(buff + i, "power:%s\r\n", power_version());
+	i += sprintf(buff + i, "producttest:%s\r\n", producttest_version());
+	i += sprintf(buff + i, "pub:%s\r\n", pub_version());
+	i += sprintf(buff + i, "sqlite:%s\r\n", sqlite_version());
+	i += sprintf(buff + i, "switchcheck:%s\r\n", switchcheck_version());
+	i += sprintf(buff + i, "tms:%s\r\n", tms_version());
+	i += sprintf(buff + i, "wifi:%s\r\n", wifi_version());
+	i += sprintf(buff + i, "xgui:%s\r\n", xgui_version());
+
+	return i;
+}
 static int _menu_proc(char *pid)
 {
 	int ret;

@@ -314,7 +314,6 @@ loop_card:
 	if(EMVAPI_RET_ARQC == ret)
 	{
 		xgui_messagebox_show("", "Online Request" , "" , "ok" , 0);
-		EMV_online_cardemv_free();
 	}
 	else if(EMVAPI_RET_TC == ret)
 	{
@@ -364,7 +363,7 @@ loop_card:
 	strcpy(card_info.title, card_in->title);
 	strcpy(card_info.pan, card_out->pan);
 	strcpy(card_info.expdate, card_out->exp_data);
-
+	EMV_online_cardemv_free();
 	FREE(card_in);
 	FREE(card_out);
 

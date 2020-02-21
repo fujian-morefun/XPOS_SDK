@@ -107,8 +107,25 @@ static  const st_main_menu_item_def _menu_def[] = {
 };*/
 
 
+static int getversions( char *buff)
+{
+	int i = 0;
 
+	i += sprintf(buff + i, "api:%s\r\n", libapi_version());
+	i += sprintf(buff + i, "apppub:%s\r\n", apppub_version());
+	i += sprintf(buff + i, "atc:%s\r\n", atc_version());
+	i += sprintf(buff + i, "json:%s\r\n", json_version());
+	i += sprintf(buff + i, "net:%s\r\n", net_version());
+	i += sprintf(buff + i, "power:%s\r\n", power_version());
+	i += sprintf(buff + i, "producttest:%s\r\n", producttest_version());
+	i += sprintf(buff + i, "pub:%s\r\n", pub_version());
+	i += sprintf(buff + i, "switchcheck:%s\r\n", switchcheck_version());
+	i += sprintf(buff + i, "tms:%s\r\n", tms_version());
+	i += sprintf(buff + i, "wifi:%s\r\n", wifi_version());
+	i += sprintf(buff + i, "xgui:%s\r\n", xgui_version());
 
+	return i;
+}
 
 // The menu callback function, as long as all the menu operations of this function are registered, 
 // this function will be called, and the selected menu name will be returned. 
@@ -118,7 +135,7 @@ static int _menu_proc(char *pid)
 	int ret;
 	char buff[20];
 	int pos = 0;
-	char msg[256];
+	char msg[512];
 
 	if (strcmp(pid , "Sale") == 0){
 		upay_consum();
@@ -128,6 +145,8 @@ static int _menu_proc(char *pid)
 		sprintf(msg , "app:%s\r\n", APP_VER);
 		sprintf(msg + strlen(msg), "hardware:%s\r\n", sec_get_hw_ver());
 		sprintf(msg + strlen(msg), "fireware:%s\r\n", sec_get_fw_ver());
+		getversions(msg + strlen(msg));
+		
 		gui_messagebox_show( "Version" , msg , "" , "confirm" , 0);
 	}
 	else if (strcmp(pid , "CodePay") == 0){	
