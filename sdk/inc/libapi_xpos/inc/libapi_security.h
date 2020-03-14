@@ -30,8 +30,8 @@
 #define SEC_PIN_FORMAT3				0x03
 #define SEC_PIN_FORMAT4				0x04
 
-#define DES_MODE_ENCRYPT			0x00
-#define DES_MODE_DECRYPT			0x01
+#define DES_TYPE_ENCRYPT			0x00
+#define DES_TYPE_DECRYPT			0x01
 
 #define DES_MODE_ECB				0x00
 #define DES_MODE_CBC				0x01
@@ -40,8 +40,7 @@
 #define DUKPT_DES_KEY_MAC1			0x01
 #define DUKPT_DES_KEY_MAC2			0x02
 #define DUKPT_DES_KEY_DATA1			0x03
-#define DUKPT_DES_KEY_DATA2			0x05
-
+#define DUKPT_DES_KEY_DATA2			0x04
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
@@ -109,7 +108,7 @@ Output :   ksn:		Key corresponds to ksn
 return: 0,     success
 		Other, failure	
 *************************************************************************************/
-LIB_EXPORT int dukpt_get_ksn(unsigned char gid, unsigned char * ksn);
+LIB_EXPORT int dukpt_prepare_key(unsigned char gid, unsigned char * ksn);
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
@@ -139,10 +138,30 @@ return: 0,     success
 *************************************************************************************/
 LIB_EXPORT int dukpt_3des_run_ex(int mode, char *ind, int size, char *outd, int des_mode, int key_tpye);
 
+
+
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:lx
-Functions:Initialize the dukpt key
+Functions:Initialize the dukpt key use IPEK
+Input : 	type:		Initial key type
+						0 = ipek 1= bdk
+			mode:		Encryption method of initial key
+						0=Plaintext 1= tmk encryption 2= kek encryption
+			gid:		Key grouping£¬0
+			init_ksn:	Initial ksn	
+			init_key:	Initial key
+			kvc		:	Key kvc(Key plaintext encryption 8 0x00)
+Output :   Nothing
+return: 0,     success
+		Other, failure
+*************************************************************************************/
+LIB_EXPORT int dukpt_load_key(int mode, int type, int gid, unsigned char* init_ksn, unsigned char* init_key, char * kvc);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions:Initialize the dukpt key use IPEK
 Input : 	gid:		Key grouping£¬0
 			init_ksn:	Initial ksn	
 			init_key:	Initial key
@@ -150,20 +169,35 @@ Output :   Nothing
 return: 0,     success
 		Other, failure
 *************************************************************************************/
-LIB_EXPORT int dukpt_init_key(unsigned char gid, unsigned char* init_ksn, unsigned char* init_key);
+LIB_EXPORT int dukpt_init_ipek(unsigned char gid, unsigned char* init_ksn, unsigned char* init_key);
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:lx
-Functions:Initialize the dukpt key
+Functions:Initialize the dukpt key use IPEK  Ciphertext
 Input : 	gid:		Key grouping£¬0
-			key:		Initial key Ciphertext
+			key:		ipek Ciphertext
 			kvc:		Key kvc(Key plaintext encryption 8 0x00)
 Output :   Nothing
 return: 0,     success
 		Other, failure
 *************************************************************************************/
-LIB_EXPORT int dukpt_init_key2(unsigned char gid, unsigned char* key, char * kvc);
+LIB_EXPORT int dukpt_init_ciphertext_ipek(unsigned char gid, unsigned char* key, char * kvc);
+
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions:Initialize the dukpt key use BDK
+Input : 	gid:		Key grouping£¬0
+			init_ksn:	Initial ksn	
+			init_key:	BDK
+Output :   Nothing
+return: 0,     success
+		Other, failure
+*************************************************************************************/
+LIB_EXPORT int dukpt_init_bdk(unsigned char gid, unsigned char* init_ksn, unsigned char* init_key);
+
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.

@@ -208,8 +208,8 @@
 #define  EMV_TAG_DF79_UPLOAG_BALANCE             "\xDF\x79" /**< 圈存交易日志的金额**/
 /**< 非接触终端数据*/
 #define EMV_TAG_9F66_TM_RF_TRANSPROP			"\x9F\x66"	/**< 终端交易属性*/
-#define EMV_TAG_DF19_TM_RF_LIMIT					"\xDF\x19"	/**< 非接触终端交易限额*/
-#define EMV_TAG_DF20_TM_RF_OFFLINELIMIT			"\xDF\x20"	/**< 非接触终端脱机交易限额*/
+#define EMV_TAG_DF20_TM_RF_LIMIT					"\xDF\x20"	/**< 非接触终端交易限额*/
+#define EMV_TAG_DF19_TM_RF_OFFLINELIMIT				"\xDF\x19"	/**< 非接触终端脱机交易限额*/
 #define EMV_TAG_9F5D_IC_RF_BALANCE				"\x9F\x5D"	/**< 脱机可用余额*/
 #define EMV_TAG_9F6C_IC_RF_TRANSPROP				"\x9F\x6C"	/**< 卡片交易属性*/
 #define EMV_TAG_DF21_TM_CVMLIMIT					"\xDF\x21"	/**< 终端执行CVM限额*/
@@ -441,6 +441,17 @@
 #define DPAS_TAG_9F7D_PAVN							 "\x9F\x7D"  
 #define DPAS_TAG_DF8606_TM_CHECK_INDICATE            "\xDF\x86\x06"
 
+/*****************JCB****************************/
+#define JCB_TAG_9F50_IC_CVS					"\x9F\x50"		//Cardholder Verification Status
+#define JCB_TAG_9F52_K_TCI					"\x9F\x52"		//Terminal Compatibility Indicator
+#define JCB_TAG_9F53_K_TIP					"\x9F\x53"		//Terminal  InterchangeProfile (dynamic) 
+#define JCB_TAG_9F5C_IC_MDOL				"\x9F\x5C"		//Magstripe Data Object List (MDOL) 
+#define JCB_TAG_9F5F_IC_OB					"\x9F\x5F"		//Offline Balance 
+#define JCB_TAG_9F60_IC_IUP					"\x9F\x60"		//Issuer Update Paramete
+
+#define JCB_TAG_DF8801_COMBINATION_OPTIONS	"\xDF\x88\x01"
+#define JCB_TAG_DF8802_ONLINE_TYPE			"\xDF\x88\x02"
+#define JCB_TAG_DF8803_STATIC_TIP			"\xDF\x88\x03"
 
 //EMV 公共自定义TAG
 #define DEF_TAG_ISS_RECOVER_SIGN	"\xDF\x84\x01"		//回收证书标识		0--不存在 1-存在

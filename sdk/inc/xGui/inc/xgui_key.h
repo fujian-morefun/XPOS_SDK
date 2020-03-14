@@ -33,6 +33,12 @@
 #define KEY_J		'J'
 #define KEY_K		'K'
 
+#define KEY_PLUS			'+'
+#define KEY_SUBTRACT		'-'
+#define KEY_MULTIPLY		'*'
+#define KEY_DIVISION		'/'
+
+
 #define KEY_CONTROL		0x80
 
 #define KEY_UP			(KEY_CONTROL + 0x1)
@@ -80,4 +86,8 @@ LIB_EXPORT void xgui_key_set_proc(int val);
 
 LIB_EXPORT int xgui_key_getlast();
 LIB_EXPORT int xgui_key_clrlast();
+
+LIB_EXPORT int xgui_key_pin_data(char * data);
+LIB_EXPORT void xgui_key_pin_mode(int mode, int size);
+
 

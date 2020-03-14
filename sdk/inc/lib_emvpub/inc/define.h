@@ -30,8 +30,10 @@
 
 //typedef unsigned char BYTE;
 
-#define ENTRY_POINT_VERSION			"EntryPoint_2020-01-06_XP"
-#define EMV_VERSION			"EMV4.3H_2020-01-06_XP"	
+
+#define ENTRY_POINT_VERSION			"EP20200309XP"
+
+#define EMV_VERSION			"EMV20200306XP"	
 //#define EMV_PINPAD_VERSION	"EMV4.3G_PINPAD-V1.01"
 //#define  L2_APPROVE  1  //1 - L2认证时宏定义开启   0-默认提交生产用（SVN只上传为0的版本）此前第三方应用发现有卡片返回tag一样导致中止
 
@@ -104,9 +106,9 @@ typedef enum {
 
 
 //#define MAXLEN_AUTHDATA   1500  
-#define MAXLEN_AUTHDATA   2048+512		//paypass案例脱机签名数据2048--恢复IC卡公钥计算hash空间2048+512
+#define MAXLEN_AUTHDATA   (2048+512)		//paypass案例脱机签名数据2048--恢复IC卡公钥计算hash空间2048+512
 
-#define MAXNUM_AIDCONTAIN  80	//终端支持的AID个数限制
+#define MAXNUM_AIDCONTAIN  60	//终端支持的AID个数限制
 #define MAXNUM_AIDLIST 8		//候选列表AID个数限制
 
 

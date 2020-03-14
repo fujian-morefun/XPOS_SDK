@@ -676,9 +676,8 @@ typedef enum
 
 //2.2.11 EMV class API
 
-#define  UMAX_TERMINAL_APPL    21        //The maximum number of applications supported by card terminals
+#define  UMAX_TERMINAL_APPL    60        //The maximum number of applications supported by card terminals
 #define  UMAX_EXCEPTION_BIN_COUNT	100  //Card BIN blacklist maximum number
-
 //EMV parameter operation returns an enumeration
 typedef enum
 { 
@@ -732,6 +731,7 @@ typedef struct {
     char    TermType ;            /*Terminal type '9F35'*/
     char    TransCurrCode[2] ;    /*Transaction currency '5F2A'*/
     char    TransCurrExp;         /*Transaction currency index '5F36'*/
+	char	szTransProp[4];			/*TTQ'9F66'*/
     //PSE Selection
     char    bPSE;                 /*Whether to support the choice PSE 1*/
     char    bCardHolderConfirm;   /*Whether to support cardholder confirmation 1*/
@@ -771,6 +771,15 @@ typedef struct {
     //Exception Handling
     char    cEntryModeUsingMagStripe; /*POSEntryMode value when the IC card is faulty and can only be swiped*/
     char    bAccountSelect;      /*Whether to support account selection*/
+	//visa check value
+	char	checkAmtZore;
+	char	checkRCTL;
+	char	checkStatus;
+	char	checkFloorLimit;
+	char	optionAmtZore;
+	char	checkCVMLimit;
+	char	checkOnPIN;
+	char	checkSig;
 }TERMCONFIG; 
 
 
@@ -1070,7 +1079,6 @@ typedef enum
 #define		PIN_PED			0x00	//Built in
 #define		PIN_PP			0x01	//External
 
-#define		TIMEOUT			-2		//Time out
 
 #define		COM_PAD_NO		0x00			//rs232 A
 #define		PINPADCOM		0x01			//pinpad

@@ -378,4 +378,7 @@ Remarks: Nothing
 *************************************************************************************/
 LIB_EXPORT  void Sys_lcd_SetBackLightTime(int ntime);
 
+#define SYS_TRACE( ...)	osl_log( "app", 2 , __VA_ARGS__ )
+#define SYS_TRACE_BUFF(buff,size,tip) 	osl_log_buff_tip("app",2,buff, size , tip ,1 );
+
 #endif /*__LIBAPI_SYSTEM_HEADER__*/
