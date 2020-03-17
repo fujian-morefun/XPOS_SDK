@@ -1,6 +1,9 @@
 #pragma once
 #include "pub/pub.h"
 //reference to emv_interface.h
+
+#define EMVAPI_VER				"EMVAPI20200317ZY"
+
 #define MODE_API_UNKNOW			0x00
 #define	MODE_API_PBOC			0x01
 #define MODE_API_VCPS			0x02
@@ -115,8 +118,6 @@ typedef struct
 	RUPAYPRMACQKEY PRMacqKey[UMAX_RUPAY_PRMACQKEY_COUNT];
 }RUPAYPRMACQKEYLIST;
 
-
-#define EMVAPI_VER				"EMVAPI20200311XP"
 
 //Transaction Result return value define
 #define EMVAPI_RET_TC	 0	 //TC Approval
