@@ -1,0 +1,5 @@
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+This product includes software developed by morefun
+Copyright (c) 2020 morefun.  All rights reserved.
