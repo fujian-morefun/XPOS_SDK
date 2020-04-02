@@ -5,9 +5,76 @@
 #include "xGui/inc/xgui_key.h"
 #include "pub/common/misc/inc/mfmalloc.h"
 
+#include "pub\tracedef.h"
+#include "libqr/inc/qr.h"
+#include "xGui/inc/xgui_bmp.h"
 
 #define QR_WIDTH	240
 #define QR_HEIGHT	240
+
+
+
+int generate_code( char *data,char **outbitmap,int *outwidth  )
+{
+#define TEMP "xxxx\\qr.tmp"
+
+	int version = -1;
+	int mode = QR_EM_AUTO;
+	int eclevel = QR_ECL_M;
+	int masktype = -1;
+
+	int errcode = QR_ERR_NONE;
+	int has_data = 0;
+
+	char * bitmap = 0;
+	int width = 0;
+	int height = 0;
+	int datalen;
+	int nsize = 0;
+	int sep = 1;
+	int mag=8;
+
+	QRCode *qr = 0 ;
+
+	datalen = strlen(data);
+
+	qr = qrInit(version, mode, eclevel, masktype, &errcode);
+	APP_TRACE("qrInit\r\n");
+
+	qrAddData(qr, data,datalen );
+	APP_TRACE("qrAddData\r\n");
+	qrFinalize(qr);
+	APP_TRACE("qrFinalize datalen=%d version = %d  mode=%d\r\n" , datalen, qr->param.version , qr->param.mode );
+
+	nsize = 0;
+	bitmap = qrGetSymbol(qr,  QR_FMT_BMP,  sep,  mag,  &nsize);
+	APP_TRACE("qrGetSymbol nsize=%d\r\n" , nsize);
+	if (  nsize > 0 )
+	{
+		File_WriteBlockByName( TEMP ,0,bitmap,nsize);
+	}
+	else{
+		FREE(bitmap);
+	}
+	qrDestroy(qr);
+
+	APP_TRACE("qrDestroy nsize = %d\r\n",nsize);
+
+	if ( nsize > 0 )
+	{//生成成功
+		*outbitmap = xgui_load_bmp(TEMP,outwidth,&height);
+	}
+	else{
+		//生成失败
+		*outbitmap = 0 ;
+		*outwidth = 0;
+	}
+	//	*outbitmap = bitmap;
+	//	*outwidth = lastwidth;
+
+	return 0;
+}
+
 
 void showQrTest()
 {
@@ -24,7 +91,8 @@ void showQrTest()
 	int left,top;
 	char *data= "test qr code";
 
-
+#define USELIBQR
+#ifndef USELIBQR
 	qr_info.moudleWidth = 8;		// gain
 	qr_info.nLevel = 1;				// Error correction level
 	qr_info.nVersion = 0;			// Qr version
@@ -33,6 +101,9 @@ void showQrTest()
 
 	width = mfGeneCodePic(data , strlen(data) , &qr_info , bitmap);
 
+#else
+	generate_code( data, &bitmap, &width );
+#endif
 	xgui_PostMessage(XM_GUIPAINT, 0 , 0);  // Send a paint message
 
 	if(width > 0){

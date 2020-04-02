@@ -278,5 +278,100 @@ return: Nothing
 *************************************************************************************/
 LIB_EXPORT void EMV_ShowCAPK_Prm(void);
 
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:ruansj
+Functions:Set rupay service data into device
+Input : pRuPayServiceList: rupay sevice data list buffer
+		
+Output : Nothing
+return: 	
+			FAIL=-1,	//FAIL
+			SUCC=0		//SUCC
+*************************************************************************************/
+LIB_EXPORT int EMV_SetRuPayServiceList(RUPAYSERVICELIST *pRuPayServiceList);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:ruansj
+Functions:Get all rupay service data into memory
+Input : Nothing
+		
+Output : pRuPayServiceList: rupay sevice data list buffer
+return: 	
+			FAIL=-1,	//FAIL
+			SUCC=0		//SUCC
+*************************************************************************************/
+LIB_EXPORT int EMV_GetRuPayServiceList(RUPAYSERVICELIST *pRuPayServiceList);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:ruansj
+Functions:Set rupay PRMacqKey list into device
+Input : pRuPayPRMacqKeyList: rupay PRMacqKeylist buffer
+		
+Output : Nothing
+return: 	
+			FAIL=-1,	//FAIL
+			SUCC=0		//SUCC
+*************************************************************************************/
+LIB_EXPORT int EMV_SetRuPayPRMacqKeyList(RUPAYPRMACQKEYLIST *pRuPayPRMacqKeyList);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:ruansj
+Functions:Get all rupay service PRMacqKey into memory
+Input : Nothing
+		
+Output : pRuPayServicePRMacqKeyList: rupay sevice PRMacqKey list buffer
+return: 	
+			FAIL=-1,	//FAIL
+			SUCC=0		//SUCC
+*************************************************************************************/
+LIB_EXPORT int EMV_GetRuPayPRMacqKeyList(RUPAYPRMACQKEYLIST *pRuPayPRMacqKeyList);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:ruansj
+Functions:Show RuPay PRMacq Key
+Input :  Nothing
+Output : Nothing
+return: Nothing
+*************************************************************************************/
+LIB_EXPORT void EMV_ShowRuPayPRMacqKey(void);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:ruansj
+Functions:Show RuPay Service
+Input :  Nothing
+Output : Nothing
+return: Nothing
+*************************************************************************************/
+LIB_EXPORT void EMV_ShowRuPayService(void);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:ruansj
+Functions:Clear all rupay service from device
+Input : Nothing
+		
+Output : Nothing
+return: FAIL = -1,
+		SUCC =  0 
+*************************************************************************************/
+LIB_EXPORT int EMV_ClearRuPayServiceFile(void);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:ruansj
+Functions:Clear all rupay PRMacq Key from device
+Input : Nothing
+		
+Output : Nothing
+return: FAIL = -1,
+		SUCC =  0 
+*************************************************************************************/
+LIB_EXPORT int EMV_ClearRuPayPRMacqKeyFile(void);
 
 #endif

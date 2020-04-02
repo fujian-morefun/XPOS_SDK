@@ -47,7 +47,12 @@ static void _inputamount_PanitAll(char* title, int nAmount)
 	xgui_BeginBatchPaint();
 	xgui_Clear_Win();
 	input_PaintTitle(title);
-	input_PaintHeader("Input the amount");
+	if (strcmp(title , "CASHBACK") == 0){
+		input_PaintHeader("Input Cashback AMT:");	
+	}
+	else{
+		input_PaintHeader("Input the amount:");
+	}
 	_setAmount(nAmount);
 	input_PaintFooter0("Backspace if wrong");
 

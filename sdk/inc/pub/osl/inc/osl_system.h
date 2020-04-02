@@ -145,6 +145,15 @@ LIB_EXPORT const char* get_vendor_type();//Device Type 02: Traditional POS 03: m
 LIB_EXPORT const char* get_vendor_code();//Terminal Access Authentication Number MF90 Access Number P3278
 LIB_EXPORT int get_vendor_factor(char*SrcFactor,int nSrclen,char *sEnFactor);//Encryption Random Factor
 
+
+LIB_EXPORT int osl_init();
+LIB_EXPORT int osl_start();
+
+
+LIB_EXPORT int osl_lock( int * fd , int timeover);
+LIB_EXPORT int osl_unlock( int * fd );
+
+LIB_EXPORT int osl_task_create(void * pfun, int prio ,unsigned int stackbuff[],int stacksize);
 #ifdef __cplusplus
 }
 #endif

@@ -215,11 +215,14 @@ extern "C"{
 #define MODE_RF_TYPE_VCPS		0x02
 #define MODE_RF_TYPE_QPBOC		MODE_RF_TYPE_VCPS
 #define MODE_RF_TYPE_MSD		0x04
-#define MODE_TYPE_EC			0x10		/*电子现金交易*/
+#define MODE_TYPE_PBOC_EC		0x10		/*电子现金交易*/
 #define	MODE_TYPE_RF			0x20		/*非接触*/
-#define	MODE_TYPE_DPAS			0x30		/*非接触d-pas*/
-#define	MODE_TYPE_AMEX		    0x40		/*非接触AMEX*/
-
+#define	MODE_RF_TYPE_DPAS			0x30		/*非接触d-pas*/
+#define	MODE_RF_TYPE_AMEX		    0x40		/*非接触AMEX*/
+#define MODE_RF_TYPE_M_CHIP			0x21	//PayPass Mchip芯片模式
+#define MODE_RF_TYPE_M_STRIPE		0x22	//PayPass Stripe磁条模式
+#define MODE_RF_TYPE_R_LEGACY		0x23	//RUPAY Legacy模式
+#define MODE_RF_TYPE_R_NON_LEGACY	0x24	//RUPAY Non_Legacy模式
 	
 //API 返回值
 #define UNSUPPORT	(-6)
@@ -337,8 +340,8 @@ extern "C"{
 		char c9F3D_len;
 		char cRefCurrExp_aid_9F3D;			/**<(TERM)交易参考货币指数*/
 		char c9F1D_len;
-		char cRiskManage_aid_9F1D;			/**<(TERM)终端风险管理数据*/
-		char cResv[31];	
+		char cRiskManage_aid_9F1D[8];			/**<(TERM)终端风险管理数据*/
+		char cResv[24];	
 #endif
 	}ST_TERMAID;
 
@@ -413,6 +416,8 @@ extern "C"{
 		char szFile_BinA[MAXLEN_FILENAME];				/*BIN A列表*/
 		char szFile_BinB[MAXLEN_FILENAME];				/*BIN B列表*/
 		char szFile_BinC[MAXLEN_FILENAME];				/*免密卡BIN C中黑名单*/
+		char szFile_RuPayService[MAXLEN_FILENAME];		/*RuPayService文件*/
+		char szFile_RuPayPRMacqKey[MAXLEN_FILENAME];	/*RuPayPRMacqKey文件*/
 	}STEMV_FILE;
 	/**< 设置文件存储路径*/
 	LIB_EXPORT extern int EMV_SetFileName(STEMV_FILE *stEmvFileName);
@@ -458,8 +463,6 @@ extern "C"{
 	LIB_EXPORT extern int Emv_AddCertBL(STBlackCert stBlackCert,YESORNO cCoverFlag);
 	LIB_EXPORT extern int Emv_DelCertBL(STBlackCert stBlackCert);
 	/**< ---------------------------------------------------------------------------------------------------*/
-
-
 
 
 	/**< ---------------------------------------------------------------------------------------------------*/
@@ -612,12 +615,6 @@ extern "C"{
 
 	/**< ---------------------------新增API接口 add by rsjian at 180417--------------------------------------------------------------------------*/
 	/*paypass函数及专用参数*/
-	//交易模式
-	#define  EMV_FLOWTYPE_M_CHIP			0x21	//PayPass Mchip芯片模式
-	#define  EMV_FLOWTYPE_M_STRIPE			0x22	//PayPass Stripe磁条模式
-	#define  EMV_FLOWTYPE_R_LEGACY			0x23	//RUPAY Legacy模式
-	#define  EMV_FLOWTYPE_R_NON_LEGACY		0x24	//RUPAY Non_Legacy模式
-
 	#define  EMV_FLAG_ADD					     0x01 //添加 
 	#define  EMV_FLAG_DELETE				     0x02 //删除 
 	#define  EMV_FLAG_CLEAR				     0x03 //清除所有	
