@@ -144,6 +144,16 @@ return: the background color
 *************************************************************************************/
 LIB_EXPORT int gui_get_bg_color();
 
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:linzhu
+Functions:Set to full screen display 
+Input : full:1set full screen display, cancel full screen display			
+Output : Nothing			
+return: Nothing			
+*************************************************************************************/
+LIB_EXPORT void gui_set_full_screen(int full);
+
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
@@ -273,6 +283,27 @@ Output : Nothing
 return: Nothing
 *************************************************************************************/
 LIB_EXPORT void gui_clear_dc(void);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions:Set text magnification
+Input : size		Multiple, the default value is 2
+Output : Nothing			
+return: 0			success
+*************************************************************************************/
+LIB_EXPORT void gui_set_text_zoom(int size) ;
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions:Get text magnification
+Input : Nothing
+Output : Nothing			
+return: Multiple
+*************************************************************************************/
+LIB_EXPORT int gui_get_text_zoom() ;
+
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
@@ -497,6 +528,16 @@ return: Image content array, which needs to be released after use
 LIB_EXPORT char * gui_load_bmp(char * filename , int *width , int *height);
 
 
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions:Load bmp into memory
+Input : pbmp		Image content array
+return: Nothing
+*************************************************************************************/
+LIB_EXPORT void gui_bmp_free(char * pbmp);
+
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:lx
@@ -584,6 +625,53 @@ return: Nothing
 
 LIB_EXPORT void gui_settextstyle(int textStyle);
 
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:linz
+Functions:select page
+Input : title:	the title of the select page
+		items:	Menu items
+		itemscount: Number of menu items 
+		timeout:	Menu timeout
+		select:	Default menu item
+Output: Nothing
+return: Nothing
+*************************************************************************************/
+LIB_EXPORT int gui_select_page_ex(char *title , char *items[],int itemscount,int timeover, int select);
+
+
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:linz
+Functions:gui_titlecolorback
+Input : color:	the color of title background
+Output: Nothing
+return: Nothing
+*************************************************************************************/
+LIB_EXPORT void gui_titlecolorback(int color);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:linz
+Functions:gui_titlecolorfore
+Input : color:	the color of title foreground
+Output: Nothing
+return: Nothing
+*************************************************************************************/
+LIB_EXPORT void gui_titlecolorfore(int color);
+
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:linz
+Functions:gui_menuhightlinecolor
+Input : color:	the color of menu hightline color
+Output: Nothing
+return: Nothing
+*************************************************************************************/
+LIB_EXPORT void gui_menuhightlinecolor( int color);
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:lx

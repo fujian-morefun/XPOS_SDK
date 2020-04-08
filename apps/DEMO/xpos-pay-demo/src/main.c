@@ -13,10 +13,12 @@
 #include "pub/osl/inc/osl_filedef.h"
 #include "sdk_file.h"
 #include "sdk_readcard.h"
+#include "libapi_xpos/inc/def.h"
 
 #pragma data_alignment=8
 
 #define LOGOIMG "data\\logo1.bmp"
+
 /*
 #define PACKED
 

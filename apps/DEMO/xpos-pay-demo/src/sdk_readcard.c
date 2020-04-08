@@ -28,7 +28,8 @@ void sdk_SetTermConfig()
 	APP_TRACE( "TestSetTermConfig" );
 
 	memcpy( termconfig.TermCap, "\xE0\xF8\xC8", 3);	/*Terminal performance '9F33'*/
-	memcpy( termconfig.AdditionalTermCap,"\xFF\x80\xF0\x00\x01", 5);/*Terminal additional performance*/	
+	memcpy( termconfig.AdditionalTermCap,"\xFF\x80\xF0\x00\x01", 5);/*Terminal additional performance*/
+	memcpy( termconfig.szMerID_ans_9F16,"000000000000000",15);	//9F16
 	memcpy( termconfig.IFDSerialNum,"morefun1",8);		/*IFD serial number '9F1E'*/ 
 	memcpy(termconfig.TermCountryCode, COUNTRYCODE, 2);	/*Terminal country code '9F1A'*/
 	memcpy( termconfig.TermID, "12312312", 8);			/*Terminal identification '9F1C'*/
@@ -149,13 +150,13 @@ static void sdk_add_demo_aids(TERMINALAPPLIST *TerminalApps)
 		memcpy(TerminalApps->TermApp[i].TAC_Denial, "\x00\x00\x00\x00\x00", 5);/* TAC Refuse: data format (n5) DF12*/
 		memcpy(TerminalApps->TermApp[i].TAC_Online, "\x00\x00\x00\x00\x00", 5);/* TAC Online: data format (n5) DF13*/
 		memcpy(TerminalApps->TermApp[i].abTrnCurrencyCode, COUNTRYCODE, 2);/* Currency code tag: 5F2A */
-		memcpy(TerminalApps->TermApp[i].abTerminalCountryCode, COUNTRYCODE, 2);/* Country code terminal tag: 9F1A */
+		//memcpy(TerminalApps->TermApp[i].abTerminalCountryCode, COUNTRYCODE, 2);/* Country code terminal tag: 9F1A */
 		TerminalApps->TermApp[i].abTrnCurrencyExp = 0x02;/* tag: 5F36 */
 		memcpy(TerminalApps->TermApp[i].abRFCVMLimit, "\x00\x00\x00\x10\x00", 6);/*Terminal performs CVM quota: DF21*/
 		memcpy(TerminalApps->TermApp[i].abDDOL, "\x9F\x37\x04", 3);/* TDOL DF14*/
 		TerminalApps->TermApp[i].DDOL_Length = 0x03;/* TDOL Length */
-		TerminalApps->TermApp[i].TerminalType = 0x22;/* Terminal type: data format (n 3) */
-		memcpy(TerminalApps->TermApp[i].TerminalCap, "\xE0\xF8\xC8", 3);/* Terminal capability: data format (n 3) */		
+		//TerminalApps->TermApp[i].TerminalType = 0x22;/* Terminal type: data format (n 3) */
+		//memcpy(TerminalApps->TermApp[i].TerminalCap, "\xE0\xF8\xC8", 3);/* Terminal capability: data format (n 3) */		
 	}
 
 	for(i=0; i<20; i++)

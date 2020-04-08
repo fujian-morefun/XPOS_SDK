@@ -45,6 +45,7 @@ return: 0,     success
 LIB_EXPORT int comm_net_link_ex(char * title, char * apn,  int timeover, char *user,char *pwd);
 
 
+
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:lx

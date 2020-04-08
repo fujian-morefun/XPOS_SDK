@@ -225,6 +225,7 @@ return: Nothing
 Remarks:Nothing
 *************************************************************************************/
 LIB_EXPORT void Util_Beep(int num);
+LIB_EXPORT void Util_BuzzerSound(int nMillisecond);
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
@@ -305,7 +306,7 @@ Functions: QR code generation
 Input : chData QR code data, iLen data length, qrparam QR code parameters
 Output : bitmap Generated two-dimensional code dot matrix data
 return: <=0 fail, >0 Successfully generated QR code width 
-Remarks:   
+Remarks:   Voice playback is non blocking.
 *************************************************************************************/
 LIB_EXPORT int Util_GeneCodePic(char * chData, int iLen, Util_QR_INFO *qrparam , char * bitmap);
 
@@ -316,7 +317,7 @@ Functions: LED light control
 Input : num LED light number(0 red, 1 blue, 2 yellow, 3 green), type LED light switch(0 close, 1 open)
 Output : Nothing
 return: Nothing
-Remarks:   
+Remarks:   Voice playback is non blocking.
 *************************************************************************************/
 LIB_EXPORT void Util_Led(int num, int type);
 

@@ -678,6 +678,7 @@ typedef enum
 
 #define  UMAX_TERMINAL_APPL    60        //The maximum number of applications supported by card terminals
 #define  UMAX_EXCEPTION_BIN_COUNT	100  //Card BIN blacklist maximum number
+
 //EMV parameter operation returns an enumeration
 typedef enum
 { 
@@ -724,7 +725,8 @@ typedef enum
 //Terminal parameter structure
 typedef struct { 
     char    TermCap[3] ;          /*Terminal performance '9F33'*/
-    char    AdditionalTermCap[5] ;/*Terminal additional performance*/
+    char    AdditionalTermCap[5] ;/*Terminal additional performance 9F40*/
+	char	szMerID_ans_9F16[15];			/**<(TERM)9f16*/
     char    IFDSerialNum[9] ;	  /*IFD serial number '9F1E'*/
     char    TermCountryCode[2] ;  /*Terminal country code '9F1A'*/
     char    TermID[9] ;           /*Terminal identification '9F1C'*/
@@ -786,45 +788,43 @@ typedef struct {
 //EMV_AID Parameter structure
 typedef struct
 {
-	byte AID[16];						//AID
+	byte AID[16];						//AID 9F06
 	byte AID_Length;					//AID length
-	byte bAppSelIndicator;				//Application selection indicator
-	byte bTerminalPriority;				//Terminal priority
-	/* Domestic */
-	byte bMaxTargetDomestic;			/*Offset randomly selected maximum target percentage*/
-	byte bTargetPercentageDomestic;		/*Randomly selected target percentage*/
-	byte abTFL_Domestic[4];				/* Terminal minimum */
-	byte abThresholdValueDomestic[4];	/*Offset randomly selected threshold*/
-	/* International */
-	byte bMaxTargetPercentageInt;		/*Offset randomly selected maximum target percentage*/
-	byte bTargetPercentageInt;			/*Randomly selected target percentage*/
-	byte abTFL_International[4];		/* Terminal minimum */
-	byte abThresholdValueInt[4];		/*Offset randomly selected threshold*/
+	byte bAppSelIndicator;				//Application selection indicator DF01
+	byte bTerminalPriority;				//Terminal priority 87
+	//byte bMaxTargetDomestic;			/*Offset randomly selected maximum target percentage*/
+	//byte bTargetPercentageDomestic;		/*Randomly selected target percentage*/
+	//byte abTFL_Domestic[4];				/* Terminal minimum */
+	//byte abThresholdValueDomestic[4];	/*Offset randomly selected threshold*/
+	byte bMaxTargetPercentageInt;		/*Offset randomly selected maximum target percentage DF16*/
+	byte bTargetPercentageInt;			/*Randomly selected target percentage DF17*/
+	byte abTFL_International[4];		/* Terminal minimum 9F1B*/
+	byte abThresholdValueInt[4];		/*Offset randomly selected threshold DF15*/
 	
-	byte abTerminalApplVersion[4];		/* Terminal application version */
-	byte abMerchantCategoryCode[2];		/* Business category code tag: 9F15 */        
-	byte bTransactionCategoryCode;		/* Transaction category code Europay only, tag: 9F53 */
+	byte abTerminalApplVersion[4];		/* Terminal application version 9F09*/
+	//byte abMerchantCategoryCode[2];		/* Business category code tag: 9F15 */        
+	//byte bTransactionCategoryCode;		/* Transaction category code Europay only, tag: 9F53 */
 	byte abTrnCurrencyCode[2];			/* Currency code tag: 5F2A */
-	byte abTerminalCountryCode[2];		/* Country code terminal tag: 9F1A */
-	byte TAC_Default[5];				/* TAC Default data format (n5) */    
-	byte TAC_Denial[5];					/* TAC Refuse: data format (n5) */    
-	byte TAC_Online[5];					/* TAC Online: data format (n5) */  
+	//byte abTerminalCountryCode[2];		/* Country code terminal tag: 9F1A */
+	byte TAC_Default[5];				/* TAC Default data format (n5) DF11 */    
+	byte TAC_Denial[5];					/* TAC Refuse: data format (n5) DF13*/    
+	byte TAC_Online[5];					/* TAC Online: data format (n5) DF12*/  
 	byte abDDOL[20];					/* DDOL */
 	byte DDOL_Length;					/* DDOL Length */
 	byte abTDOL[20];					/* TDOL */
 	byte TDOL_Length;					/* TDOL Length */
 	byte abTrnCurrencyExp;				/* tag: 5F36 */
 	byte abEC_TFL[6];					/* Terminal electronic cash transaction limit tag: 9F7B n12*/
-	byte TerminalType;					/* Terminal type: data format (n 3) */
-	char cOnlinePinCap;					/* Terminal online pin capability */
-	byte TerminalCap[3];				/* Terminal capability: data format (n 3) */
-	byte AddTerminalCap[5];				/* Terminal additional performance :data format (n 3) */
+	//byte TerminalType;					/* Terminal type: data format (n 3) */
+	char cOnlinePinCap;					/* Terminal online pin capability DF18 */
+	//byte TerminalCap[3];				/* Terminal capability: data format (n 3) */
+	//byte AddTerminalCap[5];				/* Terminal additional performance :data format (n 3) */
 	byte abRFOfflineLimit[6];			/*Contactless offline minimum :DF19*/
 	byte abRFTransLimit[6];				/*Contactless transaction limit:DF20*/
 	byte abRFCVMLimit[6];				/*Terminal performs CVM quota: DF21*/
-	byte abTransProp[4];			    /*Terminal transaction attribute: 9F66*/
-	byte bStatusCheck;          	    /*Non-contact status check, 0x00-Not checking,0x01-checking*/
-	byte abAcquirerID[6];         	    /*Acquirer line identifier:9F01*/
+	//byte abTransProp[4];			    /*Terminal transaction attribute: 9F66*/
+	//byte bStatusCheck;          	    /*Non-contact status check, 0x00-Not checking,0x01-checking*/
+	//byte abAcquirerID[6];         	    /*Acquirer line identifier:9F01*/
 }APPLICATIONPARAMS;
 
 //EMV_AID Parameter total structure
@@ -1078,7 +1078,6 @@ typedef enum
 #define UPLOGDETAILTYPE2	4		//The reconciliation is not smooth, and the subsequent single is sent
 #define		PIN_PED			0x00	//Built in
 #define		PIN_PP			0x01	//External
-
 
 #define		COM_PAD_NO		0x00			//rs232 A
 #define		PINPADCOM		0x01			//pinpad

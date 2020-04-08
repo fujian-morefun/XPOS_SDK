@@ -135,5 +135,31 @@ Remarks: Convert data to QR code and print
 *************************************************************************************/
 LIB_EXPORT int UPrint_MatrixCode(const char *psMatrixCode, int nLen,byte cSize,byte cPattern);
 
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:LinZhu
+Functions:Set print font
+Input : size: Set print English font size(0--8)
+		zoom_w: Set the horizontal magnification of English(1--5)
+		zoom_h: Set the vertical magnification of English(1--5)
+Output : Nothing
+return: UPRN_CACHE_ERR        = -7,            //Save cache failed
+		UPRN_SUCCESS          =  0		       //Success
+Remarks: 
+*************************************************************************************/
+LIB_EXPORT int UPrint_SetFont(int size, int zoom_w, int zoom_h);
+
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:LinZhu
+Functions:Set print density
+Input : v: Set print density (1--5, 3 is normal)
+Output : Nothing
+return: UPRN_CACHE_ERR        = -7,            //Save cache failed
+		UPRN_SUCCESS          =  0		       //Success
+Remarks: 
+*************************************************************************************/
+LIB_EXPORT int UPrint_SetDensity(int v);
 
 #endif /*__LIBAPI_PRINT_HEADER__*/

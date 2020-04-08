@@ -377,8 +377,35 @@ return:
 Remarks: Nothing
 *************************************************************************************/
 LIB_EXPORT  void Sys_lcd_SetBackLightTime(int ntime);
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:linzhu
+Functions:Get app version
+Input : 
+Output :
+return: the app version
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT const char * Sys_GetAppVer();
+
+
+
+#define SYS_DEVICE_TYPE_H9G		18
+#define SYS_DEVICE_TYPE_M70G    20
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:Get Device Type
+Input : 
+Output :
+return: Device Type H9 or MP70
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT int Sys_GetDeviceType();
+
 
 #define SYS_TRACE( ...)	osl_log( "app", 2 , __VA_ARGS__ )
 #define SYS_TRACE_BUFF(buff,size,tip) 	osl_log_buff_tip("app",2,buff, size , tip ,1 );
+
 
 #endif /*__LIBAPI_SYSTEM_HEADER__*/

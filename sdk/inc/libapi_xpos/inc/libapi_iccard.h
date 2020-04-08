@@ -155,5 +155,18 @@ Remarks: Used to obtain IC card reset information ATR (Answer To Reset), which i
 LIB_EXPORT int Icc_GetCardATR(int iCardType, int iSlotType, byte *psATR, int*pnATRLen);
 
 
+LIB_EXPORT int mf_rfid_mfcl_open(void);
+LIB_EXPORT int mf_rfid_mfcl_close(void);
+LIB_EXPORT int mf_rfid_mfcl_getuid(unsigned char *uid);
+LIB_EXPORT int mf_rfid_mfcl_atqa(void);
+LIB_EXPORT int mf_rfid_mfcl_setkey( unsigned char *key);
+LIB_EXPORT int mf_rfid_mfcl_auth(int cmd, int block);
+LIB_EXPORT int mf_rfid_mfcl_read(int block, unsigned char *buf, int *len);
+LIB_EXPORT int mf_rfid_mfcl_write(int block, unsigned char *buf, int len);
+LIB_EXPORT int mf_rfid_mfcl_increment(int block, int operand);
+LIB_EXPORT int mf_rfid_mfcl_transfer(int block);
+LIB_EXPORT int mf_rfid_mfcl_restore(int block);
+LIB_EXPORT int mf_rfid_mfcl_decrement(int block, int operand);
+
 
 #endif /*__LIBAPI_ICCARD_HEADER__*/
