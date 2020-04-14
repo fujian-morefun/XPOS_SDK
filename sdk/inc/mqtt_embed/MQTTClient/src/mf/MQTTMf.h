@@ -54,6 +54,8 @@ int TimerLeftMS(MqttTimer*);
 typedef struct Network
 {
 	int my_socket;
+	int tls;
+	int tickrecv;
 	int (*mqttread) (struct Network*, unsigned char*, int, int);
 	int (*mqttwrite) (struct Network*, unsigned char*, int, int);
 } Network;
