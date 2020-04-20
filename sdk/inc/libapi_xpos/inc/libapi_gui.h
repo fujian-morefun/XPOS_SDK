@@ -593,17 +593,6 @@ LIB_EXPORT void gui_out_bits_zoom(int x, int y, unsigned char *pbits, int width 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:lx
-Functions:get text width
-Input : str: text
-Output: Nothing
-return: text width
-*************************************************************************************/
-LIB_EXPORT int gui_text_width_ex(char * str);
-
-
-/*************************************************************************************
-Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
-Author:lx
 Functions:display text  Display different languages
 Input : x				X coordinate
 		y				Y coordinate	
@@ -640,38 +629,6 @@ return: Nothing
 *************************************************************************************/
 LIB_EXPORT int gui_select_page_ex(char *title , char *items[],int itemscount,int timeover, int select);
 
-
-
-/*************************************************************************************
-Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
-Author:linz
-Functions:gui_titlecolorback
-Input : color:	the color of title background
-Output: Nothing
-return: Nothing
-*************************************************************************************/
-LIB_EXPORT void gui_titlecolorback(int color);
-
-/*************************************************************************************
-Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
-Author:linz
-Functions:gui_titlecolorfore
-Input : color:	the color of title foreground
-Output: Nothing
-return: Nothing
-*************************************************************************************/
-LIB_EXPORT void gui_titlecolorfore(int color);
-
-
-/*************************************************************************************
-Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
-Author:linz
-Functions:gui_menuhightlinecolor
-Input : color:	the color of menu hightline color
-Output: Nothing
-return: Nothing
-*************************************************************************************/
-LIB_EXPORT void gui_menuhightlinecolor( int color);
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:lx

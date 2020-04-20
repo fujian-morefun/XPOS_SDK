@@ -389,7 +389,6 @@ Remarks: Nothing
 LIB_EXPORT const char * Sys_GetAppVer();
 
 
-
 #define SYS_DEVICE_TYPE_H9G		18
 #define SYS_DEVICE_TYPE_M70G    20
 /*************************************************************************************
