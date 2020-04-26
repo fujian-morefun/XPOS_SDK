@@ -36,50 +36,50 @@ enum{
 };
 
 typedef struct __st_read_card_in{
-	char title[32];
-	int trans_type;
-	char amt[32];
-	char other_amt[32];
-	int card_mode;
-	int card_timeover;
+	char title[32];//title of card reading pages
+	int trans_type;//Transaction Type refer DE3.1(ISO 8583). example 0x00 as SALE;
+	char amt[32];//Amount
+	char other_amt[32];//Cash back Amount
+	int card_mode;//READ_CARD_MODE_MAG , READ_CARD_MODE_IC , READ_CARD_MODE_RF
+	int card_timeover;//Time over of  card reading page,normally 60000;
 	int pin_input;  //For DIP and TAP cards. 0x01: enter the PIN interface according to the emv_read_card internal; 0x02:forces the PIN interface  of online transactions 
 	int mag_mode;	//For magnetic stripe cards. 0x01: The application determines whether to enter the PIN interface according to the service_code; 0x00:require a PIN from emv_read_card internal
-	int pin_max_len;
-	int pin_timeover;
-	int key_pid;
-	int pin_dukpt_gid;
-	int des_mode;
-	int data_dukpt_gid;
-	int pin_mksk_gid;
-	int forceIC;
-	int show_PAN;
+	int pin_max_len;//max length of PIN,range 4-12
+	int pin_timeover;//Time over of PIN inputting page,normally 60000;
+	int key_pid;	//SEC_DUKPT_FIELD,SEC_MKSK_FIELD,SEC_FIXED_FIELD
+	int pin_dukpt_gid;//group ID of DUKPT mode, used for PIN encryption; gid<0 means not support;
+	int des_mode;		//DES_TYPE_ENCRYPT,DES_TYPE_DECRYPT
+	int data_dukpt_gid;//group ID of DUKPT mode, used for track or account data encryption; gid<0 means not support;
+	int pin_mksk_gid;	//group ID of MKSK mode, used for PIN encryption; gid<0 means not support;
+	int forceIC;		//0x00:not forced chip read priority; 0x01:chip card takes priority over magnetic stripe
+	int show_PAN;		//0x00:not show PAN during card reading; 0x01:show PAN during card reading;
 	int bByPassPin;		//0x00  NotSupport ByPassPin	0x01 Support ByPassPin
-	char ic_tags[256];
-	char card_page_msg[50];	
-	int ic_online_resp;
-	int nTransSerial_9f41;
+	char ic_tags[256];	//ASCII code; TAGs need get value from card reading; example:9F0282...;NULL value, will get default TAG list
+	char card_page_msg[50];	//Message of card reading page
+	int ic_online_resp;		//0:not support; 1:chip card reading support online response processing
+	int nTransSerial_9f41;	//Transcation Sequence Counter of chip card reading
 }st_read_card_in;
 
 #define TRACK_MAX_LENTH		144
 typedef struct __st_read_card_out{
-	int card_type;  //0x01 READ_CARD_RET_MAGNETIC 0x02 READ_CARD_RET_IC 0x03 READ_CARD_RET_RF,  
-	char exp_data[8];
-	char ic_data[1024];
-	int ic_data_len;
-	char pan[32];
-	char pan_sn[8];
-	char pin_block[32];
-	char pin_ksn[10];
-	char data_ksn[10];
-	int  pin_len;
-	char track2[TRACK_MAX_LENTH];
-	int track2_len;
-	char track3[TRACK_MAX_LENTH];
-	int track3_len;
-	char vChName[45 +1];
-	int nEmvMode;
+	int card_type;		//0x01 READ_CARD_RET_MAGNETIC 0x02 READ_CARD_RET_IC 0x03 READ_CARD_RET_RF,  
+	char exp_data[8];	//Expiration Date of card
+	char ic_data[1024];	//HEX code, TLV data of card_in.ic_tags
+	int ic_data_len;	//Length of ic_data
+	char pan[32];		//PAN of card
+	char pan_sn[8];		//5F34 PAN Sequence Number,DE23(ISO 8583)
+	char pin_block[32];	//PINBLOCK
+	char pin_ksn[10];	//KSN of PIN encryption KEY in DUKPT mode
+	char data_ksn[10];	//KSN of track or account data encryption KEY in DUKPT mode
+	int  pin_len;		//Length of online PIN plaintext, return 0 when bypass PIN
+	char track2[TRACK_MAX_LENTH];//plaintext of track2 when data_dukpt_gid<0; encryption track2 when data_dukpt_gid>=0;
+	int track2_len;		//length of track2
+	char track3[TRACK_MAX_LENTH];//plaintext of track3 when data_dukpt_gid<0; encryption track3 when data_dukpt_gid>=0;
+	int track3_len;		//length of track3
+	char vChName[45 +1];//Card holder Name
+	int nEmvMode;		//refer to MODE_API_XX
 	char signature_flag;//0x01 Need signature;0x00 No signature
-	char service_code[3+1];
+	char service_code[3+1];//service code of card
 }st_read_card_out;
 
 
