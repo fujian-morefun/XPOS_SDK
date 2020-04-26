@@ -33,7 +33,7 @@
 
 #define ENTRY_POINT_VERSION			"EP20200309XP"
 
-#define EMV_VERSION			"EMV20200306XP"	
+#define EMV_VERSION			"EMV20200320ZY"	
 //#define EMV_PINPAD_VERSION	"EMV4.3G_PINPAD-V1.01"
 //#define  L2_APPROVE  1  //1 - L2认证时宏定义开启   0-默认提交生产用（SVN只上传为0的版本）此前第三方应用发现有卡片返回tag一样导致中止
 

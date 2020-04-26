@@ -389,6 +389,7 @@ Remarks: Nothing
 LIB_EXPORT const char * Sys_GetAppVer();
 
 
+
 #define SYS_DEVICE_TYPE_H9G		18
 #define SYS_DEVICE_TYPE_M70G    20
 /*************************************************************************************
@@ -402,6 +403,17 @@ Remarks: Nothing
 *************************************************************************************/
 LIB_EXPORT int Sys_GetDeviceType();
 
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions: Get power supply
+Input : 
+Output :
+return:  power supply
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT int Sys_get_power();
 
 #define SYS_TRACE( ...)	osl_log( "app", 2 , __VA_ARGS__ )
 #define SYS_TRACE_BUFF(buff,size,tip) 	osl_log_buff_tip("app",2,buff, size , tip ,1 );

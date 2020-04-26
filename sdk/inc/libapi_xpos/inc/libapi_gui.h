@@ -43,6 +43,23 @@
 #define GUI_KEY_F2			(GUI_KEY_CONTROL + 0x14)
 #define GUI_KEY_POWER		(GUI_KEY_CONTROL + 0x15)
 
+
+
+#define GUI_KEY_MC			'A'
+#define GUI_KEY_MR			'B'
+#define GUI_KEY_MP			'C'
+#define GUI_KEY_MS			'D'
+
+
+#define GUI_KEY_PLUS			'+'
+#define GUI_KEY_SUBTRACT		'-'
+#define GUI_KEY_MULTIPLY		'M'
+#define GUI_KEY_DIVISION		'/'
+#define GUI_KEY_EQUAL			'='
+#define GUI_KEY_DOT				'.'
+
+
+
 #define GUI_COLOR_BACK		(0xCCCCCC)
 #define GUI_COLOR_FORE		(0x222222)
 
@@ -143,6 +160,28 @@ Output : Nothing
 return: the background color				
 *************************************************************************************/
 LIB_EXPORT int gui_get_bg_color();
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions:Set text display style
+Input : style: 0 normal 1 transparent
+Output : Nothing			
+return: 				
+*************************************************************************************/
+LIB_EXPORT void gui_set_text_style(int style);
+
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions:Set text display style
+Input : 
+Output : Nothing			
+return: style: 0 normal 1 transparent				
+*************************************************************************************/
+LIB_EXPORT int gui_get_text_style();
+
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
@@ -527,7 +566,17 @@ return: Image content array, which needs to be released after use
 *************************************************************************************/
 LIB_EXPORT char * gui_load_bmp(char * filename , int *width , int *height);
 
-
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions:Load bmp into memory
+Input : filename		Image name
+Output : width			Image width
+		  height		Picture height
+		  color         Color bits
+return: Image content array, which needs to be released after use
+*************************************************************************************/
+LIB_EXPORT char * gui_load_bmp_ex(char * filename , int *width , int *height, int * color);
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
@@ -641,6 +690,8 @@ return: 0			success
 *************************************************************************************/
 LIB_EXPORT void  gui_textout_line_center(char *pMsg , int top);
 
+LIB_EXPORT void  gui_textout_line_right(char *pMsg , int top);
+
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
@@ -655,3 +706,10 @@ Output : Nothing
 return: 0			success
 *************************************************************************************/
 LIB_EXPORT void gui_clear_rect(int left, int top, int right, int bottom, int color);
+
+
+enum{
+	GUI_LCD_INDEX_1,
+	GUI_LCD_INDEX_2,
+};
+LIB_EXPORT void gui_lcd_set_index( int index);

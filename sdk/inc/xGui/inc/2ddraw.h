@@ -102,6 +102,7 @@ typedef struct tagMemDc{
 }MEMDC;
 
 
+LIB_EXPORT int xgui_IsGbkChar(const unsigned char *ch);
 
 LIB_EXPORT void xgui_SetTextZoom(int size) ;
 LIB_EXPORT void xgui_ResumeTextZoom() ;
@@ -559,7 +560,10 @@ LIB_EXPORT void xgui_out_bits(int x, int y, unsigned char *pbits, int width , in
 LIB_EXPORT void xgui_out_bits_auto(int x, int y, unsigned char *pbits, int width , int height, int mode);
 LIB_EXPORT void xgui_out_bits_zoom(int x, int y, unsigned char *pbits, int width , int height, int mode, int zoom);
 LIB_EXPORT void xgui_out_bits_bmp24bit(int x, int y, unsigned char *pbits, int width , int height, int mode);
+LIB_EXPORT void xgui_out_bits_bmp24bit_zoom( int x, int y, unsigned char *bitdata, int width , int height, int mode,int zoom );
+
 LIB_EXPORT void xgui_out_bits_bmp4bit( int x, int y, unsigned char *pbits, int width , int height, int mode );
+LIB_EXPORT void xgui_out_bits_bmp4bit_zoom( int posx, int posy, unsigned char *bitdata, int width , int height, int mode,int zoom );
 LIB_EXPORT int xgui_get_color_size();
 
 LIB_EXPORT void xgui_cleart_state(int left , int width);
@@ -653,11 +657,14 @@ void xgui_init_color();
 #define LCD_IS_128_64	(xgui_GetWidth() == 128 && xgui_GetAllHeight() == 64)
 #define LCD_IS_240_320	(xgui_GetWidth() == 240 && xgui_GetAllHeight() == 320)
 #define LCD_IS_320_240	(xgui_GetWidth() == 320 && xgui_GetAllHeight() == 240)
+#define LCD_IS_320_480	(xgui_GetWidth() == 320 && xgui_GetAllHeight() == 480)
+#define LCD_IS_480_320	(xgui_GetWidth() == 480 && xgui_GetAllHeight() == 320)
 
 #define LCD_IS_320 LCD_IS_320_240
 #define LCD_IS_128 LCD_IS_128_64
 #define LCD_IS_160 LCD_IS_160_120
-#define LCD_IS_TFT_SCREEN	(LCD_IS_240_320 || LCD_IS_320_240)
+
+#define LCD_IS_TFT_SCREEN	(LCD_IS_240_320 || LCD_IS_320_240 || LCD_IS_320_480 || LCD_IS_480_320)
 
 #define LCD_GET_ZOOM	((LCD_IS_TFT_SCREEN) ? 2 : 1)
 
