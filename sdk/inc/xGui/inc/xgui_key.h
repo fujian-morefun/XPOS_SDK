@@ -33,10 +33,7 @@
 #define KEY_J		'J'
 #define KEY_K		'K'
 
-#define KEY_PLUS			'+'
-#define KEY_SUBTRACT		'-'
-#define KEY_MULTIPLY		'*'
-#define KEY_DIVISION		'/'
+
 
 
 #define KEY_CONTROL		0x80
@@ -67,6 +64,18 @@
 #define KEY_IM_UP		(KEY_CONTROL + 0x16)
 #define KEY_IM_DOWN		(KEY_CONTROL + 0x17)
 
+#define KEY_MC			'A'
+#define KEY_MR			'B'
+#define KEY_MP			'C'
+#define KEY_MS			'D'
+
+
+#define KEY_PLUS			'+'
+#define KEY_SUBTRACT		'-'
+#define KEY_MULTIPLY		'M'
+#define KEY_DIVISION		'/'
+#define KEY_EQUAL			'='
+#define KEY_DOT				'.'
 
 
 /**

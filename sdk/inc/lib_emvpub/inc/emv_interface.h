@@ -223,6 +223,11 @@ extern "C"{
 #define MODE_RF_TYPE_M_STRIPE		0x22	//PayPass Stripe磁条模式
 #define MODE_RF_TYPE_R_LEGACY		0x23	//RUPAY Legacy模式
 #define MODE_RF_TYPE_R_NON_LEGACY	0x24	//RUPAY Non_Legacy模式
+
+#define MODE_RF_TYPE_EMV_MODE		0x25	//EMV_MODE 
+#define MODE_RF_TYPE_MS_MODE		0x26	//MS_MODE
+#define MODE_RF_TYPE_ZIP_MODE		0x27	//ZIP_MODE
+
 	
 //API 返回值
 #define UNSUPPORT	(-6)

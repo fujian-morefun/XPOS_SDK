@@ -164,7 +164,7 @@ static void sdk_add_demo_aids(TERMINALAPPLIST *TerminalApps)
 		TerminalApps->TermApp[i].bMaxTargetPercentageInt = 0x00;/*Offset randomly selected maximum target percentage DF16*/
 		memcpy(TerminalApps->TermApp[i].abTFL_International, "\x00\x00\x3A\x98", 4);/* Terminal minimum 9F1B//*/
 		memcpy(TerminalApps->TermApp[i].abThresholdValueInt, "\x00\x00\x13\x88", 4);/*Offset randomly selected threshold DF15*/
-		memcpy(TerminalApps->TermApp[i].abTerminalApplVersion, "\x00\x96", 2);/* Terminal application version 9F09 9F08 */
+		memcpy(TerminalApps->TermApp[i].abTerminalApplVersion, "0096", 2);/* Terminal application version 9F09 9F08 */
 		memcpy(TerminalApps->TermApp[i].abEC_TFL, "\x00\x00\x00\x20\x00", 6);/* Terminal electronic cash transaction limit tag: 9F7B n12*/
 		memcpy(TerminalApps->TermApp[i].abRFOfflineLimit, "\x00\x00\x00\x20\x00", 6);/*Contactless offline minimum :DF19*/
 		memcpy(TerminalApps->TermApp[i].abRFTransLimit, "\x00\x00\x02\x00\x00", 6);/*Contactless transaction limit:DF20*/
@@ -173,7 +173,7 @@ static void sdk_add_demo_aids(TERMINALAPPLIST *TerminalApps)
 
 	for(i=20; i<n; i++)
 	{
-		memcpy(TerminalApps->TermApp[i].abTerminalApplVersion, "\x00\x02", 2);/* Terminal application version 9F09 9F08 */
+		memcpy(TerminalApps->TermApp[i].abTerminalApplVersion, "0002", 2);/* Terminal application version 9F09 9F08 */
 		memcpy(TerminalApps->TermApp[i].abTFL_International, "\x00\x01\x86\xA0", 4);/* Terminal minimum 9F1B//*/
 		memcpy(TerminalApps->TermApp[i].abThresholdValueInt, "\x00\x00\x00\x00", 4);/*Offset randomly selected threshold DF15*/
 		TerminalApps->TermApp[i].bMaxTargetPercentageInt = 0x05;/*Offset randomly selected maximum target percentage DF16*/

@@ -47,6 +47,9 @@ LIB_EXPORT int ap_get_model_ver(char *buff , int len);
 * @return 0 success
 */
 LIB_EXPORT int ag_send_wait_return(char *cmd , int timeover , char * retstr , int len , int count);
+
+LIB_EXPORT int ap_send_tts(char *buff);
+
 /**
 * @brief Set Echo
 * @param val Echo value
@@ -66,6 +69,9 @@ LIB_EXPORT int ap_get_csq(int *csq_val);
 * @return 0 success
 */
 LIB_EXPORT int ap_get_creg(int *creg_val);
+LIB_EXPORT int ap_get_cgatt();
+LIB_EXPORT int ap_set_cgatt();
+int ap_set_creg(char * buff);
 /**
 * @brief read pin
 * @return 0 success
@@ -166,6 +172,12 @@ typedef struct _cceditem{
 LIB_EXPORT ccedItem * atc_getcceditems( int *outcount);
 
 LIB_EXPORT int atc_modelreset_set();
+
+LIB_EXPORT void atc_set_cpin_lock(int flag,char * str);
+LIB_EXPORT void ap_set_cced_flag(int flag);
+LIB_EXPORT int ap_get_is4g();
+
+LIB_EXPORT void atc_tts_play(char * str , int level);
 
 #ifdef __cplusplus
 }

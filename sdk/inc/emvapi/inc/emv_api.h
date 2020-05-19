@@ -2,7 +2,7 @@
 #include "pub/pub.h"
 //reference to emv_interface.h
 
-#define EMVAPI_VER				"EMVAPI20200420ZY"
+#define EMVAPI_VER				"EMVAPI20200513RSJ"
 
 #define MODE_API_UNKNOW			0x00
 #define	MODE_API_PBOC			0x01
@@ -17,6 +17,10 @@
 #define MODE_API_M_STRIPE		0x22	//MasterCard MagStripe mode
 #define MODE_API_R_LEGACY		0x23	//RUPAY LEGACY mode
 #define MODE_API_R_NON_LEGACY	0x24	//RUPAY NON LEGACY mode
+#define MODE_API_EMV_MODE		0x25	//EMV_MODE 	(for AMEX,DPAS)
+#define MODE_API_MS_MODE		0x26	//MS_MODE	(for AMEX,DPAS)
+#define MODE_API_ZIP_MODE		0x27	//ZIP_MODE	(for DPAS)
+
 
 //card_type value of card_out
 enum{

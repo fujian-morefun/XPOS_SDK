@@ -415,6 +415,121 @@ Remarks: Nothing
 *************************************************************************************/
 LIB_EXPORT int Sys_get_power();
 
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions: Get Key Sound
+Input : 
+Output :
+return:  Key Sound value
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT int Sys_GetKeySound();
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions: Set Key Sound
+Input : val :Key Sound value
+Output :
+return:  
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT void Sys_SetKeySound(int val);
+
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions: Get powerdown time
+Input : 
+Output :
+return: powerdown time 
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT int Sys_GetPowerDownTime();
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions: Set powerdown time
+Input : val : powerdown time
+Output :
+return:  
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT void Sys_SetPowerDownTime(int val);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions: Set backlight time
+Input : 
+Output :
+return:   backlight time
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT int Sys_GetBackLightTime();
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions: Set backlight time
+Input : val : backlight time
+Output :
+return:  
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT void Sys_SetBackLightTime(int val);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions: Set tts volume
+Input : val : backlight time
+Output :
+return:  
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT void Sys_SetTtsVolume(int val);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions: Set tts volume
+Input : 
+Output :
+return:  tts volume
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT int Sys_GetTtsVolume();
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions: Write flash data
+Input :		pdata: write Data content
+			size: data size
+Output :
+return:  
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT void Sys_WriteFlashData(char * pdata, int size);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions: Read flash data
+Input :		size : data size 
+Output :	pdata: read Data content
+return:  
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT void Sys_ReadFlashData(char * pdata, int size);
+
+
+
 #define SYS_TRACE( ...)	osl_log( "app", 2 , __VA_ARGS__ )
 #define SYS_TRACE_BUFF(buff,size,tip) 	osl_log_buff_tip("app",2,buff, size , tip ,1 );
 

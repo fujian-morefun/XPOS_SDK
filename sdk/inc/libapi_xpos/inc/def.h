@@ -838,7 +838,7 @@ typedef struct
 typedef struct
 {								
 	byte RID[5];					/* Registered Application Provider Identifier */
-	byte CA_PKIndex;				/* Certification Authority Public Key Index */
+	byte CA_PKIndex;				/* hex code,Certification Authority Public Key Index */
 	byte CA_HashAlgoIndicator;		/* Certification Authority Public Key Hash Algorithm Identification */
 	byte CA_PKAlgoIndicator;		/* Certification Authority Public Key Algorithm Identifier */
 	byte LengthOfCAPKModulus;		/* Certification Center Public Key Mode Length */
