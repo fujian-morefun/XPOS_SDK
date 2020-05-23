@@ -62,6 +62,7 @@ LIB_EXPORT const char * osl_getDeviceVision();
 * @return Application Version Number
 */
 LIB_EXPORT const char * osl_getAppVision();
+LIB_EXPORT const char * osl_getAppVersion2();
 /**
 * @brief Setting Application Version Number
 * @param Application Version Number

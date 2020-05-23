@@ -2,7 +2,7 @@
 #include "pub/pub.h"
 //reference to emv_interface.h
 
-#define EMVAPI_VER				"EMVAPI20200513RSJ"
+#define EMVAPI_VER				"EMVAPI20200522ZY"
 
 #define MODE_API_UNKNOW			0x00
 #define	MODE_API_PBOC			0x01

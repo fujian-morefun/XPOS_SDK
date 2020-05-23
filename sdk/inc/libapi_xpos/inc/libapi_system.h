@@ -3,6 +3,20 @@
 
 #include "libapi_pub.h"
 
+
+
+#define  DEVICE_TYPE_MF67		13
+#define  DEVICE_TYPE_MF68		199
+#define  DEVICE_TYPE_MF69		14
+#define  DEVICE_TYPE_MF66B		17
+#define  DEVICE_TYPE_MF66S		29
+#define  DEVICE_TYPE_MP70		10
+#define  DEVICE_TYPE_H9			11
+#define  DEVICE_TYPE_ET330		25
+#define  DEVICE_TYPE_ET350		26
+#define  DEVICE_TYPE_ET380		27
+
+
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:yangjy

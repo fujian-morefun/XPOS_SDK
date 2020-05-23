@@ -822,6 +822,8 @@ typedef struct
 	byte abRFOfflineLimit[6];			/*Contactless offline minimum :DF19*/
 	byte abRFTransLimit[6];				/*Contactless transaction limit:DF20*/
 	byte abRFCVMLimit[6];				/*Terminal performs CVM quota: DF21*/
+	byte cRiskManage_aid_9F1D[8];		/**Terminal Risk Management*/
+	byte c9F1D_len;						/**Terminal Risk Management length*/
 	//byte abTransProp[4];			    /*Terminal transaction attribute: 9F66*/
 	//byte bStatusCheck;          	    /*Non-contact status check, 0x00-Not checking,0x01-checking*/
 	//byte abAcquirerID[6];         	    /*Acquirer line identifier:9F01*/
