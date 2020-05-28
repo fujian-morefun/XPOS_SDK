@@ -28,6 +28,7 @@
 
 #ifndef MBEDTLS_CONFIG_H
 #define MBEDTLS_CONFIG_H
+#include "pub/pub.h"
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_DEPRECATE)
 #define _CRT_SECURE_NO_DEPRECATE 1
@@ -509,7 +510,7 @@
  * This option is independent of \c MBEDTLS_AES_ROM_TABLES.
  *
  */
-//#define MBEDTLS_AES_FEWER_TABLES
+#define MBEDTLS_AES_FEWER_TABLES
 
 /**
  * \def MBEDTLS_CAMELLIA_SMALL_MEMORY
@@ -518,7 +519,7 @@
  *
  * Uncomment this macro to use less memory for Camellia.
  */
-#define MBEDTLS_CAMELLIA_SMALL_MEMORY
+//#define MBEDTLS_CAMELLIA_SMALL_MEMORY
 
 /**
  * \def MBEDTLS_CIPHER_MODE_CBC
@@ -532,7 +533,7 @@
  *
  * Enable Cipher Feedback mode (CFB) for symmetric ciphers.
  */
-//#define MBEDTLS_CIPHER_MODE_CFB
+#define MBEDTLS_CIPHER_MODE_CFB
 
 /**
  * \def MBEDTLS_CIPHER_MODE_CTR
@@ -702,7 +703,7 @@
  *      MBEDTLS_TLS_PSK_WITH_3DES_EDE_CBC_SHA
  *      MBEDTLS_TLS_PSK_WITH_RC4_128_SHA
  */
-//#define MBEDTLS_KEY_EXCHANGE_PSK_ENABLED
+#define MBEDTLS_KEY_EXCHANGE_PSK_ENABLED
 
 /**
  * \def MBEDTLS_KEY_EXCHANGE_DHE_PSK_ENABLED
@@ -778,7 +779,7 @@
  *      MBEDTLS_TLS_RSA_PSK_WITH_3DES_EDE_CBC_SHA
  *      MBEDTLS_TLS_RSA_PSK_WITH_RC4_128_SHA
  */
-//#define MBEDTLS_KEY_EXCHANGE_RSA_PSK_ENABLED
+#define MBEDTLS_KEY_EXCHANGE_RSA_PSK_ENABLED
 
 /**
  * \def MBEDTLS_KEY_EXCHANGE_RSA_ENABLED
@@ -993,7 +994,7 @@
  *
  * Requires: MBEDTLS_BIGNUM_C
  */
-//#define MBEDTLS_GENPRIME
+#define MBEDTLS_GENPRIME
 
 /**
  * \def MBEDTLS_FS_IO
@@ -1135,7 +1136,7 @@
  * Uncomment this macro to disable the use of CRT in RSA.
  *
  */
-//#define MBEDTLS_RSA_NO_CRT
+#define MBEDTLS_RSA_NO_CRT
 
 /**
  * \def MBEDTLS_SELF_TEST
@@ -1471,7 +1472,7 @@
  *
  * Comment this macro to disable support for SSL session tickets
  */
-//#define MBEDTLS_SSL_SESSION_TICKETS
+#define MBEDTLS_SSL_SESSION_TICKETS
 
 /**
  * \def MBEDTLS_SSL_EXPORT_KEYS
@@ -2041,7 +2042,9 @@
  *
  * This module provides debugging functions.
  */
+#ifdef WIN32
 #define MBEDTLS_DEBUG_C
+#endif
 
 /**
  * \def MBEDTLS_DES_C
@@ -2107,7 +2110,7 @@
  *
  * Requires: MBEDTLS_ECP_C
  */
-//#define MBEDTLS_ECDH_C
+#define MBEDTLS_ECDH_C
 
 /**
  * \def MBEDTLS_ECDSA_C
@@ -2122,7 +2125,7 @@
  *
  * Requires: MBEDTLS_ECP_C, MBEDTLS_ASN1_WRITE_C, MBEDTLS_ASN1_PARSE_C
  */
-//#define MBEDTLS_ECDSA_C
+#define MBEDTLS_ECDSA_C
 
 /**
  * \def MBEDTLS_ECJPAKE_C
@@ -2155,7 +2158,7 @@
  *
  * Requires: MBEDTLS_BIGNUM_C and at least one MBEDTLS_ECP_DP_XXX_ENABLED
  */
-//#define MBEDTLS_ECP_C
+#define MBEDTLS_ECP_C
 
 /**
  * \def MBEDTLS_ENTROPY_C
@@ -2418,7 +2421,7 @@
  *
  * This modules adds support for decoding / parsing PEM files.
  */
-//#define MBEDTLS_PEM_PARSE_C
+#define MBEDTLS_PEM_PARSE_C
 
 /**
  * \def MBEDTLS_PEM_WRITE_C
@@ -2637,7 +2640,9 @@
  *
  * This module adds support for SHA-384 and SHA-512.
  */
-//#define MBEDTLS_SHA512_C
+#ifdef WIN32
+#define MBEDTLS_SHA512_C
+#endif
 
 /**
  * \def MBEDTLS_SSL_CACHE_C
@@ -2950,18 +2955,23 @@
 /* To Use Function Macros MBEDTLS_PLATFORM_C must be enabled */
 /* MBEDTLS_PLATFORM_XXX_MACRO and MBEDTLS_PLATFORM_XXX_ALT cannot both be defined */
 #ifndef WIN32
-extern void mf_free(void *p,char * pcFileName, int nLine);
+extern void mf_free2(void *p,char * pcFileName, int nLine);
 extern void *mf_calloc(int num, int size, char * pcFileName , int nLine);
 #endif
-
+#ifdef MBEDTLS_DEBUG_C
 #define MBEDTLS_PLATFORM_CALLOC_MACRO(a,b)        mf_calloc(a, b, __FILE__, __LINE__) /**< Default allocator macro to use, can be undefined */
-#define MBEDTLS_PLATFORM_FREE_MACRO(a)          mf_free(a, __FILE__, __LINE__) /**< Default free macro to use, can be undefined */
+#define MBEDTLS_PLATFORM_FREE_MACRO(a)          mf_free2(a, __FILE__, __LINE__) /**< Default free macro to use, can be undefined */
+#else
+#define MBEDTLS_PLATFORM_CALLOC_MACRO(a,b)        mf_calloc(a, b, "", 0) /**< Default allocator macro to use, can be undefined */
+#define MBEDTLS_PLATFORM_FREE_MACRO(a)          mf_free2(a, "", 0) /**< Default free macro to use, can be undefined */
+#endif
+
 //#define MBEDTLS_PLATFORM_EXIT_MACRO            exit /**< Default exit macro to use, can be undefined */
 //#define MBEDTLS_PLATFORM_TIME_MACRO            time /**< Default time macro to use, can be undefined. MBEDTLS_HAVE_TIME must be enabled */
 //#define MBEDTLS_PLATFORM_TIME_TYPE_MACRO       time_t /**< Default time macro to use, can be undefined. MBEDTLS_HAVE_TIME must be enabled */
 //#define MBEDTLS_PLATFORM_FPRINTF_MACRO      fprintf /**< Default fprintf macro to use, can be undefined */
 //#define MBEDTLS_PLATFORM_PRINTF_MACRO        printf /**< Default printf macro to use, can be undefined */
-#include "pub/osl/inc/osl_log.h"
+
 #define MBEDTLS_PLATFORM_PRINTF_MACRO( ...)	osl_log( "pub", 0 , __VA_ARGS__ )
 
 /* Note: your snprintf must correclty zero-terminate the buffer! */
@@ -2985,7 +2995,7 @@ extern void *mf_calloc(int num, int size, char * pcFileName , int nLine);
  * will override this length by setting maximum incoming and/or outgoing
  * fragment length, respectively.
  */
-#define MBEDTLS_SSL_MAX_CONTENT_LEN             5000
+#define MBEDTLS_SSL_MAX_CONTENT_LEN             6000
 
 /** \def MBEDTLS_SSL_IN_CONTENT_LEN
  *
@@ -3017,7 +3027,7 @@ extern void *mf_calloc(int num, int size, char * pcFileName , int nLine);
  * guaranteed if the other end of the connection also supports the TLS
  * max_fragment_len extension. Otherwise the connection may fail.
  */
-#define MBEDTLS_SSL_OUT_CONTENT_LEN             2048
+#define MBEDTLS_SSL_OUT_CONTENT_LEN             2100
 
 /** \def MBEDTLS_SSL_DTLS_MAX_BUFFERING
  *

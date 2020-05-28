@@ -208,6 +208,7 @@ LIB_EXPORT int MQTTYield(MQTTClient* client, int time);
  */
 LIB_EXPORT int MQTTIsConnected(MQTTClient* client);
 
+LIB_EXPORT void MQTTCleanSession(MQTTClient* c);
 
 #if defined(MQTT_TASK)
 /** MQTT start background thread for a client.  After this, MQTTYield should not be called.

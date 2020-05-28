@@ -180,7 +180,7 @@ typedef size_t (*mbedtls_pk_rsa_alt_key_len_func)( void *ctx );
  *
  * \return          The PK info associated with the type or NULL if not found.
  */
-const mbedtls_pk_info_t *mbedtls_pk_info_from_type( mbedtls_pk_type_t pk_type );
+LIB_EXPORT const mbedtls_pk_info_t *mbedtls_pk_info_from_type( mbedtls_pk_type_t pk_type );
 
 /**
  * \brief           Initialize a mbedtls_pk_context (as NONE)
@@ -236,7 +236,7 @@ LIB_EXPORT int mbedtls_pk_setup_rsa_alt( mbedtls_pk_context *ctx, void * key,
  *
  * \return          Key size in bits, or 0 on error
  */
-size_t mbedtls_pk_get_bitlen( const mbedtls_pk_context *ctx );
+LIB_EXPORT size_t mbedtls_pk_get_bitlen( const mbedtls_pk_context *ctx );
 
 /**
  * \brief           Get the length in bytes of the underlying key
@@ -429,7 +429,7 @@ const char * mbedtls_pk_get_name( const mbedtls_pk_context *ctx );
  *
  * \return          Type on success, or MBEDTLS_PK_NONE
  */
-mbedtls_pk_type_t mbedtls_pk_get_type( const mbedtls_pk_context *ctx );
+LIB_EXPORT mbedtls_pk_type_t mbedtls_pk_get_type( const mbedtls_pk_context *ctx );
 
 #if defined(MBEDTLS_PK_PARSE_C)
 /** \ingroup pk_module */

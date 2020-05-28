@@ -403,7 +403,7 @@ LIB_EXPORT void mbedtls_rsa_set_padding( mbedtls_rsa_context *ctx, int padding,
  * \return         The length of the RSA modulus in Bytes.
  *
  */
-size_t mbedtls_rsa_get_len( const mbedtls_rsa_context *ctx );
+LIB_EXPORT size_t mbedtls_rsa_get_len( const mbedtls_rsa_context *ctx );
 
 /**
  * \brief          This function generates an RSA keypair.

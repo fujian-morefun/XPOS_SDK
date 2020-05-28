@@ -119,14 +119,14 @@ typedef struct mbedtls_aes_xts_context
  *
  * \param ctx      The AES context to initialize.
  */
-void mbedtls_aes_init( mbedtls_aes_context *ctx );
+LIB_EXPORT void mbedtls_aes_init( mbedtls_aes_context *ctx );
 
 /**
  * \brief          This function releases and clears the specified AES context.
  *
  * \param ctx      The AES context to clear.
  */
-void mbedtls_aes_free( mbedtls_aes_context *ctx );
+LIB_EXPORT void mbedtls_aes_free( mbedtls_aes_context *ctx );
 
 #if defined(MBEDTLS_CIPHER_MODE_XTS)
 /**
@@ -137,14 +137,14 @@ void mbedtls_aes_free( mbedtls_aes_context *ctx );
  *
  * \param ctx      The AES XTS context to initialize.
  */
-void mbedtls_aes_xts_init( mbedtls_aes_xts_context *ctx );
+LIB_EXPORT void mbedtls_aes_xts_init( mbedtls_aes_xts_context *ctx );
 
 /**
  * \brief          This function releases and clears the specified AES XTS context.
  *
  * \param ctx      The AES XTS context to clear.
  */
-void mbedtls_aes_xts_free( mbedtls_aes_xts_context *ctx );
+LIB_EXPORT void mbedtls_aes_xts_free( mbedtls_aes_xts_context *ctx );
 #endif /* MBEDTLS_CIPHER_MODE_XTS */
 
 /**
@@ -160,7 +160,7 @@ void mbedtls_aes_xts_free( mbedtls_aes_xts_context *ctx );
  * \return         \c 0 on success.
  * \return         #MBEDTLS_ERR_AES_INVALID_KEY_LENGTH on failure.
  */
-int mbedtls_aes_setkey_enc( mbedtls_aes_context *ctx, const unsigned char *key,
+LIB_EXPORT int mbedtls_aes_setkey_enc( mbedtls_aes_context *ctx, const unsigned char *key,
                     unsigned int keybits );
 
 /**
@@ -176,7 +176,7 @@ int mbedtls_aes_setkey_enc( mbedtls_aes_context *ctx, const unsigned char *key,
  * \return         \c 0 on success.
  * \return         #MBEDTLS_ERR_AES_INVALID_KEY_LENGTH on failure.
  */
-int mbedtls_aes_setkey_dec( mbedtls_aes_context *ctx, const unsigned char *key,
+LIB_EXPORT int mbedtls_aes_setkey_dec( mbedtls_aes_context *ctx, const unsigned char *key,
                     unsigned int keybits );
 
 #if defined(MBEDTLS_CIPHER_MODE_XTS)
@@ -194,7 +194,7 @@ int mbedtls_aes_setkey_dec( mbedtls_aes_context *ctx, const unsigned char *key,
  * \return         \c 0 on success.
  * \return         #MBEDTLS_ERR_AES_INVALID_KEY_LENGTH on failure.
  */
-int mbedtls_aes_xts_setkey_enc( mbedtls_aes_xts_context *ctx,
+LIB_EXPORT int mbedtls_aes_xts_setkey_enc( mbedtls_aes_xts_context *ctx,
                                 const unsigned char *key,
                                 unsigned int keybits );
 
@@ -212,7 +212,7 @@ int mbedtls_aes_xts_setkey_enc( mbedtls_aes_xts_context *ctx,
  * \return         \c 0 on success.
  * \return         #MBEDTLS_ERR_AES_INVALID_KEY_LENGTH on failure.
  */
-int mbedtls_aes_xts_setkey_dec( mbedtls_aes_xts_context *ctx,
+LIB_EXPORT int mbedtls_aes_xts_setkey_dec( mbedtls_aes_xts_context *ctx,
                                 const unsigned char *key,
                                 unsigned int keybits );
 #endif /* MBEDTLS_CIPHER_MODE_XTS */
@@ -237,7 +237,7 @@ int mbedtls_aes_xts_setkey_dec( mbedtls_aes_xts_context *ctx,
 
  * \return         \c 0 on success.
  */
-int mbedtls_aes_crypt_ecb( mbedtls_aes_context *ctx,
+LIB_EXPORT int mbedtls_aes_crypt_ecb( mbedtls_aes_context *ctx,
                     int mode,
                     const unsigned char input[16],
                     unsigned char output[16] );
@@ -280,7 +280,7 @@ int mbedtls_aes_crypt_ecb( mbedtls_aes_context *ctx,
  * \return         #MBEDTLS_ERR_AES_INVALID_INPUT_LENGTH
  *                 on failure.
  */
-int mbedtls_aes_crypt_cbc( mbedtls_aes_context *ctx,
+LIB_EXPORT int mbedtls_aes_crypt_cbc( mbedtls_aes_context *ctx,
                     int mode,
                     size_t length,
                     unsigned char iv[16],
@@ -323,7 +323,7 @@ int mbedtls_aes_crypt_cbc( mbedtls_aes_context *ctx,
  *                     smaller than an AES block in size (16 bytes) or if \p
  *                     length is larger than 2^20 blocks (16 MiB).
  */
-int mbedtls_aes_crypt_xts( mbedtls_aes_xts_context *ctx,
+LIB_EXPORT int mbedtls_aes_crypt_xts( mbedtls_aes_xts_context *ctx,
                            int mode,
                            size_t length,
                            const unsigned char data_unit[16],
@@ -366,7 +366,7 @@ int mbedtls_aes_crypt_xts( mbedtls_aes_xts_context *ctx,
  *
  * \return         \c 0 on success.
  */
-int mbedtls_aes_crypt_cfb128( mbedtls_aes_context *ctx,
+LIB_EXPORT int mbedtls_aes_crypt_cfb128( mbedtls_aes_context *ctx,
                        int mode,
                        size_t length,
                        size_t *iv_off,
@@ -406,7 +406,7 @@ int mbedtls_aes_crypt_cfb128( mbedtls_aes_context *ctx,
  *
  * \return         \c 0 on success.
  */
-int mbedtls_aes_crypt_cfb8( mbedtls_aes_context *ctx,
+LIB_EXPORT int mbedtls_aes_crypt_cfb8( mbedtls_aes_context *ctx,
                     int mode,
                     size_t length,
                     unsigned char iv[16],
@@ -455,7 +455,7 @@ int mbedtls_aes_crypt_cfb8( mbedtls_aes_context *ctx,
  *
  * \return         \c 0 on success.
  */
-int mbedtls_aes_crypt_ofb( mbedtls_aes_context *ctx,
+LIB_EXPORT int mbedtls_aes_crypt_ofb( mbedtls_aes_context *ctx,
                        size_t length,
                        size_t *iv_off,
                        unsigned char iv[16],
@@ -535,7 +535,7 @@ int mbedtls_aes_crypt_ofb( mbedtls_aes_context *ctx,
  *
  * \return                 \c 0 on success.
  */
-int mbedtls_aes_crypt_ctr( mbedtls_aes_context *ctx,
+LIB_EXPORT int mbedtls_aes_crypt_ctr( mbedtls_aes_context *ctx,
                        size_t length,
                        size_t *nc_off,
                        unsigned char nonce_counter[16],
@@ -590,7 +590,7 @@ int mbedtls_internal_aes_decrypt( mbedtls_aes_context *ctx,
  * \param input     Plaintext block.
  * \param output    Output (ciphertext) block.
  */
-MBEDTLS_DEPRECATED void mbedtls_aes_encrypt( mbedtls_aes_context *ctx,
+MBEDTLS_DEPRECATED LIB_EXPORT void mbedtls_aes_encrypt( mbedtls_aes_context *ctx,
                                              const unsigned char input[16],
                                              unsigned char output[16] );
 
@@ -604,7 +604,7 @@ MBEDTLS_DEPRECATED void mbedtls_aes_encrypt( mbedtls_aes_context *ctx,
  * \param input     Ciphertext block.
  * \param output    Output (plaintext) block.
  */
-MBEDTLS_DEPRECATED void mbedtls_aes_decrypt( mbedtls_aes_context *ctx,
+MBEDTLS_DEPRECATED LIB_EXPORT void mbedtls_aes_decrypt( mbedtls_aes_context *ctx,
                                              const unsigned char input[16],
                                              unsigned char output[16] );
 
@@ -617,7 +617,7 @@ MBEDTLS_DEPRECATED void mbedtls_aes_decrypt( mbedtls_aes_context *ctx,
  * \return         \c 0 on success.
  * \return         \c 1 on failure.
  */
-int mbedtls_aes_self_test( int verbose );
+LIB_EXPORT int mbedtls_aes_self_test( int verbose );
 
 #ifdef __cplusplus
 }

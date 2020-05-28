@@ -60,11 +60,13 @@ typedef struct Network
 	int (*mqttwrite) (struct Network*, unsigned char*, int, int);
 } Network;
 
-int mf_read(Network*, unsigned char*, int, int);
-int mf_write(Network*, unsigned char*, int, int);
+LIB_EXPORT int mf_read(Network*, unsigned char*, int, int);
+LIB_EXPORT int mf_write(Network*, unsigned char*, int, int);
 
 LIB_EXPORT void NetworkInit(Network*);
 LIB_EXPORT int NetworkConnect(Network*, char*, int);
+LIB_EXPORT int NetworkConnect2(Network* n, char* addr, int port,char * cacert, char * clientcert, char * clientkey);
+
 LIB_EXPORT void NetworkDisconnect(Network*);
 
 
