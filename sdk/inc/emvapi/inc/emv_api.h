@@ -2,7 +2,6 @@
 #include "pub/pub.h"
 //reference to emv_interface.h
 
-#define EMVAPI_VER				"EMVAPI20200522ZY"
 
 #define MODE_API_UNKNOW			0x00
 #define	MODE_API_PBOC			0x01
@@ -323,3 +322,16 @@ return: FAIL = -1,
 		SUCC =  0 
 *************************************************************************************/
 LIB_EXPORT int EMV_ClearRuPayPRMacqKeyFile(void);
+
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:ruansj
+Functions:set other param (tlv format)
+Input : pOtherParam : other param content
+		iLength : 	other param conten length	
+		
+Output : Nothing
+return: FAIL = -1,
+		SUCC =  0 
+*************************************************************************************/
+LIB_EXPORT void EMVAPI_vSetOtherParamTlv(char *pOtherParam,int iLength);

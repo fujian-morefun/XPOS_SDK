@@ -2,6 +2,12 @@
 
 <workspace>
   <project>
+    <path>$WS_DIR$\..\..\Custom\mqttapp\mqttapp.vcprojm66b.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\xpos-pay-demo.66s.ewp</path>
+  </project>
+  <project>
     <path>$WS_DIR$\xpos-pay-demo.vcprojm66b.ewp</path>
   </project>
   <project>
@@ -9,6 +15,9 @@
   </project>
   <project>
     <path>$WS_DIR$\xpos-pay-demo.vcprojm68.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\xpos-pay-demo.vcprojm69r.ewp</path>
   </project>
   <batchBuild/>
 </workspace>

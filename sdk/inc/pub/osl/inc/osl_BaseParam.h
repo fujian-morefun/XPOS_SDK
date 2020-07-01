@@ -33,6 +33,7 @@
 #define TS_RIGHT_KEY		"ts_right_key"
 #define TS_TOP_KEY			"ts_top_key"
 #define TS_BOTTOM_KEY		"ts_bottom_key"
+#define KEY_DOWNLOAD_STATE	"key_downlaod_state"
 
 #define LCD_LIGHT_MAX	99999999
 

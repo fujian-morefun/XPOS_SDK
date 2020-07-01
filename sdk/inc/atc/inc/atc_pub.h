@@ -178,6 +178,7 @@ LIB_EXPORT void ap_set_cced_flag(int flag);
 LIB_EXPORT int ap_get_is4g();
 
 LIB_EXPORT void atc_tts_play(char * str , int level);
+LIB_EXPORT void atc_tts_speed(int speed);
 
 #ifdef __cplusplus
 }

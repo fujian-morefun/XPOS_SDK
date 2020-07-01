@@ -444,5 +444,7 @@ Remarks: Nothing
 *************************************************************************************/
 LIB_EXPORT int UFile_GetLength(cchar *FileName, int iFileLocation);
 
+LIB_EXPORT void UFile_Path_clean(char*path);
+LIB_EXPORT void UFile_clean(void);
 
 #endif /*__LIBAPI_FILE_HEADER__*/

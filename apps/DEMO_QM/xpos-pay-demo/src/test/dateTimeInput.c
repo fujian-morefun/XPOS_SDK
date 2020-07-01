@@ -32,8 +32,8 @@ static void _dateTime_Paint(DATETIME_ST * pdt)
 
 	nFourNumWidth = xgui_GetTextWidth("0000");
 	nTwoNumWidth = xgui_GetTextWidth("00");
-	nTipWidth = xgui_GetTextWidth("年");
-	nTextHeight = xgui_GetTextHeight("年");
+	nTipWidth = xgui_GetTextWidth("-");
+	nTextHeight = xgui_line_height();
 
 //	xgui_GetViewPort(&oldrc);
 //	xgui_SetViewPort_RC(&newRc);	//set dc viewport
@@ -361,7 +361,7 @@ int dateTimeInput_Show(DATETIME_ST * pdt)
 				case KEY_OK:
 					if(checkDateTime(pdt) != 0)
 					{
-						xgui_messagebox_show("提示",  "输入格式错误", "", "返回", 100000);
+						xgui_messagebox_show("prompt",  "Input format error", "", "cancel", 100000);
 						memcpy(pdt,&npdt,sizeof(DATETIME_ST));
 						_dateTime_Paint(pdt);
 						break;

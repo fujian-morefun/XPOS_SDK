@@ -501,7 +501,7 @@ LIB_EXPORT void Sys_SetBackLightTime(int val);
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:lx
 Functions: Set tts volume
-Input : val : backlight time
+Input : val : tts volume
 Output :
 return:  
 Remarks: Nothing
@@ -518,6 +518,22 @@ return:  tts volume
 Remarks: Nothing
 *************************************************************************************/
 LIB_EXPORT int Sys_GetTtsVolume();
+
+
+/*************************************************************************************
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:lx
+Functions: Set tts speed(0-4)
+Input : val : tts speed
+Output :
+return:  
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT void Sys_SetTtsSpeed(int val);
+
+
+
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.

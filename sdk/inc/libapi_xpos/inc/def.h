@@ -782,6 +782,8 @@ typedef struct {
 	char	checkCVMLimit;
 	char	checkOnPIN;
 	char	checkSig;
+	char	*pOtherParamTlv;
+	int		iOtherParamTlvLen;
 }TERMCONFIG; 
 
 

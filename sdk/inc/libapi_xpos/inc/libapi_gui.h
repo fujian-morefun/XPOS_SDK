@@ -503,7 +503,7 @@ Output : Nothing
 return: 
 *************************************************************************************/
 LIB_EXPORT void gui_main_menu_show(char *id , int timeover);
-
+LIB_EXPORT void gui_main_menu_show_ex(char *title,char *id , int timeover);
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.

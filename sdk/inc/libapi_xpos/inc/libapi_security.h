@@ -302,6 +302,7 @@ return: firmware version
 *************************************************************************************/
 LIB_EXPORT char * sec_get_fw_ver();
 
+LIB_EXPORT int sec_read_token(int nmode,char*token_data);
 LIB_EXPORT int dukpt_get_ksn(unsigned char gid, unsigned char * ksn);
 LIB_EXPORT int dukpt_init_key(unsigned char gid, unsigned char* init_ksn, unsigned char* init_key);
 
