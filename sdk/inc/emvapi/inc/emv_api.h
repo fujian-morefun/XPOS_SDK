@@ -1,5 +1,6 @@
 #pragma once
 #include "pub/pub.h"
+#include "driver/mf_magtek.h"
 //reference to emv_interface.h
 
 
@@ -8,9 +9,9 @@
 #define MODE_API_VCPS			0x02
 #define MODE_API_QPBOC			MODE_API_VCPS
 #define MODE_API_MSD			0x04
-#define MODE_API_PBOC_EC		0x10		
-#define	MODE_API_RF				0x20	
-#define	MODE_API_DPAS			0x30		
+//#define MODE_API_PBOC_EC		0x10		
+//#define	MODE_API_RF				0x20	
+//#define	MODE_API_DPAS			0x30		
 #define	MODE_API_AMEX			0x40		
 #define MODE_API_M_CHIP			0x21	//MasterCard CHIP mode
 #define MODE_API_M_STRIPE		0x22	//MasterCard MagStripe mode
@@ -61,6 +62,7 @@ typedef struct __st_read_card_in{
 	char card_page_msg[50];	//Message of card reading page
 	int ic_online_resp;		//0:not support; 1:chip card reading support online response processing
 	int nTransSerial_9f41;	//Transcation Sequence Counter of chip card reading
+	int pin_format;//refer to SEC_PIN_FORMAX in libapi_security.h
 }st_read_card_in;
 
 #define TRACK_MAX_LENTH		144
@@ -335,3 +337,7 @@ return: FAIL = -1,
 		SUCC =  0 
 *************************************************************************************/
 LIB_EXPORT void EMVAPI_vSetOtherParamTlv(char *pOtherParam,int iLength);
+
+LIB_EXPORT int emvapi_check_ic();
+
+LIB_EXPORT int emvapi_check_magtek(struct magtek_track_info *trackinfo);
