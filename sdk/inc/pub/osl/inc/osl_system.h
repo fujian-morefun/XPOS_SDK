@@ -71,7 +71,7 @@ LIB_EXPORT void osl_setTmsLock(int flag);
 * @return 
 */
 LIB_EXPORT const char* osl_getTerminalID( char *outdata ,int nMaxLen );
-
+LIB_EXPORT void osl_getTerminalID_EX( char *outdata ,int nMaxLen );
 
 //Read serial number with manufacturer number + terminal type (UnionPay No. 21)
 /**
@@ -144,6 +144,10 @@ LIB_EXPORT const char* osl_getTerminalID_real( char *outdata ,int nMaxLen );
 LIB_EXPORT const char* get_vendor_type();//Device Type 02: Traditional POS 03: mPOS 04: Intelligent POS 
 LIB_EXPORT const char* get_vendor_code();//Terminal Access Authentication Number MF90 Access Number P3278
 LIB_EXPORT int get_vendor_factor(char*SrcFactor,int nSrclen,char *sEnFactor);//Encryption Random Factor
+
+
+LIB_EXPORT void osl_magtek_open();
+LIB_EXPORT void osl_magtek_close();
 
 
 LIB_EXPORT int osl_init();

@@ -42,12 +42,13 @@ enum{
 typedef struct __st_read_card_in{
 	char title[32];//title of card reading pages
 	int trans_type;//Transaction Type refer DE3.1(ISO 8583). example 0x00 as SALE;
-	char amt[32];//Amount
-	char other_amt[32];//Cash back Amount
+	char amt[32];//Amount 9F02
+	char other_amt[32];//Cash back Amount 9F03
 	int card_mode;//READ_CARD_MODE_MAG , READ_CARD_MODE_IC , READ_CARD_MODE_RF
 	int card_timeover;//Time over of  card reading page,normally 60000;
 	int pin_input;  //For DIP and TAP cards. 0x01: enter the PIN interface according to the emv_read_card internal; 0x02:forces the PIN interface  of online transactions 
 	int mag_mode;	//For magnetic stripe cards. 0x01: The application determines whether to enter the PIN interface according to the service_code; 0x00:require a PIN from emv_read_card internal
+	int pin_min_len;//min length of pin 
 	int pin_max_len;//max length of PIN,range 4-12
 	int pin_timeover;//Time over of PIN inputting page,normally 60000;
 	int key_pid;	//SEC_DUKPT_FIELD,SEC_MKSK_FIELD,SEC_FIXED_FIELD
@@ -63,6 +64,7 @@ typedef struct __st_read_card_in{
 	int ic_online_resp;		//0:not support; 1:chip card reading support online response processing
 	int nTransSerial_9f41;	//Transcation Sequence Counter of chip card reading
 	int pin_format;//refer to SEC_PIN_FORMAX in libapi_security.h
+	char sDccCurrency[2];//DCC Currency
 }st_read_card_in;
 
 #define TRACK_MAX_LENTH		144
@@ -124,6 +126,25 @@ typedef struct
 	RUPAYPRMACQKEY PRMacqKey[UMAX_RUPAY_PRMACQKEY_COUNT];
 }RUPAYPRMACQKEYLIST;
 
+typedef struct _st_input_pin
+{
+	char szFirstLine[30];		// first line show message
+	char szSecLine[30];			//seccond line show message
+	char szThirdLine[30];		//third line show message
+	char PinType;				//pinType 0:online PIN   1:offline pin 2:clear online msg (use default) 3:clear offline msg(use default)
+}st_input_pin;
+
+typedef struct _st_read_card_show
+{
+	char szFirstLine[30];		//first line show message
+	char FirstShowType;			//show type 0:Left 1:center 2:right
+	char szSecLine[30];			//seccond line show message
+	char SecShowType;			//show type 0:Left 1:center 2:right
+	char szThirdLine[30];		//third line show message
+	char ThirdShowType;			//show type 0:Left 1:center 2:right
+	char szFourLine[30];		//four line show message
+	char FourShowType;			//show type 0:Left 1:center 2:right
+}st_read_card_show;
 
 //Transaction Result return value define
 #define EMVAPI_RET_TC	 0	 //TC Approval
@@ -158,7 +179,7 @@ LIB_EXPORT int emv_read_card(st_read_card_in *card_in, st_read_card_out *card_ou
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:ruansj
 Functions:Process of emv online resp proc
-Input : nOnlineRes : 0--online success  -1--online fail  -2--Not online
+Input : nOnlineRes : 0--online success  -1--connect successfully, no response, online fail  -2--connect fail,not online
 		sResp39: Online Response Code
 		sField55: contain 91/8A/71/72 Tag Data
 		nFieldLen : sField55 Length
@@ -341,3 +362,7 @@ LIB_EXPORT void EMVAPI_vSetOtherParamTlv(char *pOtherParam,int iLength);
 LIB_EXPORT int emvapi_check_ic();
 
 LIB_EXPORT int emvapi_check_magtek(struct magtek_track_info *trackinfo);
+
+LIB_EXPORT int EMV_SetPinInputMsg(st_input_pin st_msg);
+
+LIB_EXPORT int EMV_SetReadCardShow(st_read_card_show st_msg);

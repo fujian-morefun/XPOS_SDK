@@ -842,7 +842,7 @@ typedef struct
 typedef struct
 {								
 	byte RID[5];					/* Registered Application Provider Identifier */
-	byte CA_PKIndex;				/* hex code,Certification Authority Public Key Index */
+	byte CA_PKIndex;				/* Certification Authority Public Key Index */
 	byte CA_HashAlgoIndicator;		/* Certification Authority Public Key Hash Algorithm Identification */
 	byte CA_PKAlgoIndicator;		/* Certification Authority Public Key Algorithm Identifier */
 	byte LengthOfCAPKModulus;		/* Certification Center Public Key Mode Length */
@@ -1134,6 +1134,18 @@ unsigned char ucPrime[2][MAX_RSA_PRIME_LEN];		 //pq prime number, prime factor
 unsigned char ucPrimeExponent[2][MAX_RSA_PRIME_LEN]; //CRT Index, prime and exponential division
 unsigned char ucCoefficient[MAX_RSA_PRIME_LEN];		 //CRT Coefficient, prime and prime division
 }RSAPRIVATEKEY;
+
+
+#define MAGTEK_TRACK_1_MAX_CHARS		(100)
+#define MAGTEK_TRACK_2_MAX_CHARS		(140)
+#define MAGTEK_TRACK_3_MAX_CHARS		(140)
+
+typedef struct{
+	unsigned char track1[MAGTEK_TRACK_1_MAX_CHARS];
+	unsigned char track2[MAGTEK_TRACK_2_MAX_CHARS];
+	unsigned char track3[MAGTEK_TRACK_3_MAX_CHARS];
+}card_magtek_track_info;
+
 
 #endif
 
