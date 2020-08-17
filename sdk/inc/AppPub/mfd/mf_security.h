@@ -1,3 +1,5 @@
+#ifndef _MF_SECURITY_
+#define _MF_SECURITY_
 #pragma once
 
 
@@ -184,4 +186,6 @@ LIB_EXPORT int mfsdk_3des_run(int type, int gid, int mode, unsigned char *ind, i
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

@@ -1,14 +1,3 @@
-/*
- * $Id: json_tokener.h,v 1.10 2006/07/25 03:24:50 mclark Exp $
- *
- * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
- * Michael Clark <michael@metaparadigm.com>
- *
- * This library is free software; you can redistribute it and/or modify
- * it under the terms of the MIT license. See COPYING for details.
- *
- */
-
 #ifndef _json_tokener_h_
 #define _json_tokener_h_
 

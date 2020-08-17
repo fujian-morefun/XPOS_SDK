@@ -1,11 +1,5 @@
-/*! \file des.h
-	\brief des Encryption and decryption functions
-*	\author lx
-*	\date 2014/02/07
-*/
-
-#ifndef CDES_H_CAESAR__DEF
-#define CDES_H_CAESAR__DEF
+#ifndef _CDES_H_CAESAR__DEF_
+#define _CDES_H_CAESAR__DEF_
 
 #ifdef __cplusplus
 extern "C" {

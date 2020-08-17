@@ -1,20 +1,6 @@
-/*---------------------------------------------------------------------------/
-/  FatFs - FAT file system module include file  R0.09     (C)ChaN, 2011
-/----------------------------------------------------------------------------/
-/ FatFs module is a generic FAT file system module for small embedded systems.
-/ This is a free software that opened for education, research and commercial
-/ developments under license policy of following trems.
-/
-/  Copyright (C) 2011, ChaN, all right reserved.
-/
-/ * The FatFs module is a free software and there is NO WARRANTY.
-/ * No restriction on use. You can use, modify and redistribute it for
-/   personal, non-profit or commercial product UNDER YOUR RESPONSIBILITY.
-/ * Redistributions of source code must retain the above copyright notice.
-/
-/----------------------------------------------------------------------------*/
-
 #ifndef _FATFS
+
+
 #define _FATFS	6502	/* Revision ID */
 
 #ifdef __cplusplus

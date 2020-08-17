@@ -1,13 +1,5 @@
-/* 
- * Copyright (c) 2012 MoreFun
- *
- * @date 2012-3-6
- * @author ZhaoJinYun
- *
-*/
-
-#ifndef __MF_TOUCH_H
-#define __MF_TOUCH_H
+#ifndef _MF_TOUCH_H_
+#define _MF_TOUCH_H_
 
 #ifdef __cplusplus
 extern "C" {

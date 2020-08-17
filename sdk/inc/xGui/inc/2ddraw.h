@@ -1,10 +1,5 @@
-/*! \file 2ddraw.h
-	\brief xgui »­Í¼½Ó¿Ú
-*	\author lx
-*	\date 2014/02/07
-*/
-#ifndef ___2DDRAW_H___
-#define ___2DDRAW_H___
+#ifndef _2DDRAW_H_
+#define _2DDRAW_H_
 
 #include "xgui_pub.h"
 #include "res.h"

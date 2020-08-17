@@ -1,13 +1,5 @@
-/* 
- * Copyright (c) 2015 MoreFun
- *
- * @date 2015-02-15
- * @author ZhaoJinYun
- *
-*/
-
-#ifndef __MF_RTC_H
-#define __MF_RTC_H
+#ifndef _MF_RTC_H_
+#define _MF_RTC_H_
 
 #ifdef __cplusplus
 extern "C" {

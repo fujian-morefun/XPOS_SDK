@@ -1,8 +1,3 @@
-/*! \file osl_filedef.h
-	\brief File System Encapsulation
-*	\author lx
-*	\date 2014/02/08
-*/
 #ifndef _OSL_FILEDEF_H_
 #define _OSL_FILEDEF_H_
 

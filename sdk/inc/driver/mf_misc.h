@@ -1,14 +1,5 @@
-/* 
- * Copyright (c) 2015 MoreFun
- *
- * @date 2015-02-6
- * @author ZhaoJinYun
- *
-*/
-
-
-#ifndef __MF_MISC_H
-#define __MF_MISC_H
+#ifndef _MF_MISC_H_
+#define _MF_MISC_H_
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,8 +1,6 @@
-/*! \file mf_sock.h
-	\brief sock¹¦ÄÜ
-*	\author lx
-*	\date 2014/02/08
-*/
+#ifndef _MF_SOCK_
+#define _MF_SOCK_
+
 #pragma once
 
 #include <pub/pub.h>
@@ -73,4 +71,6 @@ LIB_EXPORT void mf_sock_fifo_resize(int index , int size);
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

@@ -1,13 +1,5 @@
-/* 
- * Copyright (c) 2015 MoreFun
- *
- * @date 2015-2-18
- * @author ZhaoJinYun
- *
-*/
-
-#ifndef __MF_SIMPLE_RFID_H
-#define __MF_SIMPLE_RFID_H
+#ifndef _MF_SIMPLE_RFID_H_
+#define _MF_SIMPLE_RFID_H_
 
 #ifdef __cplusplus
 extern "C" {

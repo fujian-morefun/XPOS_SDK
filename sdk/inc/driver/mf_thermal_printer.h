@@ -1,13 +1,5 @@
-/* 
- * Copyright (c) 2015 MoreFun
- *
- * @date 2015-02-11
- * @author ZhaoJinYun
- *
-*/
-
-#ifndef __MF_THERMAL_PRINTER_H
-#define __MF_THERMAL_PRINTER_H
+#ifndef _MF_THERMAL_PRINTER_H_
+#define _MF_THERMAL_PRINTER_H_
 
 #ifdef __cplusplus
 extern "C" {

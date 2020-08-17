@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LIBAPI_PUB_H_
+#define _LIBAPI_PUB_H_
 
 #ifdef WIN32
 #ifdef DLL_EXPORTS
@@ -12,4 +13,6 @@
 #endif
 
 #include "def.h"
+
+#endif
 

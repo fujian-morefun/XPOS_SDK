@@ -1,15 +1,3 @@
-/*
- * QR Code Generator Library: Basic Header
- *
- * Core routines were originally written by Junn Ohta.
- * Based on qr.c Version 0.1: 2004/4/3 (Public Domain)
- *
- * @package     libqr
- * @author      Ryusuke SEKIYAMA <rsky0711@gmail.com>
- * @copyright   2006-2013 Ryusuke SEKIYAMA
- * @license     http://www.opensource.org/licenses/mit-license.php  MIT License
- */
-
 #ifndef _QR_H_
 #define _QR_H_
 

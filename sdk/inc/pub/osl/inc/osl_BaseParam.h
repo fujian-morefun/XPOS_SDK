@@ -1,9 +1,10 @@
-#pragma once
-/*! \file osl_BaseParam.h
-	\brief Basic parameters
+/*
+*       ! \file osl_BaseParam.h
+*	\brief Basic parameters
 *	\author lx
 *	\date 2014/02/07
 */
+#pragma once
 #include "pub/pub.h"
 
 #define TS_DATA_FILE		"data\\ts_data.ini"

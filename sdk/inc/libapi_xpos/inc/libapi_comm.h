@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LIBAPI_COMM_H_
+#define _LIBAPI_COMM_H_
 
 #include "libapi_pub.h"
 
@@ -390,3 +391,5 @@ Output :
 return: iccid
 *************************************************************************************/
 LIB_EXPORT const char * comm_atc_iccid();
+
+#endif

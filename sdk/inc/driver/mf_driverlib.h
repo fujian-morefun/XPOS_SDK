@@ -1,13 +1,5 @@
-/* 
- * Copyright (c) 2015 MoreFun
- *
- * @date 2015-3-7
- * @author ZhaoJinYun
- *
-*/
-
-#ifndef __MF_DRIVERLIB_H
-#define __MF_DRIVERLIB_H
+#ifndef _MF_DRIVERLIB_H_
+#define _MF_DRIVERLIB_H_
 
 #ifdef __cplusplus
 extern "C" {

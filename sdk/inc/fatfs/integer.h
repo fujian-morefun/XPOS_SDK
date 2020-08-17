@@ -1,9 +1,5 @@
-/*-------------------------------------------*/
-/* Integer type definitions for FatFs module */
-/*-------------------------------------------*/
-
-#ifndef _INTEGER
-#define _INTEGER
+#ifndef _INTEGER_
+#define _INTEGER_
 
 #ifdef _WIN32	/* FatFs development platform */
 

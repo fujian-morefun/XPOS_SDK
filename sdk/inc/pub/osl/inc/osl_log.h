@@ -1,8 +1,3 @@
-/*! \file osl_log.h
-	\brief Log interface
-*	\author lx
-*	\date 2014/02/08
-*/
 #ifndef _OSL_LOG_H_____
 #define _OSL_LOG_H_____
 

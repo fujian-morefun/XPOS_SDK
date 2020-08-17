@@ -1,9 +1,5 @@
-/*! \file pageproc.h
-	\brief Global message proc
-*	\author lx
-*	\date 2014/02/08
-*/
-#pragma once
+#ifndef _PAGEPROC_H_
+#define _PAGEPROC_H_
 
 #include "xgui_pub.h"
 #include "messagedatastruct.h"
@@ -25,3 +21,5 @@ LIB_EXPORT unsigned char xgui_get_return_desktop(void);
 * @return  0 success
 */
 LIB_EXPORT int xgui_default_msg_func_add(void * pfunc);
+
+#endif

@@ -1,8 +1,5 @@
-/*! \file mainmenu.h
-	\brief main menu
-*	\author lx
-*	\date 2014/02/07
-*/
+#ifndef __MAIN_MENU__
+#define __MAIN_MENU__
 #pragma once
 
 #include "xgui_pub.h"
@@ -69,5 +66,5 @@ LIB_EXPORT int xgui_main_menu_show2(char *title,char *id , int timeover);
 // 320 With title, 128 without
 LIB_EXPORT int xgui_main_menu_show3(char *title,char *id , int timeover);
 
-
+#endif
 

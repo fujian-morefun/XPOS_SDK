@@ -1,10 +1,5 @@
-/*! \file messagebox.h
-	\brief 提示对话框
-*	\author lx
-*	\date 2014/02/08
-*/
-#ifndef _MESSAGEBOXPAGE_H___
-#define _MESSAGEBOXPAGE_H___
+#ifndef _MESSAGEBOXPAGE_H_
+#define _MESSAGEBOXPAGE_H_
 
 
 #include "xgui_pub.h"

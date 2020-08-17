@@ -2,423 +2,448 @@
 #define __LIBAPI_FILE_HEADER__
 
 
+#include "libapi_pub.h"
 #include "def.h"
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.3	获取文件类模块版本号(UFile_GetModuleVer)
-输入参数：无
-输出参数：pszVer   模块版本号
-返    回：成功返回模块版本号长度
-		UFILE_FAIL   =-1,           //失败
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:2.2.9.3	Get File module version (UFile_GetModuleVer)
+Input : Nothing
+Output : pszVer    module version 
+return: > 0 Successfully returns module version number length
+		USYS_FAIL     = -1,    
+Remarks: Nothing
 *************************************************************************************/
-int UFile_GetModuleVer(char *pszVer);
+LIB_EXPORT int UFile_GetModuleVer(char *pszVer);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.4	检测文件是否存在（UFile_Check）
-输入参数：FileName：文件名, 以NULL结束，最长16个字节
-		iFileLocation: 存储位置，参见enum FILELOCATION
-输出参数：无
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_SUCCESS        =  0               //文件操作成功
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions: Test files exist￡¨UFile_Check￡?
+Input : FileName￡oFile Name End with NULL
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+Output : Nothing
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_SUCCESS        =  0               //Successful file operation
+Remarks: Nothing
 *************************************************************************************/
-int UFile_Check(cchar *FileName, int iFileLocation);
+LIB_EXPORT int UFile_Check(cchar *FileName, int iFileLocation);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.5	文件打开/创建（UFile_OpenCreate）
-输入参数：FileName：打开文件名, 以NULL结束，最长16个字节
-		iFileLocation: 存储位置，参见enum FILELOCATION
-		Flag：打开文件方式, 取值参考FileFlags定义
-		RecSize：文件记录大小（联迪专用）
-		RecSize = 0,创建打开 流式文件，文本文件
-		RecSize = 1，创建打开 非定长记录（TLV）文件
-		8<=RecSize<=4090 创建打开定长记录文件
-输出参数：Fh：文件句柄
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_OPEN_FAIL  	= -2,              //打开错误
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0               //文件操作成功
-备	 注: 对于新创建的文件RecSize才有作用；
-		对于打开已创建的文件，应忽略RecSize参数。
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:File open / create￡¨UFile_OpenCreate￡?
+Input : FileName￡oFile Name End with NULL
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		Flag￡oOpen the file mode and refer to the FileFlags definition.
+		RecSize￡oFile record size
+			RecSize = 0,Create open stream file, text file
+			RecSize = 1￡?Create a non fixed length record (TLV) file
+			8<=RecSize<=4090 Create open fixed length record file
+Output : Fh￡oFile handle
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_OPEN_FAIL  	= -2,              //Open a mistake
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0               //Successful file operation
+Remarks: For newly created file RecSize, it works.
+		The RecSize parameter should be ignored for opening the created file
 *************************************************************************************/
-int UFile_OpenCreate(cchar *FileName, int iFileLocation, int Flag, FILE_HANDLE *fh, int RecSize);
+LIB_EXPORT int UFile_OpenCreate(cchar *FileName, int iFileLocation, int Flag, FILE_HANDLE *fh, int RecSize);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.6	文件读取（UFile_Read）
-输入参数：handle：读取的文件句柄
-		size：读取的数据大小
-输出参数：buffer：读出数据
-返    回：文件读取成功：返回值等于实际读取到的字节数
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_READ_FAIL		= -5,              //读错误
-		UFILE_FAIL			= -1,              //文件操作失败
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:2.2.9.6	file read￡¨UFile_Read￡?
+Input : handle￡oread File handle
+		size￡oread data size
+Output : buffer￡o readout data
+return: File read successfully: the return value is equal to the number of bytes actually read.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_READ_FAIL		= -5,              
+		UFILE_FAIL			= -1,              //Fail
+Remarks: Nothing
 *************************************************************************************/
-int UFile_Read(FILE_HANDLE handle, char *buffer, int size);
+LIB_EXPORT int UFile_Read(FILE_HANDLE handle, char *buffer, int size);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.7	文件写入（UFile_Write）
-输入参数：handle：读取的文件句柄
-		size：待写入的数据大小
-		buffer：待写入的数据
-输出参数：无
-返    回：文件写入成功：返回值等于实际写入的字节数
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_WRITE_FAIL		= -4,              //写错误
-		UFILE_FAIL			= -1,              //文件操作失败
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions: File writing￡¨UFile_Write￡?
+Input : handle￡oFile handle to be written
+		size￡odata sizeto be written
+		buffer￡oData to be written
+Output : Nothing
+return: Success￡oThe return value equals the number of bytes actually written.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_WRITE_FAIL		= -4,              
+		UFILE_FAIL			= -1,              //Fail
+Remarks: Nothing
 *************************************************************************************/
-int UFile_Write(FILE_HANDLE handle, char *buffer, int size);
+LIB_EXPORT int UFile_Write(FILE_HANDLE handle, char *buffer, int size);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.8	定位文件指针（UFile_Lseek）
-输入参数：handle：文件句柄
-		offset：偏移量
-		origin：开始位置，参看FileSeekFlags类型
-输出参数：无
-返    回：UFILE_PARAERROR      = -11，            //参数错
-		UFILE_SEEK_FAIL	   = -6,              //定位文件指针错误
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:Locating file pointer￡¨UFile_Lseek￡?
+Input : handle￡oFile handle
+		offset￡ooffset
+		origin￡ostart position
+Output : Nothing
+return: UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_SEEK_FAIL	   = -6,              / / location file pointer error
+
+
 		UFILE_SUCCESS        =  0
-备	 注: 无
+Remarks: Nothing
 *************************************************************************************/
-long UFile_Lseek(FILE_HANDLE handle, long offset, int origin);
+LIB_EXPORT long UFile_Lseek(FILE_HANDLE handle, long offset, int origin);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.9	删除文件记录（UFile_Delete）
-输入参数：handle：文件句柄
-		size：删除的文件字节数
-输出参数：无
-返    回：UFILE_PARAERROR      = -11，            //参数错
-		UFILE_DELETE_FAIL	= -7,              //删除文件记录错误
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:2.2.9.9	delete file record￡¨UFile_Delete￡?
+Input : handle￡oFile handle
+		size￡oDeleted File Bytes
+Output : Nothing
+return: UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_DELETE_FAIL	= -7,              delete file record error
 		UFILE_SUCCESS        =  0    
-备	 注: 删除的具体位置由File_Lseek()函数决定
+Remarks: deletion is determined by the File_Lseek () function.
 *************************************************************************************/
-int UFile_Delete(FILE_HANDLE handle, uint size);
+LIB_EXPORT int UFile_Delete(FILE_HANDLE handle, uint size);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.10	关闭文件（UFile_Close）
-输入参数：andle：文件句柄
-输出参数：无
-返    回：UFILE_PARAERROR      = -11，            //参数错
-		UFILE_CLOSE_FAIL		= -8,              //关闭文件错误
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:2.2.9.10	Close the file￡¨UFile_Close￡?
+Input : Handle￡oFile handle
+Output : Nothing
+return: UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_CLOSE_FAIL		= -8,              closing file error
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Nothing
 *************************************************************************************/
-int UFile_Close(FILE_HANDLE handle);
+LIB_EXPORT int UFile_Close(FILE_HANDLE handle);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.11	删除文件（UFile_Remove）
-输入参数：fileName：文件名, 以NULL结束，最长16个字节
-		iFileLocation: 存储位置，参见enum FILELOCATION
-输出参数：无
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:2.2.9.11	Delete file￡¨UFile_Remove￡?
+Input : fileName￡oFile Name End with NULL
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+Output : Nothing
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Nothing
 *************************************************************************************/
-int UFile_Remove(cchar *filename, int iFileLocation);
+LIB_EXPORT int UFile_Remove(cchar *filename, int iFileLocation);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.12	重命名文件（UFile_Rename）
-输入参数：oldname：旧文件名
-		iFileLocation: 存储位置，参见enum FILELOCATION
-		newname：新文件名
-输出参数：无
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:2.2.9.12	Rename file￡¨UFile_Rename￡?
+Input : oldname￡oOld  FileName
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		newname￡oNew FileName
+Output : Nothing
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Nothing
 *************************************************************************************/
-int UFile_Rename(cchar *oldname, int iFileLocation, cchar *newname);
+LIB_EXPORT int UFile_Rename(cchar *oldname, int iFileLocation, cchar *newname);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.13	清空文件（UFile_Clear）
-输入参数：FileName：文件名, 以NULL结束，最长16个字节
-		iFileLocation: 存储位置，参见enum FILELOCATION
-输出参数：无
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:2.2.9.13	Empty File￡¨UFile_Clear￡?
+Input : FileName￡oFile Name End with NULL
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+Output : Nothing
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Nothing
 *************************************************************************************/
-int UFile_Clear(cchar *FileName, int iFileLocation);
+LIB_EXPORT int UFile_Clear(cchar *FileName, int iFileLocation);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.14	取文件系统剩余空间（UFile_GetFreeSpace）
-输入参数：drive：驱动器名称("I:"或"F:")
-		如果无驱动名称应忽略此参数
-输出参数：无
-返    回：成功：返回剩余空间单位K
-		失败：UFILE_FAIL			= -1,              //文件操作失败
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:File system remaining space￡¨UFile_GetFreeSpace￡?
+Input : drive￡o0
+Output : Nothing
+return: Success￡oReturn to the remaining space unit K
+		UFILE_FAIL			= -1,              //Fail
+Remarks: 
 *************************************************************************************/
-long UFile_GetFreeSpace(cchar *drive);
+LIB_EXPORT long UFile_GetFreeSpace(cchar *drive);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.15	取文件记录条数（UFile_GetNumberOfRecords）
-输入参数：FileName：文件名称
-		iFileLocation: 存储位置，参见enum FILELOCATION
-		Record_Len：单条记录长度
-输出参数：无
-返    回：成功：返回记录条数
-		失败：UFILE_PARAERROR      = -11，            //参数错
-		UFILE_FAIL			= -1,              //文件操作失败
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:2.2.9.15	get record number￡¨UFile_GetNumberOfRecords￡?
+Input : FileName￡oFile Name 
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		Record_Len￡oSingle Record Len
+Output : Nothing
+return: Success￡o record number
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_FAIL			= -1,              //Fail
+Remarks: Nothing
 *************************************************************************************/
-int UFile_GetNumberOfRecords(cchar *FileName, int iFileLocation, int Record_Len);
+LIB_EXPORT int UFile_GetNumberOfRecords(cchar *FileName, int iFileLocation, int Record_Len);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.16	追加文件记录（UFile_AppendRecord）
-输入参数：FileName：文件名, 以NULL结束，最长16个字节
-		iFileLocation: 存储位置，参见enum FILELOCATION
-		Record：记录数据
-		Record_Len：记录数据的长度
-输出参数：无
-返    回：UFILE_PARAERROR      = -11，            //参数错
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 掉电保护
-在文件末尾，添加一条定长记录文件。当文件不存在时，自动创建该文件
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:2.2.9.16	AppendRecord￡¨UFile_AppendRecord￡?
+Input : FileName￡oFile Name End with NULL
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		Record￡oRecord data
+		Record_Len￡oLength of recorded data
+Output : Nothing
+return: UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Power off protection
+		At the end of the file, add a fixed length record file. 
+		When the file does not exist, the file is created automatically
 *************************************************************************************/
-int UFile_AppendRecord(cchar *FileName, int iFileLocation, char *Record, int Record_Len);
+LIB_EXPORT int UFile_AppendRecord(cchar *FileName, int iFileLocation, char *Record, int Record_Len);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.17	根据索引号查询记录（UFile_GetRecordByIndex）
-输入参数：FileName：文件名称
-		iFileLocation: 存储位置，参见enum FILELOCATION
-		Record_Len：记录长度
-		Record_Index ：记录索引(从0开始)
-输出参数：Record：记录数据
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_NO_RECORD		= -10,             //记录未找到
-		UFILE_READ_FAIL		= -5,              //读错误
-		UFILE_OPEN_FAIL  	= -2,              //打开错误
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions: 	Query record by index￡¨UFile_GetRecordByIndex￡?
+Input : FileName￡oFile Name 
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		Record_Len￡oRecord Len
+		Record_Index ￡oRecord index (starting from 0)
+Output : Record￡oRecord data
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_NO_RECORD		= -10,             //Record not found
+		UFILE_READ_FAIL		= -5,              
+		UFILE_OPEN_FAIL  	= -2,              //Open a mistake
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Nothing
 *************************************************************************************/
-int UFile_GetRecordByIndex(cchar *FileName, int iFileLocation, void *Record, int Record_Len, int Record_Index);
+LIB_EXPORT int UFile_GetRecordByIndex(cchar *FileName, int iFileLocation, void *Record, int Record_Len, int Record_Index);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.18	查询记录（UFile_GetRecord）
-输入参数：FileName：文件名称
-		iFileLocation: 存储位置，参见enum FILELOCATION
-		Record_Len：记录长度
-		Condtion：查询条件，参考DBSearCond结构
-输出参数：Record：记录数据
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_NO_RECORD		= -10,             //记录未找到
-		UFILE_READ_FAIL		= -5,              //读错误
-		UFILE_OPEN_FAIL  	= -2,              //打开错误
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions: Query record￡¨UFile_GetRecord￡?
+Input : FileName￡oFile Name 
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		Record_Len￡oRecord Len
+		Condtion￡oFor reference, refer to DBSearCond structure.
+Output : Record￡oRecord data
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_NO_RECORD		= -10,             //Record not found
+		UFILE_READ_FAIL		= -5,              
+		UFILE_OPEN_FAIL  	= -2,              //Open a mistake
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Nothing
 *************************************************************************************/
-int UFile_GetRecord(cchar *FileName, int iFileLocation, void *Record, int Record_Len, DBSEARCOND *Condtion);
+LIB_EXPORT int UFile_GetRecord(cchar *FileName, int iFileLocation, void *Record, int Record_Len, DBSEARCOND *Condtion);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.19	更新记录（UFile_UpdateRecord）通过条件更新任意一条记录
-输入参数：FileName：文件名称
-		iFileLocation: 存储位置，参见enum FILELOCATION
-		Record：记录数据
-		Record_Len：记录长度
-		Condtion：查询条件，参考DBSearCond结构
-输出参数：Record：记录数据
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_NO_RECORD		= -10,             //记录未找到
-		UFILE_READ_FAIL		= -5,              //读错误
-		UFILE_WRITE_FAIL		= -4,              //写错误
-		UFILE_OPEN_FAIL  	= -2,              //打开错误
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 掉电保护,Record既是入参也是出参。搜索成功的情况下，Record被搜索结果填充。
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions: Update record (UFile_UpdateRecord) to update any record by condition.
+Input : FileName￡oFile Name 
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		Record￡oRecord data
+		Record_Len￡oRecord Len
+		Condtion￡oFor reference, refer to DBSearCond structure.
+Output : Record￡oRecord data
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_NO_RECORD		= -10,             //Record not found
+		UFILE_READ_FAIL		= -5,              
+		UFILE_WRITE_FAIL		= -4,              
+		UFILE_OPEN_FAIL  	= -2,              //Open a mistake
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Power off protection,
+		Record is both a reference and a reference. 
+		In search of Success, Record is filled with search results
 *************************************************************************************/
-int UFile_UpdateRecord(cchar *FileName, int iFileLocation, void *Record, int Record_Len, DBSEARCOND *Condtion);
+LIB_EXPORT int UFile_UpdateRecord(cchar *FileName, int iFileLocation, void *Record, int Record_Len, DBSEARCOND *Condtion);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.20	根据索引号更新记录（UFile_UpdateRecordByIndex）
-输入参数：FileName：文件名称
-		iFileLocation: 存储位置，参见enum FILELOCATION
-		Record：记录数据
-		Record_Len：记录长度
-		Index： 记录索引号
-输出参数：Record：记录数据
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_NO_RECORD		= -10,             //记录未找到
-		UFILE_READ_FAIL		= -5,              //读错误
-		UFILE_WRITE_FAIL		= -4,              //写错误
-		UFILE_OPEN_FAIL  	= -2,              //打开错误
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 掉电保护,Record既是入参也是出参。搜索成功的情况下，Record被搜索结果填充。
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions: Update record according to index number￡¨UFile_UpdateRecordByIndex￡?
+Input : FileName￡oFile Name 
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		Record￡oRecord data
+		Record_Len￡oRecord Len
+		Index￡o Record Index
+Output : Record￡oRecord data
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_NO_RECORD		= -10,             //Record not found
+		UFILE_READ_FAIL		= -5,              
+		UFILE_WRITE_FAIL		= -4,              
+		UFILE_OPEN_FAIL  	= -2,              //Open a mistake
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Power off protection,
+		Record is both a reference and a reference. 
+		In search of Success, Record is filled with search results
 *************************************************************************************/
-int UFile_UpdateRecordByIndex(cchar *FileName, int iFileLocation, void *Record, int Record_Len, uint Index);
+LIB_EXPORT int UFile_UpdateRecordByIndex(cchar *FileName, int iFileLocation, void *Record, int Record_Len, uint Index);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.21	删除记录（UFile_DeleteRecord）通过条件删除任意一条记录
-输入参数：FileName：文件名称
-		iFileLocation: 存储位置，参见enum FILELOCATION
-		Record_Len：记录长度
-		Condtion：查询条件，参考DBSearCond结构
-输出参数：无
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_NO_RECORD		= -10,             //记录未找到
-		UFILE_DELETE_FAIL	= -7,              //删除文件记录错误
-		UFILE_OPEN_FAIL  	= -2,              //打开错误
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 掉电保护
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:2.2.9.21	Delete record (UFile_DeleteRecord) by deleting any record by condition.
+Input : FileName￡oFile Name 
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		Record_Len￡oRecord Len
+		Condtion￡oFor reference, refer to DBSearCond structure.
+Output : Nothing
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_NO_RECORD		= -10,             //Record not found
+		UFILE_DELETE_FAIL	= -7,              delete file record error
+		UFILE_OPEN_FAIL  	= -2,              //Open a mistake
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Power off protection
 *************************************************************************************/
-int UFile_DeleteRecord(cchar *FileName, int iFileLocation, int Record_Len, DBSEARCOND *Condtion);
+LIB_EXPORT int UFile_DeleteRecord(cchar *FileName, int iFileLocation, int Record_Len, DBSEARCOND *Condtion);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.22	根据索引号删除记录（UFile_DeleteRecordByIndex）
-输入参数：FileName：文件名称
-		iFileLocation: 存储位置，参见enum FILELOCATION
-		Record_Len：记录长度
-		Index： 记录索引号
-输出参数：无
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_NO_RECORD		= -10,             //记录未找到
-		UFILE_DELETE_FAIL	= -7,              //删除文件记录错误
-		UFILE_OPEN_FAIL  	= -2,              //打开错误
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 掉电保护
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:2.2.9.22	Delete record based on index number￡¨UFile_DeleteRecordByIndex￡?
+Input : FileName￡oFile Name 
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		Record_Len￡oRecord Len
+		Index￡o Record Index
+Output : Nothing
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_NO_RECORD		= -10,             //Record not found
+		UFILE_DELETE_FAIL	= -7,              delete file record error
+		UFILE_OPEN_FAIL  	= -2,              //Open a mistake
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Power off protection
 *************************************************************************************/
-int UFile_DeleteRecordByIndex(cchar *FileName, int iFileLocation, int Record_Len, uint Index);
+LIB_EXPORT int UFile_DeleteRecordByIndex(cchar *FileName, int iFileLocation, int Record_Len, uint Index);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.23	读一行文本（UFile_ReadLine)同时支持 \r \n换行(读出来的数据应不包含换行符)
-输入参数：pFile：文件handle
-		LineBuffSize：缓冲大小
-输出参数：pLineBuff	：读取的文本数据
-返    回：成功：数据长度
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_READ_FAIL		= -5,              //读错误
-		UFILE_FAIL			= -1,              //文件操作失败
-备	 注: 针对文本文件，从当前位置读取一行数据，并跳转到下一行。
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:	Read a line of text (UFile_ReadLine) and support \r \n wrap
+Input : pFile￡oFile Handle
+		LineBuffSize￡oLine Buff Size
+Output : pLineBuff	￡oText data read
+return: Success￡oData length
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_READ_FAIL		= -5,              
+		UFILE_FAIL			= -1,              //Fail
+Remarks: For text files, read one row of data from the current location and jump to the next line.
 *************************************************************************************/
-int UFile_ReadLine(FILE_HANDLE pFile, char *pLineBuff,uint LineBuffSize);
+LIB_EXPORT int UFile_ReadLine(FILE_HANDLE pFile, char *pLineBuff,uint LineBuffSize);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.24	读取非定长记录（UFile_ReadTLV）读非定长记录TLV，跟IC卡TVL格式一致
-输入参数：FileName: 文件名称
-		iFileLocation: 存储位置，参见enum FILELOCATION
-		FldID: 标签(Tag)
-输出参数：Data: 数据(Value)
-		DataLen: 长度(length)
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_NO_RECORD		= -10,             //记录未找到
-		UFILE_READ_FAIL		= -5,              //读错误
-		UFILE_OPEN_FAIL  	= -2,              //打开错误
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 读取TLV格式的记录
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions: Read the non fixed length record (UFile_ReadTLV) 
+			to read the non fixed length record TLV, which is consistent with the IC card TVL format.
+Input : FileName: File Name 
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		FldID: (Tag)
+Output : Data: (Value)
+		DataLen: (length)
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_NO_RECORD		= -10,             //Record not found
+		UFILE_READ_FAIL		= -5,              
+		UFILE_OPEN_FAIL  	= -2,              //Open a mistake
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Read the record in TLV format
 *************************************************************************************/
-int UFile_ReadTLV(char *FileName, int iFileLocation, uint FldID, char *Data, uint *DataLen);
+LIB_EXPORT int UFile_ReadTLV(char *FileName, int iFileLocation, uint FldID, char *Data, uint *DataLen);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.25	写非定长数据（UFile_WriteTLV）
-输入参数：FileName：文件名称
-		iFileLocation: 存储位置，参见enum FILELOCATION
-		FldID：标签(Tag)
-		Data：数据(Value)
-		DataLen：长度(length)
-输出参数：无
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_WRITE_FAIL		= -4,              //写错误
-		UFILE_OPEN_FAIL  	= -2,              //打开错误
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:Writing non fixed length data (UFile_WriteTLV)
+Input : FileName￡oFile Name 
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		FldID￡o(Tag)
+		Data￡o(Value)
+		DataLen￡o(length)
+Output : Nothing
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_WRITE_FAIL		= -4,              
+		UFILE_OPEN_FAIL  	= -2,              //Open a mistake
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Nothing
 *************************************************************************************/
-int UFile_WriteTLV(char *FileName, int iFileLocation, uint FldID, char *Data, uint *DataLen);
+LIB_EXPORT int UFile_WriteTLV(char *FileName, int iFileLocation, uint FldID, char *Data, uint DataLen);
 
 /*************************************************************************************
-版    权：福建魔方电子科技有限公司
-作	 者：yangjy
-功    能：2.2.9.26	删除非定长记录（UFile_DeleteTLV）
-输入参数：FileName：文件名称
-		iFileLocation: 存储位置，参见enum FILELOCATION
-		FldID：标签(Tag)
-输出参数：无
-返    回：UFILE_NO_EXIST       = -12,             //指定的文件不存在
-		UFILE_PARAERROR      = -11，            //参数错
-		UFILE_NO_RECORD		= -10,             //记录未找到
-		UFILE_DELETE_FAIL	= -7,              //删除文件记录错误
-		UFILE_OPEN_FAIL  	= -2,              //打开错误
-		UFILE_FAIL			= -1,              //文件操作失败
-		UFILE_SUCCESS        =  0              //文件操作成功
-备	 注: 无
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:2.2.9.26	Delete non fixed length record￡¨UFile_DeleteTLV￡?
+Input : FileName￡oFile Name 
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		FldID￡o(Tag)
+Output : Nothing
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_NO_RECORD		= -10,             //Record not found
+		UFILE_DELETE_FAIL	= -7,              delete file record error
+		UFILE_OPEN_FAIL  	= -2,              //Open a mistake
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Nothing
 *************************************************************************************/
-int UFile_DeleteTLV(char *FileName, int iFileLocation, uint FldID);
+LIB_EXPORT int UFile_DeleteTLV(char *FileName, int iFileLocation, uint FldID);
 
 
 
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:yangjy
+Functions:2.2.9.26	Delete non fixed length record￡¨UFile_DeleteTLV￡?
+Input : FileName￡oFile Name 
+		iFileLocation: Storage location￡?Reference enum FILELOCATION
+		FldID￡o(Tag)
+Output : Nothing
+return: UFILE_NO_EXIST       = -12,             //The specified file does not exist.
+		UFILE_PARAERROR      = -11￡?            //Parameter Error
+		UFILE_NO_RECORD		= -10,             //Record not found
+		UFILE_DELETE_FAIL	= -7,              delete file record error
+		UFILE_OPEN_FAIL  	= -2,              //Open a mistake
+		UFILE_FAIL			= -1,              //Fail
+		UFILE_SUCCESS        =  0              //Successful file operation
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT int UFile_GetLength(cchar *FileName, int iFileLocation);
 
-int UFile_GetLength(cchar *FileName, int iFileLocation);
-
+LIB_EXPORT void UFile_clean(void);
 
 #endif /*__LIBAPI_FILE_HEADER__*/

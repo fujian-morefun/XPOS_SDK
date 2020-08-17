@@ -1,8 +1,5 @@
-/*! \file osl_uart.h
-	\brief Serial port data transmission
-*	\author lx
-*	\date 2014/02/08
-*/
+#ifndef _OSL_UART_
+#define _OSL_UART_
 #pragma once
 #include "pub/pub.h"
 #include "pub\pub.h"
@@ -27,3 +24,5 @@ LIB_EXPORT int osl_uart_send(unsigned int nCom, unsigned char *pBuffer, unsigned
 #ifdef __cplusplus
 }
 #endif	
+
+#endif

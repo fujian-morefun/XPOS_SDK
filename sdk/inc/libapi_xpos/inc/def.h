@@ -524,16 +524,9 @@ typedef enum
 //IC card slot enumeration
 typedef enum
 {
-	USLOT_PSAM1,       //Contact PSAM card slot1
-	USLOT_PSAM2,       //Contact PSAM card slot2
-	USLOT_PSAM3,       //Contact PSAM card slot3
-	USLOT_PSAM4,       //Contact PSAM card slot4
-	USLOT_EXCARD,      //Contact user card slot
-	USLOT_INRF,        //Built-in non-card slot
-	USLOT_EXRF_COM1,   //External non-card slot COM1 port
-	USLOT_EXRF_COM2,   //External non-card slot COM2 port
-	USLOT_EXRF_COM3,   //External non-card slot COM3 port
-	USLOT_EXRF_USB     //External non-card slot USB port
+	SLOT_ICC_SOCKET1 = 0, //SMART CARD
+	SLOT_ICC_SOCKET2, //TSAM
+	SLOT_ICC_SOCKET3,//
 } SlotType;
 
 

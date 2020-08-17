@@ -1,13 +1,5 @@
-/* 
- * Copyright (c) 2015 MoreFun
- *
- * @date 2015-03-16
- * @author ZhaoJinYun
- *
-*/
-
-#ifndef __MF_STRIPEREADER_H
-#define __MF_STRIPEREADER_H
+#ifndef _MF_STRIPEREADER_H_
+#define _MF_STRIPEREADER_H_
 
 #ifdef __cplusplus
 extern "C" {

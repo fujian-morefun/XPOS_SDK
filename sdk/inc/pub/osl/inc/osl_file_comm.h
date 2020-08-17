@@ -1,8 +1,3 @@
-/*! \file osl_file_comm.h
-	\brief File operation
-*	\author lx
-*	\date 2014/02/08
-*/
 #ifndef _FILE_COMM_H_
 #define _FILE_COMM_H_
 

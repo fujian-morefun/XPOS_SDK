@@ -1,10 +1,4 @@
-/*! \file xgui_bmp.h
-	\brief Picture function
-*	\author lx
-*	\date 2014/02/08
-*/
 #pragma once
-
 #include "xgui_pub.h"
 
 /**

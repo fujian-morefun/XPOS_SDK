@@ -1,13 +1,5 @@
-/* 
- * Copyright (c) 2015 MoreFun
- *
- * @date 2015-06-04
- * @author ZhaoJinYun
- *
-*/
-
-#ifndef __MF_USB_CDC_H
-#define __MF_USB_CDC_H
+#ifndef _MF_USB_CDC_H_
+#define _MF_USB_CDC_H_
 
 #ifdef __cplusplus
 extern "C" {

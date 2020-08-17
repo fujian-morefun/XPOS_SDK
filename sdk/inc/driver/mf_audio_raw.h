@@ -1,13 +1,5 @@
-/* 
- * Copyright (c) 2015 MoreFun
- *
- * @date 2015-3-16
- * @author ZhaoJinYun
- *
-*/
-
-#ifndef __MF_AUDIO_RAW_H
-#define __MF_AUDIO_RAW_H
+#ifndef _MF_AUDIO_RAW_H_
+#define _MF_AUDIO_RAW_H_
 
 
 #ifdef __cplusplus

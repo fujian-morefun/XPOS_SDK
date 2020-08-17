@@ -1,13 +1,5 @@
-/* 
- * Copyright (c) 2015 MoreFun
- *
- * @date 2015-01-22
- * @author ZhaoJinYun
- *
-*/
-
-#ifndef __MF_SYSTEM_H
-#define __MF_SYSTEM_H
+#ifndef _MF_SYSTEM_H_
+#define _MF_SYSTEM_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -98,4 +90,3 @@ int mf_get_syscode(void);
 
 
 #endif /* __MF_SYSTEM_H */
-

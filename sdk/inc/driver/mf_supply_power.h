@@ -1,11 +1,10 @@
-/* 
- * Copyright (c) 2015 MoreFun
- *
- * @date 2015-3-24
- * @author ZhaoJinYun
- *
+/*
+* Copyright (c) 2015 MoreFun
+*
+* @date 2015-3-24  
+*
+* 
 */
-
 
 #ifndef __MF_SUPPLY_POWER_H
 #define __MF_SUPPLY_POWER_H

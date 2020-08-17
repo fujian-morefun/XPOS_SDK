@@ -131,6 +131,7 @@ typedef struct _st_input_pin
 	char szFirstLine[30];		// first line show message
 	char szSecLine[30];			//seccond line show message
 	char szThirdLine[30];		//third line show message
+	char szFourthLine[30];		//if this param is not null, input pin will show 5th line
 	char PinType;				//pinType 0:online PIN   1:offline pin 2:clear online msg (use default) 3:clear offline msg(use default)
 }st_input_pin;
 
@@ -362,6 +363,7 @@ LIB_EXPORT void EMVAPI_vSetOtherParamTlv(char *pOtherParam,int iLength);
 LIB_EXPORT int emvapi_check_ic();
 
 LIB_EXPORT int emvapi_check_magtek(struct magtek_track_info *trackinfo);
+LIB_EXPORT int emvapi_check_rf();
 
 LIB_EXPORT int EMV_SetPinInputMsg(st_input_pin st_msg);
 

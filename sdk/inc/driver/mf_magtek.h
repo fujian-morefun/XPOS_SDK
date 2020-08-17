@@ -1,13 +1,5 @@
-/* 
- * Copyright (c) 2015 MoreFun
- *
- * @date 2015-3-6
- * @author ZhaoJinYun
- *
-*/
-
-#ifndef __MF_MAGTEK_H
-#define __MF_MAGTEK_H
+#ifndef _MF_MAGTEK_H_
+#define _MF_MAGTEK_H_
 
 #ifdef __cplusplus
 extern "C" {

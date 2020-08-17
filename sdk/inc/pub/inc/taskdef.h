@@ -1,3 +1,5 @@
+#ifndef _TASK_DEF_
+#define _TASK_DEF_
 #pragma once
 
 enum{
@@ -39,3 +41,5 @@ enum{
 #define _TMS_TASK_SIZE			512
 #define _STK_CHK_TASK_SIZE		128
 #define _TASK_TEST_TASK_SZIE	256
+
+#endif

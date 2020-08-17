@@ -1,13 +1,5 @@
-/* 
- * Copyright (c) 2015 MoreFun
- *
- * @date 2015-02-12
- * @author ZhaoJinYun
- *
-*/
-
-#ifndef __MF_BLUETOOTH_H
-#define __MF_BLUETOOTH_H
+#ifndef _MF_BLUETOOTH_H_
+#define _MF_BLUETOOTH_H_
 
 #ifdef __cplusplus
 extern "C" {

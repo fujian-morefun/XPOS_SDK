@@ -1,3 +1,5 @@
+#ifndef _MF_NET_
+#define _MF_NET_
 #pragma once
 #include "pub/pub.h"
 
@@ -13,3 +15,5 @@ LIB_EXPORT int  net_func_link_ex(char * title, char * apn ,int timeover,char * u
 LIB_EXPORT int  net_func_link_state();
 LIB_EXPORT char * net_func_module_id();
 LIB_EXPORT char * net_func_module_ver();
+
+#endif

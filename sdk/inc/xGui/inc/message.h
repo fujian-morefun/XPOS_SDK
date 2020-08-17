@@ -1,8 +1,3 @@
-/*! \file message.h
-	\brief Message Processing
-*	\author lx
-*	\date 2014/02/08
-*/
 #ifndef __MESSAGE_H__
 #define __MESSAGE_H__
 

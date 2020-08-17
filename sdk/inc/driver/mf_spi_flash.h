@@ -1,13 +1,5 @@
-/* 
- * Copyright (c) 2015 MoreFun
- *
- * @date 2015-02-13
- * @author ZhaoJinYun
- *
-*/
-
-#ifndef __MF_SPI_FLASH_H
-#define __MF_SPI_FLASH_H
+#ifndef _MF_SPI_FLASH_H_
+#define _MF_SPI_FLASH_H_
 
 #ifdef __cplusplus
 extern "C" {

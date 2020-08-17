@@ -1,6 +1,5 @@
-#ifndef __RES_H__
-#define __RES_H__
-
+#ifndef _RES_H_
+#define _RES_H_
 #include "xgui_pub.h"
 
 typedef struct _gui_res{

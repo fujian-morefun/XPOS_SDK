@@ -1,3 +1,5 @@
+#ifndef _UNICODE_
+#define _UNICODE_
 #pragma once
 
 
@@ -23,6 +25,6 @@ LIB_EXPORT int osl_unicode_to_utf8 (unsigned short codepoint, char *outstr);
 }
 #endif
 
-
+#endif
 
 

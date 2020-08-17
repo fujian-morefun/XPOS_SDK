@@ -1,3 +1,6 @@
+#ifndef __OSL_TIMERDATA_STRUCT__
+#define __OSL_TIMERDATA_STRUCT__
+
 #pragma once
 
 #define TIMER_PRECISION			1
@@ -30,3 +33,4 @@ typedef struct __timer_entry_node{
 }TIMERENTRYNODE;
 
 
+#endif

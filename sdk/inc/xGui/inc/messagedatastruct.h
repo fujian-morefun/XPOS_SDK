@@ -1,5 +1,5 @@
-#ifndef __MESSAGEDATASTRUCT_H__
-#define __MESSAGEDATASTRUCT_H__
+#ifndef _MESSAGEDATASTRUCT_H_
+#define _MESSAGEDATASTRUCT_H_
 
 #include "xgui_pub.h"
 

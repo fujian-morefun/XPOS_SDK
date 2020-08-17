@@ -1,8 +1,5 @@
-/*! \file atc_pub.h
-	\brief ATÃüÁî·â×°
-*	\author lx
-*	\date 2014/02/08
-*/
+#ifdef  _ATC_PUB_
+#define _ATC_PUB_
 #pragma once
 
 #include "pub\pub.h"
@@ -183,3 +180,5 @@ LIB_EXPORT void atc_tts_speed(int speed);
 #ifdef __cplusplus
 }
 #endif	
+
+#endif

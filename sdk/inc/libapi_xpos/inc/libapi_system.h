@@ -1,5 +1,5 @@
-#ifndef __LIBAPI_SYSTEM_HEADER__
-#define __LIBAPI_SYSTEM_HEADER__
+#ifndef _LIBAPI_SYSTEM_HEADER_
+#define _LIBAPI_SYSTEM_HEADER_
 
 #include "libapi_pub.h"
 

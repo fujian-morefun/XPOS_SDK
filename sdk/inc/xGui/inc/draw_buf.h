@@ -1,5 +1,5 @@
-#ifndef ___DRAW_BUF_H___
-#define ___DRAW_BUF_H___
+#ifndef _DRAW_BUF_H_
+#define _DRAW_BUF_H_
 
 #include "xgui_pub.h"
 
