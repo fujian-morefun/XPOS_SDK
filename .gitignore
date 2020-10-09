@@ -1,4 +1,4 @@
-**/*.docx
+﻿**/*.docx
 
 
 
@@ -197,7 +197,7 @@ KotakBank/*
 TOOL/*
 version/*
 XPOS(G)/*
-apps/Custom/*
+#apps/Custom/*
 /apps/DEMO_QM/hkbdt/*
 /apps/DEMO/xpos-sdk-demo/*
 omni/*
