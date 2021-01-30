@@ -289,7 +289,7 @@ Output :
 return: Nothing
 Remarks:   Voice playback is non blocking.
 *************************************************************************************/
-LIB_EXPORT void Play_Voice(char *msg);
+LIB_EXPORT int Play_Voice(char *msg);
 
 
 //QR code parameters

@@ -5,6 +5,7 @@
 
 void xgui_state_init();
 void xgui_state_set_mode(int mode);
+LIB_EXPORT int xgui_led_control(int led , int status);
 LIB_EXPORT int xgui_state_get_mode();
 LIB_EXPORT int xgui_state_func_add(void * pfunc);
 LIB_EXPORT void xgui_state_set_state(int state);

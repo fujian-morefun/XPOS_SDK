@@ -15,6 +15,7 @@ extern "C"{
 LIB_EXPORT void mf_model_init();
 LIB_EXPORT void mf_sock_init();
 LIB_EXPORT int mf_sock_get_type();
+LIB_EXPORT int mf_sock_get_model_type(int index);
 /**
 * @brief …Ë÷√apn
 * @param apn apn√˚≥∆
@@ -68,6 +69,10 @@ LIB_EXPORT int mf_sock_close(int s);
 LIB_EXPORT void mf_set_connnect_server_func(int index, void * func);
 
 LIB_EXPORT void mf_sock_fifo_resize(int index , int size);
+
+LIB_EXPORT int mf_sock_get_state(int index );
+
+
 
 #ifdef __cplusplus
 }

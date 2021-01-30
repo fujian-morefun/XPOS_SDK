@@ -1,6 +1,7 @@
 #pragma once
 #include "pub/pub.h"
 #include "driver/mf_magtek.h"
+#include "libapi_xpos/inc/def.h"
 //reference to emv_interface.h
 
 
@@ -38,6 +39,20 @@ enum{
 	READ_CARD_MODE_IC = 0x02,
 	READ_CARD_MODE_RF = 0x04
 };
+//emv_card_end : ret input
+enum{
+	EMVCARD_RET_QUIT,		//quit
+	EMVCARD_RET_INPUT,	
+	EMVCARD_RET_MAGTEK,		//ms card
+	EMVCARD_RET_ICC,		// ICC
+	EMVCARD_RET_RFID,		//RF
+	EMVCARD_RET_TIME_OVER ,	// timeouts
+	EMVCARD_RET_RFS,//    two or more RF card
+};
+//Vendor ID
+enum{
+	SWIPE_LINC = 1,
+};
 
 typedef struct __st_read_card_in{
 	char title[32];//title of card reading pages
@@ -46,7 +61,7 @@ typedef struct __st_read_card_in{
 	char other_amt[32];//Cash back Amount 9F03
 	int card_mode;//READ_CARD_MODE_MAG , READ_CARD_MODE_IC , READ_CARD_MODE_RF
 	int card_timeover;//Time over of  card reading page,normally 60000;
-	int pin_input;  //For DIP and TAP cards. 0x01: enter the PIN interface according to the emv_read_card internal; 0x02:forces the PIN interface  of online transactions 
+	int pin_input;  //For DIP and TAP cards. 0x01: enter the PIN interface according to the emv_read_card internal; 0x02:forces the PIN interface  of online transactions; 
 	int mag_mode;	//For magnetic stripe cards. 0x01: The application determines whether to enter the PIN interface according to the service_code; 0x00:require a PIN from emv_read_card internal
 	int pin_min_len;//min length of pin 
 	int pin_max_len;//max length of PIN,range 4-12
@@ -65,6 +80,7 @@ typedef struct __st_read_card_in{
 	int nTransSerial_9f41;	//Transcation Sequence Counter of chip card reading
 	int pin_format;//refer to SEC_PIN_FORMAX in libapi_security.h
 	char sDccCurrency[2];//DCC Currency
+	int VendorID;
 }st_read_card_in;
 
 #define TRACK_MAX_LENTH		144
@@ -87,6 +103,7 @@ typedef struct __st_read_card_out{
 	int nEmvMode;		//refer to MODE_API_XX
 	char signature_flag;//0x01 Need signature;0x00 No signature
 	char service_code[3+1];//service code of card
+	int nNFCType;//NFC type;0:card type; non-0:mobile or other type;
 }st_read_card_out;
 
 
@@ -133,6 +150,7 @@ typedef struct _st_input_pin
 	char szThirdLine[30];		//third line show message
 	char szFourthLine[30];		//if this param is not null, input pin will show 5th line
 	char PinType;				//pinType 0:online PIN   1:offline pin 2:clear online msg (use default) 3:clear offline msg(use default)
+	char IsErrShow;				//1:the four line show pin , 5th show errmsg which data is szFourthLine
 }st_input_pin;
 
 typedef struct _st_read_card_show
@@ -212,10 +230,37 @@ Attention:Don't need to call EMV_online_cardemv_free()
 *************************************************************************************/
 LIB_EXPORT int emv_onlineresp_proc_pack(int nOnlineRes,char *sResp39,char *sField55,char*emvtags, char*packvalue,int*packlen);
 
-
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:zhiyu
+Functions:pre-processing
+Input : card_in£ºThe parameter of EMV trans
+Output : 
+return: 
+     	SUCC	 0	
+		FAIL     <0	 
+*************************************************************************************/
 LIB_EXPORT int emv_card_begin(st_read_card_in *card_in);
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:zhiyu
+Functions:loop to detect cards
+Input : card_mode:READ_CARD_MODE_MAG , READ_CARD_MODE_IC , READ_CARD_MODE_RF
+Output : 
+return: EMVCARD_RET_MAGTEK;EMVCARD_RET_ICC;EMVCARD_RET_RFID;EMVCARD_RET_QUIT
+*************************************************************************************/
 LIB_EXPORT int emv_card_loop( int card_mode );
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:zhiyu
+Functions:end of card reading, pack card data
+Input : ret:return value of emv_card_loop;
+		card_in£ºThe parameter of EMV trans
+Output : card_out£ºOut buffer of EMV trans
+return: Transaction Result return value:EMVAPI_RET_XX
+*************************************************************************************/
 LIB_EXPORT int emv_card_end( int ret, st_read_card_in *card_in,st_read_card_out *card_out);
+
 LIB_EXPORT void Emvapi_Version(char *pszVersion);
 LIB_EXPORT void EMV_iKernelInit(void);
 LIB_EXPORT void EMV_SetInputPin(int (*InputPin)(char *,char *,char ,char *));
@@ -368,3 +413,5 @@ LIB_EXPORT int emvapi_check_rf();
 LIB_EXPORT int EMV_SetPinInputMsg(st_input_pin st_msg);
 
 LIB_EXPORT int EMV_SetReadCardShow(st_read_card_show st_msg);
+
+LIB_EXPORT void set_mag_track_info(card_magtek_track_info track_set_info);

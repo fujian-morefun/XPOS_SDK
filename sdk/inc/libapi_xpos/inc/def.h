@@ -775,8 +775,11 @@ typedef struct {
 	char	checkCVMLimit;
 	char	checkOnPIN;
 	char	checkSig;
+	char    checkDF19;
+	char    check9F1B;
 	char	*pOtherParamTlv;
 	int		iOtherParamTlvLen;
+
 }TERMCONFIG; 
 
 
@@ -1133,7 +1136,7 @@ unsigned char ucCoefficient[MAX_RSA_PRIME_LEN];		 //CRT Coefficient, prime and p
 #define MAGTEK_TRACK_2_MAX_CHARS		(140)
 #define MAGTEK_TRACK_3_MAX_CHARS		(140)
 
-typedef struct{
+typedef struct _card_magtek_track_info{
 	unsigned char track1[MAGTEK_TRACK_1_MAX_CHARS];
 	unsigned char track2[MAGTEK_TRACK_2_MAX_CHARS];
 	unsigned char track3[MAGTEK_TRACK_3_MAX_CHARS];
