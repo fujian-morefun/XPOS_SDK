@@ -1,5 +1,4 @@
-#include "input_public.h"
-#include "xGui/inc/2ddraw.h"
+#include "../app_def.h"
 
 //Draw the title, the first line
 void input_PaintTitle(char* title)
@@ -11,13 +10,8 @@ void input_PaintTitle(char* title)
 	}
 	//xgui_GetViewPort(&oldrc);
 	//XGUI_SET_WIN_RC;
-	xgui_ClearRect(0, XGUI_LINE_TOP_0, XGUI_WIN_WIDTH - 1, XGUI_LINE_TOP_1, xgui_GetBgColor());
-#ifdef LCD_320_240
-	xgui_SetTitle(title);
-#else
-	xgui_TextOut_Line_Center(title, 0);
-#endif
-
+	gui_clear_rect(0, GUI_LINE_TOP(0), gui_get_width() - 1, GUI_LINE_TOP(1), gui_get_bg_color());
+	gui_set_title(title);
 	//xgui_SetViewPort_RC(&oldrc); 
 	//xgui_SetFont( UFONT_NORMAL );
 }
@@ -30,7 +24,7 @@ int get_line(void)
 //Draw the second row
 void input_PaintHeader(char* header)
 {
-	int textHeight = xgui_GetTextHeight("A");
+	int textHeight = gui_get_text_height("A");
 	//RECT oldrc;
 	//xgui_GetViewPort(&oldrc);
 	//XGUI_SET_WIN_RC;
@@ -45,40 +39,41 @@ void input_PaintHeader(char* header)
 			memset(sTip,0x00,sizeof(sTip));
 			memcpy(sTip,header+m,i-m);
 			m = i+1;
-			xgui_ClearRect(0,XGUI_LINE_TOP_1+textHeight*nLine, XGUI_WIN_WIDTH - 1,XGUI_LINE_TOP_2+textHeight*nLine, xgui_GetBgColor());
-			xgui_TextOut(0, XGUI_LINE_TOP_1+textHeight*nLine, sTip);
+			gui_clear_rect(0,GUI_LINE_TOP(1)+textHeight*nLine, gui_get_width() - 1,GUI_LINE_TOP(2)+textHeight*nLine, gui_get_bg_color());
+			gui_text_out(0, GUI_LINE_TOP(1)+textHeight*nLine, sTip);
 			nLine++;
 		}
 	}
 	memset(sTip,0x00,sizeof(sTip));
 	memcpy(sTip,header+m,i-m);
 
-	xgui_ClearRect(0,XGUI_LINE_TOP_1+textHeight*nLine, XGUI_WIN_WIDTH - 1,XGUI_LINE_TOP_2+textHeight*nLine, xgui_GetBgColor());
-	xgui_TextOut(0, XGUI_LINE_TOP_1+textHeight*nLine, sTip);
+	gui_clear_rect(0,GUI_LINE_TOP(1)+textHeight*nLine, gui_get_width() - 1,GUI_LINE_TOP(2)+textHeight*nLine, gui_get_bg_color());
+	gui_text_out(0, GUI_LINE_TOP(1)+textHeight*nLine, sTip);
 	//xgui_SetViewPort_RC(&oldrc); 
 }
 
 //Draw the third row
 void input_PaintInput(char* inputContent)
 {
-	int textHeight = xgui_GetTextHeight("A");
-	int textWidth = xgui_GetTextWidth(inputContent);
+	int textHeight = gui_get_text_height("A");
+
+	int textWidth = gui_text_width_ex(inputContent);
 	//RECT oldrc;
 	//xgui_GetViewPort(&oldrc);
 	//XGUI_SET_WIN_RC;
-	xgui_ClearRect(0, XGUI_LINE_TOP_2, XGUI_WIN_WIDTH - 1, XGUI_LINE_TOP_3, xgui_GetBgColor());
-	xgui_TextOut(XGUI_WIN_WIDTH - textWidth - 10, XGUI_LINE_TOP_3 , inputContent);
+	gui_clear_rect(0, GUI_LINE_TOP(2), gui_get_width() - 1, GUI_LINE_TOP(3), gui_get_bg_color());
+	gui_text_out(gui_get_width() - textWidth - 10, GUI_LINE_TOP(3) , inputContent);
 	//xgui_SetViewPort_RC(&oldrc); 
 }
 
 //Draw the fourth line
 void input_PaintFooter(char* footer)
 {
-	int textHeight = xgui_GetTextHeight("A");
+	int textHeight = gui_get_text_height("A");
 	//RECT oldrc;
 	//xgui_GetViewPort(&oldrc);
 	//XGUI_SET_WIN_RC;
-	xgui_ClearRect(0,XGUI_LINE_TOP_3, XGUI_WIN_WIDTH, XGUI_WIN_HEIGHT, xgui_GetBgColor());
-	xgui_TextOut(0, XGUI_LINE_TOP_3, footer);
+	gui_clear_rect(0,GUI_LINE_TOP(3), gui_get_width(), gui_get_height(), gui_get_bg_color());
+	gui_text_out(0, GUI_LINE_TOP(3), footer);
 	//xgui_SetViewPort_RC(&oldrc); 
 }

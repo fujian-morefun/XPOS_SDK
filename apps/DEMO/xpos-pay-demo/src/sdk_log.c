@@ -1,16 +1,6 @@
-#include "sdk_log.h"
-#include <stdarg.h>
-#include <string.h>
-#include "driver/mf_misc.h"
-#include "pub/osl/inc/osl_system.h"
-#include "pub/osl/inc/osl_BaseParam.h"
-#include "xGui/inc/draw_buf.h"
-#include "xGui/inc/2ddraw.h"
-#include "xGui/inc/xgui_key.h"
-#include "xGui/inc/message.h"
-#include <stdio.h>
-#include "xGui/inc/pageproc.h"
 
+
+#include "app_def.h"
 static int init = 0;
 static char buff[512];
 
@@ -19,7 +9,6 @@ void sdk_log_out(const char *fmt,... )
 {
 	int ret;
 	va_list vargs;
-
 	if(init == 0){
 		mf_console_switch(1);	// Initialize log
 		init = 1;
@@ -34,17 +23,17 @@ void sdk_log_out(const char *fmt,... )
 
 static void _LogOut_Paint(int value)
 {
-	xgui_BeginBatchPaint();
+	gui_begin_batch_paint();
 
-	xgui_ClearDC();
+	gui_clear_dc();
 
-	xgui_TextOut(0, XGUI_LINE_TOP_0, value == 1 ? "LogOut:On" : "LogOut:Off");
+	gui_text_out(0, GUI_LINE_TOP(0), value == 1 ? "LogOut:On" : "LogOut:Off");
 
 	//xgui_TextOut(0, XGUI_LINE_TOP_2 , "Up to switch");
 
-	xgui_Page_OP_Paint( "Cancel" , "OK");
+	gui_page_op_paint( "Cancel" , "OK");
 
-	xgui_EndBatchPaint();
+	gui_end_batch_paint();
 }
 
 void openlog(int nOpen)
@@ -68,39 +57,39 @@ void openlog(int nOpen)
 	setbuf[3] = (dl >> 24) & 0xff;
 	strcpy(setbuf+4, set);
 
-	osl_set_log_data(setbuf, dl+4);
+	Sys_set_log_data(setbuf, dl+4);
 }
 
 int LogOutSet_Show()
 {
 	int presskey;
-	MESSAGE pMsg;
+	st_gui_message pMsg;
 	int nOpen = 0;
 
 
 	_LogOut_Paint(nOpen);
 
 	while(1){
-		if (xgui_GetMessageWithTime(&pMsg, 100) == MESSAGE_ERR_NO_ERR) {
+		if (gui_get_message(&pMsg, 100) == 0) {
 
-			if (pMsg.MessageId == XM_KEYPRESS) {
-				presskey = pMsg.WParam;
+			if (pMsg.message_id == GUI_KEYPRESS) {
+				presskey = pMsg.wparam;
 
 				switch(presskey) {
-				case KEY_UP: case KEY_DOWN:case KEY_LEFT:case KEY_RIGHT:case KEY_XING:case KEY_JING:
+				case GUI_KEY_UP: case GUI_KEY_DOWN:case GUI_KEY_LEFT:case GUI_KEY_RIGHT:case GUI_KEY_XING:case GUI_KEY_JING:
 					nOpen = 1 - nOpen;
 					_LogOut_Paint(nOpen);
 					break;
-				case KEY_OK:
-					//保存，再走quit退出
+				case GUI_KEY_OK:
+					//save and restart
 					openlog(nOpen);
 					Sys_Reboot();
 					break;
-				case KEY_QUIT:
+				case GUI_KEY_QUIT:
 					break;
 				}
 
-				if ( presskey == KEY_QUIT || KEY_OK == presskey )
+				if ( presskey == GUI_KEY_QUIT || GUI_KEY_OK == presskey )
 				{
 					break;
 				}

@@ -1,4 +1,4 @@
-#include "pub/osl/inc/osl_timer.h"
+#include "app_def.h"
 #include "sdk_timer.h"
 
 static int timerHandle = -1;
@@ -27,8 +27,8 @@ void sdk_timer_init()
 {
 	if(timerHandle == -1){
 		// Create a timer
-		timerHandle = osl_TimerCreate(timerProc, 0 , 1000, TIMER_MODE_NORMAL , 0); 
-		osl_TimerEnable(timerHandle);  // Start this timer
+		timerHandle = Sys_TimerCreate((void *)timerProc, 0 , 1000, TIMER_MODE_NORMAL_ , 0); 
+		Sys_TimerEnable(timerHandle);  // Start this timer
 	}
 	
 }

@@ -428,7 +428,7 @@ LIB_EXPORT int UFile_DeleteTLV(char *FileName, int iFileLocation, uint FldID);
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:yangjy
-Functions:2.2.9.26	Delete non fixed length record£¨UFile_DeleteTLV£©
+Functions:2.2.9.26	get length by file name£¨UFile_GetLength£©
 Input : FileName£ºFile Name 
 		iFileLocation: Storage location£¬Reference enum FILELOCATION
 		FldID£º(Tag)

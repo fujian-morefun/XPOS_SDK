@@ -1,5 +1,4 @@
-#ifndef _LIBAPI_COMM_H_
-#define _LIBAPI_COMM_H_
+#pragma once
 
 #include "libapi_pub.h"
 
@@ -188,7 +187,7 @@ return: 0,     success
 		Other, failure		
 *************************************************************************************/
 LIB_EXPORT int comm_ssl_recv(int index, char * pdata, int size);
-
+LIB_EXPORT int comm_ssl_recv3(int sock_index);
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:lx
@@ -391,5 +390,3 @@ Output :
 return: iccid
 *************************************************************************************/
 LIB_EXPORT const char * comm_atc_iccid();
-
-#endif

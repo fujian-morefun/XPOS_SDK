@@ -1,31 +1,25 @@
-#include "inputamount_page.h"
-#include "xGui/inc/2ddraw.h"
-#include "xGui/inc/message.h"
-#include "xGui/inc/xgui_key.h"
-#include "input_public.h"
-//#include "pub/pub_misc.h"
-//#include "normal/upay/base/upay_auto_test.h"
-#include <string.h>
+
+#include "../app_def.h"
 
 static int amt_type;
 static void input_PaintFooter0(char*footer)
 {
-	int textHeight = xgui_GetTextHeight("A");
-	xgui_ClearRect(0,XGUI_LINE_TOP_3, XGUI_WIN_WIDTH, textHeight, xgui_GetBgColor());
-	xgui_TextOut(0, XGUI_LINE_TOP_3, footer);
+	int textHeight = gui_get_text_height("A");
+	gui_clear_rect(0,GUI_LINE_TOP(3), gui_get_width(), textHeight, gui_get_bg_color());
+	gui_text_out(0, GUI_LINE_TOP(3), footer);
 }
 
 
 //Draw the third line, the amount
 static void _inputamount_PaintAmount(char* amount)
 {
-	int textHeight = xgui_GetTextHeight("A");
-	int textWidth = xgui_GetTextWidth(amount);
+	int textHeight = gui_get_text_height("A");
+	int textWidth = gui_text_width_ex(amount);
 	//RECT oldrc;
 	//xgui_GetViewPort(&oldrc);
 	//XGUI_SET_WIN_RC;
-	xgui_ClearRect(0, XGUI_LINE_TOP_2 , XGUI_WIN_WIDTH , XGUI_LINE_TOP_3, xgui_GetBgColor());
-	xgui_TextOut(XGUI_WIN_WIDTH - textWidth - 10, XGUI_LINE_TOP_2, amount);
+	xgui_ClearRect(0, GUI_LINE_TOP(2) , gui_get_width() , GUI_LINE_TOP(3), gui_get_bg_color());
+	xgui_TextOut(gui_get_width() - textWidth - 10, GUI_LINE_TOP(2), amount);
 
 	//xgui_SetViewPort_RC(&oldrc); 
 }
@@ -44,8 +38,8 @@ static void _inputamount_PanitAll(char* title, int nAmount)
 	//RECT oldrc;
 	
 	//xgui_GetViewPort(&oldrc);
-	xgui_BeginBatchPaint();
-	xgui_Clear_Win();
+	gui_begin_batch_paint();
+	gui_clear_win();
 	input_PaintTitle(title);
 	if (strcmp(title , "CASHBACK") == 0){
 		input_PaintHeader("Input Cashback AMT:");	
@@ -56,7 +50,7 @@ static void _inputamount_PanitAll(char* title, int nAmount)
 	_setAmount(nAmount);
 	input_PaintFooter0("Backspace if wrong");
 
-	xgui_EndBatchPaint();
+	gui_end_batch_paint();
 	//xgui_SetViewPort_RC(&oldrc);
 }
 
@@ -64,23 +58,23 @@ static long long _keyPressProc(long long nAmount, int maxLength, int presskey)
 {
 	switch (presskey)
 	{
-	case KEY_0:
-	case KEY_1:
-	case KEY_2:
-	case KEY_3:
-	case KEY_4:
-	case KEY_5:
-	case KEY_6:
-	case KEY_7:
-	case KEY_8:
-	case KEY_9:
+	case GUI_KEY_0:
+	case GUI_KEY_1:
+	case GUI_KEY_2:
+	case GUI_KEY_3:
+	case GUI_KEY_4:
+	case GUI_KEY_5:
+	case GUI_KEY_6:
+	case GUI_KEY_7:
+	case GUI_KEY_8:
+	case GUI_KEY_9:
 		{
 			char buf[32] = {0};
 			int bufLen = sprintf(buf, "%lld", nAmount);
 
 			if ( bufLen < maxLength  )
 			{
-				nAmount = nAmount * 10 + (presskey- KEY_0);
+				nAmount = nAmount * 10 + (presskey- GUI_KEY_0);
 				_setAmount(nAmount);
 				input_PaintFooter0("backspace if wrong");
 			}
@@ -91,10 +85,11 @@ static long long _keyPressProc(long long nAmount, int maxLength, int presskey)
 			}		
 		}		
 		break;
-	case KEY_BACKSPACE:
+	case GUI_KEY_BACKSPACE:
 		{
 			nAmount = nAmount / 10;
 			_setAmount(nAmount);
+			
 			input_PaintFooter0("backspace if wrong");
 		}
 		break;
@@ -111,9 +106,10 @@ static long long _keyPressProc(long long nAmount, int maxLength, int presskey)
 long long inputamount_page(char* title, int maxLength, int timeover)
 {
 	long long nAmount = 0;
+	long long ntestamt = 255;
 	static long long amnt_0 = 1;
-	MESSAGE pMsg;
-	unsigned int quitTick = osl_GetTick();	//Timeout exit timer
+	st_gui_message pMsg;
+	unsigned int quitTick = Sys_TimerOpen(timeover);	//Timeout exit timer
 	maxLength = maxLength > 12 ? 12 : maxLength;
 
 	_inputamount_PanitAll(title, nAmount);
@@ -121,25 +117,25 @@ long long inputamount_page(char* title, int maxLength, int timeover)
 	while(1){
 
 		//Determine if the timeout has expired
-		if (osl_CheckTimeover(quitTick , timeover) != 0)	{
+		if (Sys_TimerCheck(quitTick) == 0)	{
 			nAmount = INPUT_INPUT_RET_TIMEOVER;
 			break;
 		}
 
-		if (xgui_GetMessageWithTime(&pMsg , 10) == MESSAGE_ERR_NO_ERR) {
-			quitTick = osl_GetTick();
+		if (gui_get_message(&pMsg , 10) == 0) {
+			quitTick = Sys_TimerOpen(timeover);
 
-			if (pMsg.MessageId == XM_GUIPAINT) {
+			if (pMsg.message_id == GUI_GUIPAINT) {
 				_inputamount_PanitAll( title,nAmount);
 			}
-			else if (pMsg.MessageId == XM_KEYPRESS) {
-				int presskey = pMsg.WParam;
-				if(presskey== KEY_QUIT)
+			else if (pMsg.message_id == GUI_KEYPRESS) {
+				int presskey = pMsg.wparam;
+				if(presskey== GUI_KEY_QUIT)
 				{
 					nAmount = INPUT_INPUT_RET_QUIT;
 					break;
 				}
-				else if(presskey == KEY_OK)
+				else if(presskey == GUI_KEY_OK)
 				{
 					if (nAmount == 0)
 					{
@@ -156,13 +152,13 @@ long long inputamount_page(char* title, int maxLength, int timeover)
 				}
 			}
 			else{
-				xgui_proc_default_msg(&pMsg);
+				gui_proc_default_msg(&pMsg);
 			}
 
-			quitTick = osl_GetTick();
+			quitTick = Sys_TimerOpen(timeover);
 		}
 
-		osl_Sleep(10);
+		Sys_Delay(10);
 	}
 
 	return nAmount;

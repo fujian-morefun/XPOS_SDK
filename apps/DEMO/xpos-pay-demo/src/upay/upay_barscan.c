@@ -1,7 +1,5 @@
-#include "upay_barscan.h"
-#include "../pages/input_num_page.h"
-#include "../pages/scan_page.h"
-#include "xGui/inc/messagebox.h"
+
+#include "../app_def.h"
 
 int upay_barscan( void )
 {
@@ -15,6 +13,7 @@ int upay_barscan( void )
 	//ret = input_num_page(amt, "input the amount", 1, 9, 0, 0, 1);		//Enter the amount
 	//if(ret != INPUT_NUM_RET_OK) return -1;
 	namt = inputamount_page(title, 9, 90000);
+	SYS_TRACE("namt:%lld",namt);
 	if(namt <= 0)
 	{
 		return -1;
@@ -26,7 +25,7 @@ int upay_barscan( void )
 
 	if ( ret >0 ){
 		sprintf(msg, "amt:%s\r\ncode:%s", amt, code);
-		xgui_messagebox_show(title, msg, "" , "ok", 0);	// Prompt result
+		gui_messagebox_show(title, msg, "" , "ok", 0);	// Prompt result
 	}
 
 	return ret;

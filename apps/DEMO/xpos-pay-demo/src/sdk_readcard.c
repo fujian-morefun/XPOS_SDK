@@ -1,17 +1,6 @@
 //#include "upay_track.h"
 //#include "upay_print.h"
-#include "pages/input_num_page.h"
-#include "pages/inputcard_page.h"
-#include "xGui/inc/messagebox.h"
-#include "sdk_log.h"
-#include "upay/upay_define.h"
-#include "emvapi/inc/emv_api.h"
-#include "libapi_xpos/inc/def.h"
-#include "libapi_xpos/inc/libapi_emv.h"
-#include "pub/tracedef.h"
-#include "libapi_xpos/inc/libapi_security.h"
-#include "sdk_readcard.h"
-#include "pub\common\misc\inc\mfmalloc.h"
+#include "app_def.h"
 
 
 #define COUNTRYCODE "\x01\x56"//CNY
@@ -25,7 +14,7 @@ void sdk_SetTermConfig()
 	TERMCONFIG termconfig;
 	memset(&termconfig,0,sizeof(TERMCONFIG));
 
-	APP_TRACE( "TestSetTermConfig" );
+	SYS_TRACE( "TestSetTermConfig" );
 
 	memcpy( termconfig.TermCap, "\xE0\xF8\xC8", 3);	/*Terminal performance '9F33'*/
 	memcpy( termconfig.AdditionalTermCap,"\xFF\x80\xF0\x00\x01", 5);/*Terminal additional performance*/
@@ -94,7 +83,7 @@ static void sdk_add_demo_aids(TERMINALAPPLIST *TerminalApps)
 	if(TerminalApps==0)
 		return;
 
-	APP_TRACE( "TestDownloadAID" );
+	SYS_TRACE( "TestDownloadAID" );
 	memset(TerminalApps,0x00,sizeof(TERMINALAPPLIST));	
 	memcpy(TerminalApps->TermApp[n].AID, "\xA0\x00\x00\x00\x01\x10\x10", 7);//AID
 	TerminalApps->TermApp[n++].AID_Length = 7;//1
@@ -249,7 +238,7 @@ int sdk_online_proc(int ic_online_resp)
 	char *sPackValue;
 	int nPacklen;
 
-	APP_TRACE( "sdk_online_proc:ic_online_resp=%d\r\n",ic_online_resp);
+	SYS_TRACE( "sdk_online_proc:ic_online_resp=%d\r\n",ic_online_resp);
 
 	;//todo:Allocate space:msg_Buf,host_Rsp
 
@@ -271,19 +260,19 @@ int sdk_online_proc(int ic_online_resp)
 	else
 		nOnlineRes = FAIL;
 	
-	sField55=(char*)MALLOC(TLV_MAX_LEN);
+	sField55=(char*)Util_Malloc(TLV_MAX_LEN);
 	unpack_ic_online_data(host_Rsp,len_Rsp,szAuthCode,sField55);
 	;//todo:Free up space:host_Rsp
 	
-	sPackValue=(char*)MALLOC(TLV_MAX_LEN);
+	sPackValue=(char*)Util_Malloc(TLV_MAX_LEN);
 	iRet = emv_onlineresp_proc_pack(nOnlineRes,szAuthCode,sField55,sTLVtags,sPackValue,&nPacklen);//IC card secondary authorization request
-	FREE(sField55);
+	Util_Free(sField55);
 	//todo:save and process
 	;;
 
 
-	FREE(sPackValue);
-	APP_TRACE( "sdk_online_proc:iRet=%d\r\n",iRet);
+	Util_Free(sPackValue);
+	SYS_TRACE( "sdk_online_proc:iRet=%d\r\n",iRet);
 
 	return iRet;
 }
@@ -297,7 +286,7 @@ static void add_capkByAid(unsigned char* cAID,unsigned char Index)
 	int nLen = 0;
 	int npacklen = 0;
 	nLen = sizeof(CAPUBLICKEY)+30;
-	szBuf = (char *)malloc(nLen);
+	szBuf = (char *)Util_Malloc(nLen);
 	if(NULL == szBuf) {
 		return ;
 	}
@@ -336,56 +325,12 @@ static void add_capkByAid(unsigned char* cAID,unsigned char Index)
 		nLen += 3;
 	}
 	memset(szHash, 0, sizeof(szHash));
-	mf_sha1((unsigned char *)szBuf, nLen, (unsigned char *)szHash);
+	Util_SHA1((unsigned char *)szBuf, nLen, (unsigned char *)szHash);
 	memcpy(ppkKey.ChecksumHash,szHash,20);
 	EMV_PrmSetCAPK(&ppkKey);
-	free(szBuf);
+	Util_Free(szBuf);
 }
-//
-//static void add_capkByAid_sm(unsigned char* cAID,unsigned char Index)
-//{
-//	CAPUBLICKEY ppkKey;
-//	char *szBuf = NULL;
-//	char szHash[20]={0};
-//
-//	int nLen = 0;
-//	int npacklen = 0;
-//	nLen = sizeof(CAPUBLICKEY)+30;
-//	szBuf = (char *)malloc(nLen);
-//	if(NULL == szBuf) {
-//		return ;
-//	}
-//	memset(&ppkKey,0,sizeof(CAPUBLICKEY));
-//	memcpy(ppkKey.RID,cAID,5);
-//	ppkKey.CA_PKIndex=Index;
-//	memcpy(ppkKey.CAPKModulus,
-//		"\x37\x26\x03\x0D\x0D\x74\xA5\x99\x8A\x12\xFA\x6B\x4B\x5C\x69\x96\xA8\x6F\x48\x57\xDD\x88\x05\x37\x84\xE0\xDD\x44\x70"
-//		"\xD5\x61\x6C\x7E\x22\xAF\x76\x60\x13\xDA\xD2\xED\xB7\xE8\x9C\x26\x42\x8F\xC8\x1E\xF0\x50\xFA\x2B\xCA\xA3\xD6\x31\x26\xDF\x41\x9D\xFA\x9E\x0A",64);
-//	memcpy(ppkKey.CAPKExponent,"\x00\x00\x03",3);
-//	memcpy(ppkKey.CAPKExpDate,"\x20\x20\x12\x31",4);
-//	ppkKey.LengthOfCAPKModulus=0x40;
-//	ppkKey.LengthOfCAPKExponent=3;
-//
-//	memcpy(szBuf, cAID, 5);
-//	szBuf[5]=Index;
-//	//memcpy(szBuf+5, (char *)stCAPK->cCAPKIndex_b_9F22, 1);
-//	memcpy(szBuf+6, (char *)ppkKey.CAPKModulus,ppkKey.LengthOfCAPKModulus);
-//	nLen = ppkKey.LengthOfCAPKModulus + 6;
-//	if(ppkKey.CAPKExponent[2]==0x03) {
-//		memcpy(szBuf+nLen, (char *)&(ppkKey.CAPKExponent[2]), 1);
-//		nLen += 1;
-//	}
-//	else {
-//		memcpy(szBuf+nLen, (char *)ppkKey.CAPKExponent, 3);
-//		nLen += 3;
-//	}
-//	memset(szHash, 0, sizeof(szHash));
-//	mf_sha1((unsigned char *)szBuf, nLen, (unsigned char *)szHash);
-//	memcpy(ppkKey.ChecksumHash,szHash,20);
-//	EMV_PrmSetCAPK(&ppkKey);
-//	free(szBuf);
-//
-//}
+
 static void init_capk_param(int binitial)
 {
 	if(binitial)
@@ -407,19 +352,19 @@ static void init_aid_param(int binitial)
 	if(binitial)
 		EMV_PrmClearAIDPrmFile();
 
-	TerminalApps=(TERMINALAPPLIST*)MALLOC(sizeof(TERMINALAPPLIST));
+	TerminalApps=(TERMINALAPPLIST*)Util_Malloc(sizeof(TERMINALAPPLIST));
 	if(TerminalApps==NULL)
 		return;
 	/*EMV_PrmGetAIDPrm(TerminalApps);
 	if(UEMV_PRM_OK==nret)
 	{
-		FREE(TerminalApps);
+		Util_Free(TerminalApps);
 		return;
 	}*/
 	memset(TerminalApps,0,sizeof(TERMINALAPPLIST));
 	sdk_add_demo_aids(TerminalApps);
 	EMV_PrmSetAIDPrm(TerminalApps);//Set AID
-	FREE(TerminalApps);
+	Util_Free(TerminalApps);
 }
 
 static void sdk_add_demo_rupay_prmacqkey(RUPAYPRMACQKEYLIST *pRuPayPRMacqKeyList)
@@ -432,7 +377,7 @@ static void sdk_add_demo_rupay_prmacqkey(RUPAYPRMACQKEYLIST *pRuPayPRMacqKeyList
 		return;
 
 	//01
-	APP_TRACE( "TestDownloadPRMacqKey" );
+	SYS_TRACE( "TestDownloadPRMacqKey" );
 	memset(pRuPayPRMacqKeyList,0x00,sizeof(RUPAYPRMACQKEYLIST));
 
 	memcpy(pRuPayPRMacqKeyList->PRMacqKey[n].ucServiceId,"\x10\x10",2);
@@ -462,7 +407,7 @@ static void sdk_add_demo_rupay_service(RUPAYSERVICELIST *pRuPayServiceList)
 	if(pRuPayServiceList==0)
 		return;
 
-	APP_TRACE( "TestDownloadRuPayService" );
+	SYS_TRACE( "TestDownloadRuPayService" );
 
 	//1
 	memcpy(pRuPayServiceList->ServiceData[n].ucServiceId,"\x10\x10",2);
@@ -507,14 +452,14 @@ void init_service_prmacqkey(int binitial)
 		
 
 	//PRMacqKey
-	pRuPayPRMacqKeyList=(RUPAYPRMACQKEYLIST*)MALLOC(sizeof(RUPAYPRMACQKEYLIST));
+	pRuPayPRMacqKeyList=(RUPAYPRMACQKEYLIST*)Util_Malloc(sizeof(RUPAYPRMACQKEYLIST));
 	if(pRuPayPRMacqKeyList==NULL)
 		return;
 	
 	memset(pRuPayPRMacqKeyList,0,sizeof(RUPAYPRMACQKEYLIST));
 	sdk_add_demo_rupay_prmacqkey(pRuPayPRMacqKeyList);
 	nret = EMV_SetRuPayPRMacqKeyList(pRuPayPRMacqKeyList);	//Set PRMacqKey
-	FREE(pRuPayPRMacqKeyList);
+	Util_Free(pRuPayPRMacqKeyList);
 
 	if(nret != SUCC)
 	{
@@ -523,14 +468,14 @@ void init_service_prmacqkey(int binitial)
 	}
 
 	//Service
-	pRuPayServiceList=(RUPAYSERVICELIST*)MALLOC(sizeof(RUPAYSERVICELIST));
+	pRuPayServiceList=(RUPAYSERVICELIST*)Util_Malloc(sizeof(RUPAYSERVICELIST));
 	if(pRuPayServiceList==NULL)
 		return;
 
 	memset(pRuPayServiceList,0,sizeof(RUPAYSERVICELIST));
 	sdk_add_demo_rupay_service(pRuPayServiceList);
 	nret = EMV_SetRuPayServiceList(pRuPayServiceList);		//Set rupay service
-	FREE(pRuPayServiceList);
+	Util_Free(pRuPayServiceList);
 
 	if(nret == SUCC)
 	{
@@ -545,8 +490,6 @@ void init_service_prmacqkey(int binitial)
 
 static int sdk_readcard_config(void)
 {
-	
-
 	//EMV_SetInputPin( m_InputPin );//Set offline PIN verification interface
 	//EMV_SetDispOffPin( m_DispOffPin );//Set offline PIN prompt interface
 	//EMV_SetReadingCardDisp(m_ReadingCardDisp);
@@ -565,15 +508,15 @@ int upay_readcard_proc(st_read_card_in *card_in, st_read_card_out *card_out)
 {
 	int ret=EMVAPI_RET_CANCEL;
 
-	APP_TRACE( "upay_readcard_proc" );
+	SYS_TRACE( "upay_readcard_proc" );
 
 loop_card:
 	memset(card_out, 0, sizeof(st_read_card_out));
-	//dukpt_prepare_key(0, card_out->pin_ksn);//ksn在读卡后读取不需要单独读取
+	//dukpt_prepare_key(0, card_out->pin_ksn);//ksn?????????????????????
 
 	ret = emv_read_card(card_in, card_out);
 
-	APP_TRACE( "-----------------------sdk_readcard Ret:%d-------------------------",ret);
+	SYS_TRACE( "-----------------------sdk_readcard Ret:%d-------------------------",ret);
 	//emv_read_card return value processing
 	if(EMVAPI_RET_FALLBACk==ret){//fallback mode
 		card_in->card_mode = READ_CARD_MODE_MAG;
@@ -600,7 +543,7 @@ loop_card:
 	}
 	else if(EMVAPI_RET_SEEPHONE==ret)//visa require see phone and retry
 	{
-		osl_Sleep(60000);//delay 1 minute
+		Sys_Delay(60000);//delay 1 minute
 		card_in->card_mode = READ_CARD_MODE_RF;
 		memset(card_in->card_page_msg,0x00,sizeof(card_in->card_page_msg));
 		strcpy(card_in->card_page_msg,"See Phone and Retry");
@@ -609,51 +552,51 @@ loop_card:
 
 	if(EMVAPI_RET_ARQC == ret)//online
 	{
-		xgui_messagebox_show("", "Online Request" , "" , "ok" , 0);
+		gui_messagebox_show("", "Online Request" , "" , "ok" , 0);
 		ret = sdk_online_proc(card_in->ic_online_resp);//online processing
 	}
 
 	if(EMVAPI_RET_TC == ret)//approved 
 	{
-		xgui_messagebox_show("", "Approved" , "" , "ok" , 0);
+		gui_messagebox_show("", "Approved" , "" , "ok" , 0);
 	}
 	else if(EMVAPI_RET_AAC == ret)//decline
 	{
-		xgui_messagebox_show("", "Declined" , "" , "ok" , 0);
+		gui_messagebox_show("", "Declined" , "" , "ok" , 0);
 	}
 	else if(EMVAPI_RET_AAR == ret)//terminate
 	{
-		xgui_messagebox_show("", "Terminate" , "" , "ok" , 0);
+		gui_messagebox_show("", "Terminate" , "" , "ok" , 0);
 	}
 	else if(EMVAPI_RET_TIMEOUT == ret)//timeout
 	{
-		xgui_messagebox_show("", "time out" , "" , "ok" , 0);
+		gui_messagebox_show("", "time out" , "" , "ok" , 0);
 	}
 	else if(EMVAPI_RET_CANCEL == ret)//Cancel
 	{
-		xgui_messagebox_show("", "Cancel" , "" , "ok" , 0);
+		gui_messagebox_show("", "Cancel" , "" , "ok" , 0);
 	}
 
-	APP_TRACE( "-----------------------card_info---------------------------" );
-	APP_TRACE( "card_type:%d\r\n", card_out->card_type );
-	APP_TRACE("trackb:%s\r\n", card_out->track2);
-	APP_TRACE("trackc:%s\r\n", card_out->track3);
-	APP_TRACE("pan:%s\r\n", card_out->pan);
-	APP_TRACE("expdate:%s\r\n", card_out->exp_data);
-	APP_TRACE_BUFF_TIP(card_out->pin_block, sizeof(card_out->pin_block), "pin_block:");
-	osl_Sleep(50);
-	APP_TRACE_BUFF_TIP(card_out->pin_ksn, sizeof(card_out->pin_ksn), "KSN:");
-	osl_Sleep(50);	
-	APP_TRACE("vChName:%s\r\n", card_out->vChName);
-	APP_TRACE("ic_data_len:%d\r\n", card_out->ic_data_len);
-	APP_TRACE_BUFF_TIP(card_out->ic_data, card_out->ic_data_len, "ic_data:");
-	//Due to interface memory limitations, large data log output, can not use APP_TRACE, should use APP_TRACE_BUFF_TIP.
+	SYS_TRACE( "-----------------------card_info---------------------------" );
+	SYS_TRACE( "card_type:%d\r\n", card_out->card_type );
+	SYS_TRACE("trackb:%s\r\n", card_out->track2);
+	SYS_TRACE("trackc:%s\r\n", card_out->track3);
+	SYS_TRACE("pan:%s\r\n", card_out->pan);
+	SYS_TRACE("expdate:%s\r\n", card_out->exp_data);
+	SYS_TRACE_BUFF(card_out->pin_block, sizeof(card_out->pin_block), "pin_block:");
+	Sys_Delay(50);
+	SYS_TRACE_BUFF(card_out->pin_ksn, sizeof(card_out->pin_ksn), "KSN:");
+	Sys_Delay(50);	
+	SYS_TRACE("vChName:%s\r\n", card_out->vChName);
+	SYS_TRACE("ic_data_len:%d\r\n", card_out->ic_data_len);
+	SYS_TRACE_BUFF(card_out->ic_data, card_out->ic_data_len, "ic_data:");
+	//Due to interface memory limitations, large data log output, can not use SYS_TRACE, should use SYS_TRACE_BUFF_TIP.
 	//xgui_messagebox_show("track2", card_out->track2 , "" , "ok" , 0);
 
 	//just for show testing
 	if(EMVAPI_RET_TC == ret||EMVAPI_RET_SUCC == ret){
-		xgui_messagebox_show("pan", card_out->pan , "" , "ok" , 0);
-		xgui_messagebox_show("expdate", card_out->exp_data , "" , "ok" , 0);
+		gui_messagebox_show("pan", card_out->pan , "" , "ok" , 0);
+		gui_messagebox_show("expdate", card_out->exp_data , "" , "ok" , 0);
 	}
 
 	return ret;

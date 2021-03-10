@@ -1,44 +1,14 @@
-#include "sdk_xgui.h"
-#include "xGui/inc/mainmenu.h"
-#include "xGui/inc/2ddraw.h"
-#include "xGui/inc/messagedatastruct.h"
-#include "xGui/inc/message.h"
-#include "xGui/inc/messagebox.h"
-#include "xGui/inc/xgui_key.h"
-#include "xGui/inc/pageproc.h"
-#include "xGui/inc/xgui_bmp.h"
-#include "sdk_http.h"
-#include "sdk_showqr.h"
-#include "sdk_file.h"
-#include "sdk_img.h"
+#include "app_def.h"
 #include "driver/mf_rtc.h"
-#include "pub/common/misc/inc/mfmalloc.h"
-#include "libapi_xpos/inc/libapi_gui.h"
-#include "sdk_driver.h"
-#include "libapi_xpos/inc/libapi_emv.h"
 
 #define LOGOIMG "data\\logo2.bmp"
-
-#include "sdk_timer.h"
-
 #define MAIN_MENU_PAGE	"main"
-// #define STR_MENU_MAIN			"Horizon Pay"
-// #define STR_MENU_PURCHASE		"Purchase"
-// #define STR_MENU_BALANCE			"Balance"
-// #define STR_MENU_REVERSAL		"Reversal"
-// #define STR_MENU_SETUP			"Setup"
-
-enum{
-	DRIVER_TYPE_MAG,
-	DRIVER_TYPE_ICC,
-	DRIVER_TYPE_RF,
-};
 
 
 // Define the menu array, the first parameter is the name of the parent menu, 
 // the second parameter is the name of the current menu,
 // and the second parameter is set when the name is duplicated.
-static  const st_main_menu_item_def _menu_def[] = {
+static  st_gui_menu_item_def _menu_def[] = {
 	{MAIN_MENU_PAGE ,	"Sale",			""},
 	{MAIN_MENU_PAGE ,	"CodePay",		""},
 	{MAIN_MENU_PAGE ,	"Version",		""},
@@ -48,11 +18,10 @@ static  const st_main_menu_item_def _menu_def[] = {
 
 	{"Test" ,	"DevInfo",		""},
 	{"Test" ,	"Print",		""},
-	//{"Test",	"magcard",		""},
-	//{"Test",	"Ic",			""},
-	//{"Test",	"RF",			""},
-	{"Test",	"M1",			""},
-//	{"Test",	"Touch",		""},
+	{"Test" ,	"ReadCard",		""},
+	{"Test" ,	"MallocTest",		""},
+	{"Test",	"KeyCheck",		""},
+	{"Test",	"Touch",		""},
 	{"Test",	"Barcode",		""},
 	{"Test",	"Security",		""},
 	{"Test",	"Http",		    ""},
@@ -61,16 +30,18 @@ static  const st_main_menu_item_def _menu_def[] = {
 	{"Test",	"File",		    ""},
 	{"Test",	"ShowBmp",		""},	
     {"Test",    "Led",          ""},
-//	{"Test",    "Input",        ""},
-//	{"Test",	"Wifi Link",    ""},
+	{"Test",    "uart test",          ""},
+	{"Test",	"Wifi Link",    ""},
 
+	{"Settings",	"Net Select",	""},
 	{"Settings",	"Wifi Set",	""},
 	{"Settings",	"keySound",		""},
 	{"Settings",	"lcdLight",		""},
 	{"Settings",	"powerTime",    ""},	
 	{"Settings",	"TimeSet",		""},	
 	{"Settings",	"Open Log",		""},	
-	{"Settings",	"Set Dukpt Key",		""},	
+	{"Settings",	"Set Dukpt Key",		""},
+
 	{"Others",		"View AID",		""},
 	{"Others",		"View CAPK",	""},
 	{"Others",		"View emv",	""},
@@ -80,42 +51,12 @@ static  const st_main_menu_item_def _menu_def[] = {
 	{"Others",		"RP SrData DlTest",	""},
 };
 
-/*static  const st_main_menu_item_def _menu_def[] = 
-{
-	{STR_MENU_MAIN ,	STR_MENU_PURCHASE,			""},
-	{STR_MENU_MAIN ,	STR_MENU_BALANCE,			""},
-	{STR_MENU_MAIN ,	STR_MENU_REVERSAL,			""},
-	{STR_MENU_MAIN ,	"Test",			""},
-	{STR_MENU_MAIN ,	STR_MENU_SETUP,			""},
-
-	{"Test" ,	"DevInfo",		""},
-	{"Test" ,	"Print",		""},
-	{"Test",	"magcard",		""},
-	{"Test",	"Ic",			""},
-	{"Test",	"RF",			""},
-	//{"Test",	"Touch",		""},
-	{"Test",	"Barcode",		""},
-	{"Test",	"Security",		""},
-	{"Test",	"Http",		""},
-	{"Test",	"ShowQr",		""},
-	{"Test",	"File",		""},
-	{"Test",	"ShowBmp",		""},
-
-
-	{STR_MENU_SETUP,	"Wifi Menu",	""},
-	{STR_MENU_SETUP,	"keySound",		""},
-	{STR_MENU_SETUP,	"lcdLight",		""},
-	{STR_MENU_SETUP,	"powerTime",	""},
-	{STR_MENU_SETUP,	"TimeSet",		""},
-	
-};*/
-
-
 static int getversions( char *buff)
 {
 	int i = 0;
 
 	i += sprintf(buff + i, "api:%s\r\n", libapi_version());
+	i += sprintf(buff + i, "emv:%s\r\n", EMV_GetVersion());
 	i += sprintf(buff + i, "apppub:%s\r\n", apppub_version());
 	i += sprintf(buff + i, "atc:%s\r\n", atc_version());
 	i += sprintf(buff + i, "json:%s\r\n", json_version());
@@ -134,6 +75,11 @@ static int getversions( char *buff)
 // The menu callback function, as long as all the menu operations of this function are registered, 
 // this function will be called, and the selected menu name will be returned. 
 // It is mainly determined in this function that the response menu name is processed differently.
+
+
+extern int keySoundSet_Show_test();
+extern void PowerDownTimeSet_Show();
+
 static int _menu_proc(char *pid)
 {
 	int ret;
@@ -143,15 +89,43 @@ static int _menu_proc(char *pid)
 
 	if (strcmp(pid , "Sale") == 0){
 		upay_consum();
-		//tt_upay_consum();
 	}
 	else if (strcmp(pid , "Version") == 0){
 		sprintf(msg , "app:%s\r\n", APP_VER);
 		sprintf(msg + strlen(msg), "hardware:%s\r\n", sec_get_hw_ver());
 		sprintf(msg + strlen(msg), "fireware:%s\r\n", sec_get_fw_ver());
 		getversions(msg + strlen(msg));
-		
 		gui_messagebox_show( "Version" , msg , "" , "confirm" , 0);
+	}
+
+	else if(strcmp(pid , "MallocTest") == 0){
+		unsigned char* a2;
+		unsigned char* a3;
+		unsigned char* a1 = (unsigned char*) Util_Malloc(1000);
+		Util_Free(a1);
+		a1 = (unsigned char*) Util_Malloc(10000);
+		//Util_Free(a1);
+		a2 = (unsigned char*) Util_Malloc(10001);
+		//Util_Free(a1);
+		//a3 = (unsigned char*) Util_Malloc(10002);
+		Util_Free(a1);
+		Util_Free(a2);
+		//Util_Free(a3);
+		gui_messagebox_show( pid,"Success" , "" , "confirm" , 0);
+	}
+	else if(strcmp(pid,"uart test")==0)
+	{
+		uart_test_page();
+	}
+	else if(strcmp("ReadCard",pid)==0){
+		card_magtek_track_info stMagtek;
+		ret = inputcard_page_showd(pid,&stMagtek,60000);
+		if(READ_CARD_RET_MAGNETIC==ret)
+			gui_messagebox_show( pid , "Detect Magstripe" , "" , "confirm" , 0);
+		else if(READ_CARD_RET_IC==ret)
+			gui_messagebox_show( pid , "Detect ICC" , "" , "confirm" , 0);
+		else if(READ_CARD_RET_RF==ret)
+			gui_messagebox_show( pid , "Detect NFC" , "" , "confirm" , 0);
 	}
 	else if (strcmp(pid , "CodePay") == 0){	
 		upay_barscan();
@@ -163,13 +137,13 @@ static int _menu_proc(char *pid)
 		sdk_print();
 	}
 	else if (strcmp(pid , "magcard") == 0){
-		//test_magcard();
+		sdk_driver_magtek();
 	}
 	else if (strcmp(pid , "Ic") == 0){
-		//test_IC();
+		sdk_driver_icc();
 	}
 	else if (strcmp(pid , "RF") == 0){
-		//test_rf();
+		sdk_driver_rf();
 	}
 	else if (strcmp(pid , "M1") == 0){
 		test_m1();
@@ -194,6 +168,22 @@ static int _menu_proc(char *pid)
 	}
 	else if (strcmp(pid , "Security") == 0)	{
 		securityTest();
+	}
+	else if(strcmp(pid, "KeyCheck")==0){
+		char szMac[21]={0};
+		int ret =0;
+		//sec_mac_proc(SEC_DUKPT_FIELD,0,SEC_MAC_X919_FORMAT,"data1data247584data3484884qwerty",32,szMac,DUKPT_DES_KEY_MAC1);
+		ret = check_app_key("\x73\x61\x2a\x03\xfc\x98\xa3\xdd\x75\x81\xd2\x04\xba\x17\x61\xbd\x4c\x79\xfa\xeb");
+		if(ret==0)
+			gui_messagebox_show( "app key", "check fail!" ,"","Confirm" ,0);
+		else if(ret==1)
+			gui_messagebox_show( "app key", "check succ" ,"","Confirm" ,0);
+
+		ret = check_app_key("\x06\x8A\x5E\x39\xD0\xF0\xE9\x17\x13\x1A\xBA\x62\xA3\xB2\x3A\xCE\xA9\x40\xE5\x4D");
+		if(ret==0)
+			gui_messagebox_show( "app key1", "check fail!" ,"","Confirm" ,0);
+		else if(ret==1)
+			gui_messagebox_show( "app key1", "check succ" ,"","Confirm" ,0);
 	}
 	else if (strcmp(pid , "Http") == 0)	{
 		sdk_http_test();
@@ -225,10 +215,6 @@ static int _menu_proc(char *pid)
 	{
 		wifi_link_test();
 	}
-// 	else if (strcmp(pid, "Input") == 0)
-// 	{
-// 		input_test();
-// 	}
 	else if (strcmp(pid, "Set Dukpt Key") == 0)
 	{
 		SetDukptKey();
@@ -282,12 +268,11 @@ void standby_pagepaint()
 {
 	char data[32]={0};
 
-	xgui_BeginBatchPaint();
-	XGUI_SET_WIN_RC;
-	xgui_ClearDC();
+	gui_begin_batch_paint();
+	gui_set_win_rc();
+	gui_clear_dc();
 
 	//xgui_SetTitle("Pay Demo");
-
 	{
 		int logowidth;
 		int logoheight;
@@ -298,30 +283,36 @@ void standby_pagepaint()
 		char * pbmp;	
                 
         logoleft = 30;
-		logotop = XGUI_LINE_TOP_1;
+		logotop = GUI_LINE_TOP(1);
 
-		pbmp = xgui_load_bmp_all(LOGOIMG , &logowidth , &logoheight, &logocolor);
+		pbmp = gui_load_bmp_ex(LOGOIMG , &logowidth , &logoheight, &logocolor);
 
 		if (pbmp != 0){
-			xgui_out_bits_bmp(logoleft, logotop, pbmp , logowidth , logoheight , 0 , logocolor);
-			FREE(pbmp);
+			gui_out_bits_ex(logoleft, logotop, pbmp , logowidth , logoheight , 0 , logocolor);
+			Util_Free(pbmp);
 		}
 	}
 
+	xgui_TextOut_Line_Center("welcome", GUI_LINE_TOP(0));
+	//gui_text_out_ex(0, GUI_LINE_TOP(1), "\xD9\x84\xD8\xA7\xDA\xAF\x20\xD8\xA2\xD9\x86\x20\xD8\xA7\xD8\xB3\xD8\xAA");
+	//gui_textout_line_right("\xD9\x84\xD8\xA7\xDA\xAF", GUI_LINE_TOP(2));
 	get_yyyymmdd_str(data);	
-	xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_3);
+	//sprintf(data, "%s",/* APP_VER,*/Sys_GetAppVer());
+	gui_textout_line_center(data, GUI_LINE_TOP(3));
 	get_hhmmss_str(data);	
-	xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_4);
+	//sprintf(data, "%s",/* APP_VER,*/mfs_get_fw_ver());
+	gui_textout_line_center(data, GUI_LINE_TOP(4));
+	//sprintf(data, "%d",/* APP_VER,*/Sys_GetDeviceType());
 	sprintf(data, "%s", APP_VER);
-	xgui_TextOut_Line_Center(data, XGUI_LINE_TOP_5);
+	gui_textout_line_center(data, GUI_LINE_TOP(5));
 
-	xgui_EndBatchPaint();
+	gui_end_batch_paint();
 }
 
 
 void sdk_main_page()
 {
-	MESSAGE pMsg;
+	st_gui_message pMsg;
 	static int xgui_init_flag = 0;
 	char time_cur[20];
 	char time_last[20];
@@ -331,13 +322,6 @@ void sdk_main_page()
 	get_hhmmss_str(time_last);
 
 	sdk_timer_init();
-#ifdef WIN32
-	//upay_consum();
-	//upay_barscan();
-	//test_devinfo();
-	//test_touch();
-	//sdk_https_test();
-#endif
 
 	ret = lcd_get_index();
 	lcd_set_index(1);
@@ -347,39 +331,37 @@ void sdk_main_page()
 
 	if(xgui_init_flag == 0){
 		xgui_init_flag = 1;
-		xgui_main_menu_func_add((void *)_menu_proc);		// Registration menu callback processing
-		for(i = 0; i < MENU_ITEM_COUNT(_menu_def); i ++){	// Add menu items cyclically
-			xgui_main_menu_item_add(_menu_def + i);	
+		gui_main_menu_func_add((void *)_menu_proc);		// Registration menu callback processing
+		for(i = 0; i < GUI_MENU_ITEM_COUNT(_menu_def); i ++){	// Add menu items cyclically
+			gui_main_menu_item_add(_menu_def + i);	
 		}
 	}
-	xgui_PostMessage(XM_GUIPAINT, 0 , 0);
+	gui_post_message(GUI_GUIPAINT, 0 , 0);
 	while(1){
-		if (xgui_GetMessageWithTime(&pMsg, 300) == MESSAGE_ERR_NO_ERR) {
+		if (gui_get_message(&pMsg, 300) == 0) {
 
-			if (pMsg.MessageId == XM_GUIPAINT) {
+			if (pMsg.message_id == GUI_GUIPAINT) {
 				standby_pagepaint();
 			}
-			else if (pMsg.MessageId == XM_KEYPRESS) {
-				argot_keyinput(pMsg.WParam);
+			else if (pMsg.message_id == GUI_KEYPRESS) {
+				argot_keyinput(pMsg.wparam);
 
-				if (pMsg.WParam == KEY_OK || pMsg.WParam == KEY_QUIT)	
+				if (pMsg.wparam == GUI_KEY_OK || pMsg.wparam == GUI_KEY_QUIT)	
 				{
-					xgui_main_menu_show(MAIN_MENU_PAGE , 0);	// 循环处理菜单
+					gui_main_menu_show(MAIN_MENU_PAGE , 0);	
 
-					xgui_PostMessage(XM_GUIPAINT, 0 , 0);
+					gui_post_message(GUI_GUIPAINT, 0 , 0);
 				}
 			}
 			else{
-				xgui_proc_default_msg(&pMsg);
+				gui_proc_default_msg(&pMsg);
 			}
 		}	
 
 		get_hhmmss_str(time_cur);
 		if ( strcmp(time_last,time_cur) != 0 ){
 			strcpy(time_last, time_cur );
-			xgui_PostMessage(XM_GUIPAINT, 0 , 0);
+			gui_post_message(GUI_GUIPAINT, 0 , 0);
 		}
 	}
 }
-
-

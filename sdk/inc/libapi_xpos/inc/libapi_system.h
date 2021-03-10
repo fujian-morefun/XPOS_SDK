@@ -4,7 +4,6 @@
 #include "libapi_pub.h"
 
 
-
 #define  DEVICE_TYPE_MF67		13
 #define  DEVICE_TYPE_MF68		199
 #define  DEVICE_TYPE_MF69		14
@@ -158,6 +157,7 @@ return: USYS_FAIL           = -1,    Fail
 Remarks: Nothing
 *************************************************************************************/
 LIB_EXPORT int Sys_TimerClose(int iHandle);
+LIB_EXPORT unsigned int Sys_GetTick();
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
@@ -580,9 +580,34 @@ return:
 Remarks: Nothing
 *************************************************************************************/
 LIB_EXPORT void Sys_tms_update();
+LIB_EXPORT void Sys_TaskCreate( void(*pfun)(void *param) , int prio, char * stk, int task_size );
+LIB_EXPORT void Sys_set_log_data(char * buff , int len);
+LIB_EXPORT void Sys_init();
+LIB_EXPORT void Sys_magtek_open();
+LIB_EXPORT void Sys_magtek_close();
+LIB_EXPORT int Sys_Enercy_Time();
+LIB_EXPORT int Sys_Enercy_SetTime( int nTime );
 
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:George
+Functions:set device language
+Input :nLanguageType; 0,Chinese;1,English;2,Persian 
+Output :
+return: 
+Remarks: Nothing
+*************************************************************************************/
+LIB_EXPORT void Sys_set_language(int nLanguageType);
+LIB_EXPORT unsigned int Sys_TimerCreate(void *pfunc, void* pParam, unsigned int nPeriod, unsigned int nMode, unsigned int *pnErrorCode);
+LIB_EXPORT unsigned int Sys_TimerEnable (unsigned int nTimerNo);
+LIB_EXPORT int Sys_model_type();
+LIB_EXPORT const char * Sys_getDeviceVision();
+LIB_EXPORT void Sys_get_psn(char * psn);
+		  
 #define SYS_TRACE( ...)	osl_log( "app", 2 , __VA_ARGS__ )
 #define SYS_TRACE_BUFF(buff,size,tip) 	osl_log_buff_tip("app",2,buff, size , tip ,1 );
+
+
 
 
 #endif /*__LIBAPI_SYSTEM_HEADER__*/

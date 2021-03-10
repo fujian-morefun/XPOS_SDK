@@ -1,13 +1,6 @@
-#include "sdk_showqr.h"
+#include "app_def.h"
 #include "pub/qrencode/QrEncode.h"
-#include "xGui/inc/2ddraw.h"
-#include "xGui/inc/message.h"
-#include "xGui/inc/xgui_key.h"
-#include "pub/common/misc/inc/mfmalloc.h"
-
-#include "pub\tracedef.h"
 #include "libqr/inc/qr.h"
-#include "xGui/inc/xgui_bmp.h"
 
 #define QR_WIDTH	240
 #define QR_HEIGHT	240
@@ -39,33 +32,33 @@ int generate_code( char *data,char **outbitmap,int *outwidth  )
 	datalen = strlen(data);
 
 	qr = qrInit(version, mode, eclevel, masktype, &errcode);
-	APP_TRACE("qrInit\r\n");
+	SYS_TRACE("qrInit\r\n");
 
 	qrAddData(qr, data,datalen );
-	APP_TRACE("qrAddData\r\n");
+	SYS_TRACE("qrAddData\r\n");
 	qrFinalize(qr);
-	APP_TRACE("qrFinalize datalen=%d version = %d  mode=%d\r\n" , datalen, qr->param.version , qr->param.mode );
+	SYS_TRACE("qrFinalize datalen=%d version = %d  mode=%d\r\n" , datalen, qr->param.version , qr->param.mode );
 
 	nsize = 0;
 	bitmap = qrGetSymbol(qr,  QR_FMT_BMP,  sep,  mag,  &nsize);
-	APP_TRACE("qrGetSymbol nsize=%d\r\n" , nsize);
+	SYS_TRACE("qrGetSymbol nsize=%d\r\n" , nsize);
 	if (  nsize > 0 )
 	{
 		File_WriteBlockByName( TEMP ,0,bitmap,nsize);
 	}
 	else{
-		FREE(bitmap);
+		Util_Free(bitmap);
 	}
 	qrDestroy(qr);
 
-	APP_TRACE("qrDestroy nsize = %d\r\n",nsize);
+	SYS_TRACE("qrDestroy nsize = %d\r\n",nsize);
 
 	if ( nsize > 0 )
-	{//生成成功
-		*outbitmap = xgui_load_bmp(TEMP,outwidth,&height);
+	{//??????
+		*outbitmap = gui_load_bmp(TEMP,outwidth,&height);
 	}
 	else{
-		//生成失败
+		//???????
 		*outbitmap = 0 ;
 		*outwidth = 0;
 	}
@@ -81,12 +74,12 @@ void showQrTest()
 	Param_QR_INFO qr_info;
 	int i;
 	int msg_ret; 
-	MESSAGE pMsg;
-	char * bitmap = (char *)MALLOC(QR_HEIGHT*QR_HEIGHT/8);
+	st_gui_message pMsg;
+	char * bitmap = (char *)Util_Malloc(QR_HEIGHT*QR_HEIGHT/8);
 	int width = 0;
 	int ret = 0;
-	unsigned int tick1 = osl_GetTick();	
-	unsigned int tick2 = osl_GetTick();
+	unsigned int tick1 = Sys_TimerOpen(60000);	
+	//unsigned int tick2 = osl_GetTick();
 	int zoom =  1;
 	int left,top;
 	char *data= "test qr code";
@@ -104,39 +97,39 @@ void showQrTest()
 #else
 	generate_code( data, &bitmap, &width );
 #endif
-	xgui_PostMessage(XM_GUIPAINT, 0 , 0);  // Send a paint message
+	gui_post_message(GUI_GUIPAINT, 0 , 0);  // Send a paint message
 
 	if(width > 0){
 
 		while(1){
-			if (osl_CheckTimeover(tick1 , 60000) != 0)	{	// Check page timeout
+			if (Sys_TimerCheck(tick1) == 0)	{	// Check page timeout
 				ret = -3;
 				break;
 			}
 
-			msg_ret = xgui_GetMessageWithTime(&pMsg, 500);		// Get the message 
-			if(msg_ret == MESSAGE_ERR_NO_ERR){
-				if (pMsg.MessageId == XM_GUIPAINT) {			// 	If it is a paint message, draw the page	
-					xgui_BeginBatchPaint();
-					xgui_ClearDC();
+			msg_ret = gui_get_message(&pMsg, 500);		// Get the message 
+			if(msg_ret == 0){
+				if (pMsg.message_id == GUI_GUIPAINT) {			// 	If it is a paint message, draw the page	
+					gui_begin_batch_paint();
+					gui_clear_dc();
 					
 					// Calculate barcode position, centered display
-					left = (xgui_GetWidth() - width * zoom)  / 2;	
-					top = (xgui_GetHeight() - width * zoom) / 2;
-					xgui_out_bits(left, top ,(unsigned char *)bitmap , width , width , 0);	
+					left = (gui_get_width() - width * zoom)  / 2;	
+					top = (gui_get_height() - width * zoom) / 2;
+					gui_out_bits(left, top ,(unsigned char *)bitmap , width , width , 0);	
 					
-					xgui_EndBatchPaint();
+					gui_end_batch_paint();
 				}
-				else if (pMsg.MessageId == XM_KEYPRESS){		// Handling key messages
-					if(pMsg.WParam == KEY_OK){
+				else if (pMsg.message_id == GUI_KEYPRESS){		// Handling key messages
+					if(pMsg.wparam == GUI_KEY_OK){
 						break;
 					}
-					else if(pMsg.WParam == KEY_QUIT){
+					else if(pMsg.wparam == GUI_KEY_QUIT){
 						ret = -2;
 						break;
 					}
 				}
-				xgui_proc_default_msg(&pMsg);				//  Let the system handle some common messages
+				gui_proc_default_msg(&pMsg);				//  Let the system handle some common messages
 			}
 
 
@@ -145,7 +138,7 @@ void showQrTest()
 	else{
 
 	}
-	FREE(bitmap);
+	Util_Free(bitmap);
 
 
 

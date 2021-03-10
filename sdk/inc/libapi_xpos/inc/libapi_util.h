@@ -1,5 +1,5 @@
-#ifndef _LIBAPI_UTIL_HEADER_
-#define _LIBAPI_UTIL_HEADER_
+#ifndef __LIBAPI_UTIL_HEADER__
+#define __LIBAPI_UTIL_HEADER__
 
 #include "libapi_pub.h"
 
@@ -342,5 +342,8 @@ Output : Nothing
 return: 
 *************************************************************************************/
 LIB_EXPORT void Util_Free( void * p);
+LIB_EXPORT int Util_hzk_is_gbk_char(unsigned char *ch1);
+
+LIB_EXPORT int Util_SHA1(const byte *psSrc, uint nSrcLen, byte *psDst);
 
 #endif /*__LIBAPI_UTIL_HEADER__*/

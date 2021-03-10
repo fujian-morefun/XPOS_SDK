@@ -1,7 +1,5 @@
-#include "sdk_print.h"
-#include "pub/osl/inc/osl_print.h"
-#include "pub/osl/inc/osl_filedef.h"
-#include "pub\tracedef.h"
+#include "app_def.h"
+
 
 
 const char  raw[] ={
@@ -286,49 +284,61 @@ const char  raw[] ={
 void creat_bmp()
 {
 	int fp;
-	fp = mf_file_open("data\\test.bmp", FILE_CREAT_FLAG, FILE_WRITE_MODE);
-	mf_file_write(fp, raw, sizeof(raw));
-	mf_file_close(fp);
+	int ret = 0;
+	ret = UFile_OpenCreate("test.bmp", FILE_PRIVATE, FILE_CREAT, &fp, 0);
+	if(ret == 0)
+	{
+		UFile_Write(fp, (char *)raw, sizeof(raw));
+		UFile_Close(fp);
+	}
+	
 }
 
 void sdk_print()
 {
 	int ret ; 
-	
 	creat_bmp();
 	// Prompt is printing
-	xgui_BeginBatchPaint();			
-	xgui_ClearDC();
-	xgui_TextOut_Win_Center("printing...");
-	xgui_EndBatchPaint();
-
-
-	osl_print_add(osl_print_align(0));						// Set left alignment
-	osl_print_add(osl_print_cn_font_size(1));				// Set Chinese 16 dot matrix font
-	osl_print_add(osl_print_cn_font_zoom(1 ,2));			// Set Chinese magnification
-	osl_print_add("test1");									// Set the print content
-
-
-	osl_print_add(osl_print_align(1));						// Set center alignment
-	osl_print_add(osl_print_cn_font_size(1));				// Set English font
-	osl_print_add(osl_print_cn_font_zoom(1 ,2));			// Set English magnification
-	osl_print_add("test1");									// Set the print content
-
-	osl_print_add(osl_print_align(1));						// Set center alignment
-	osl_print_add(osl_print_img("data\\test.bmp"));			// Set bmp file printing
-	osl_print_add(osl_print_row_space(100));				// Set the paper to go 100 points
+	gui_begin_batch_paint();			
+	gui_clear_dc();
+	gui_text_out_win_center("printing...");
+	gui_end_batch_paint();
+	// Set left alignment
+	// Set Chinese 16 dot matrix font
+	UPrint_SetFont(1,1,2);			// Set Chinese magnification
+	//osl_print_add("test1");	
+	UPrint_StrBold("test1", 0, 1, 1, 1);
+		// Set center alignment
+	UPrint_SetFont(1,1,2);				// Set English font
+							// Set English magnification
+	UPrint_StrBold("test2", 1, 1, 1, 1);								// Set the print content
 	
-	ret = mf_thermal_printer_nopaper();						// check no paper
-	APP_TRACE( "osl_print_write: %d", ret );
+	UPrint_BitMap("data\\test.bmp",1);// Set bmp file printing,Set center alignment
+
+	UPrint_Feed(100);				// Set the paper to go 100 points
+
+	ret = UPrint_Init();						// check no paper
     if(ret == 1)
     {
-		xgui_messagebox_show( "Print" , "No paper" , "" , "confirm" , 0);
+		gui_messagebox_show( "Print" , "No paper" , "" , "confirm" , 0);
 	}  
 	else
 	{
-		osl_print_write(osl_print_get());						// Output to printer
-	}
-
-	osl_print_free();										// Release print buffer
+		UPrint_Start();					// Output to printer
+	}	
 }
 
+//void test_func()
+//{
+//	int fp;
+//	char bufer[1024];
+//	xgui_messagebox_show("test",bufer,"","",0);
+//}
+//void test_func()
+//{
+//	int fp;
+//	char *bufer=0;
+//	bufer=(char*)Util_Malloc(1024);
+//	xgui_messagebox_show("test",bufer,"","",0);
+//	Util_Free(bufer);
+//}

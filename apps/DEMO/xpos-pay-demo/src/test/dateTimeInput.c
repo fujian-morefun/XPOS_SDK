@@ -1,10 +1,7 @@
+#include "../app_def.h"
 #include "dateTimeInput.h"
-#include "xGui/inc/message.h"
-#include "pub/osl/inc/osl_log.h"
-#include "xGui/inc/xgui_key.h"
-#include "xGui/inc/draw_buf.h"
-#include <stdio.h>
-#include <xGui/inc/pageproc.h>
+
+
 
 static void _dateTime_Paint(DATETIME_ST * pdt)
 {
@@ -30,28 +27,28 @@ static void _dateTime_Paint(DATETIME_ST * pdt)
 //	newRc.right  = xgui_GetWidth() - 1;
 //	newRc.bottom = xgui_GetHeight() - 1;
 
-	nFourNumWidth = xgui_GetTextWidth("0000");
-	nTwoNumWidth = xgui_GetTextWidth("00");
-	nTipWidth = xgui_GetTextWidth("-");
+	nFourNumWidth = gui_text_width_ex("0000");
+	nTwoNumWidth = gui_text_width_ex("00");
+	nTipWidth = gui_text_width_ex("-");
 	nTextHeight = xgui_line_height();
 
 //	xgui_GetViewPort(&oldrc);
 //	xgui_SetViewPort_RC(&newRc);	//set dc viewport
 	
-	xgui_SetTextStyle(UTEXT_SOLID);
-	xgui_BeginBatchPaint();
+	gui_settextstyle(UTEXT_SOLID);
+	gui_begin_batch_paint();
 	
 	//Set background white, font black
 	//xgui_SetTextBgColor(0);
 	//xgui_SetTextColor(255);
-	xgui_ClearDC();
+	gui_clear_dc();
 
 	//Processing date, taking October 11, 2013 as an example
 	for (i = 0; i < 6; ++ i)	{
 		if (i == pdt->m_currentSel)		{
 			//The currently selected item is white on a black background
-			xgui_SetTextBgColor(XGUI_COLOR_FORE);
-			xgui_SetTextColor(XGUI_COLOR_BACK);
+			gui_set_text_bg_color(XGUI_COLOR_FORE);
+			gui_set_text_color(XGUI_COLOR_BACK);
 		}
 
 		if (i == 0)		{
@@ -91,21 +88,21 @@ static void _dateTime_Paint(DATETIME_ST * pdt)
 			tipLeftPos = textLeftPos + nTwoNumWidth;
 		}
 
-		xgui_TextOut(textLeftPos, tipTopPos, buf);
+		gui_text_out(textLeftPos, tipTopPos, buf);
 
 		if (i == pdt->m_currentSel)		{
-			xgui_SetTextBgColor(XGUI_COLOR_BACK);
-			xgui_SetTextColor(XGUI_COLOR_FORE);
+			gui_set_text_bg_color(XGUI_COLOR_BACK);
+			gui_set_text_color(XGUI_COLOR_FORE);
 		}
 
-		xgui_TextOut(tipLeftPos, tipTopPos, dateTimeTip[i]);
+		gui_text_out(tipLeftPos, tipTopPos, dateTimeTip[i]);
 	}
 
 	xgui_ResumeTextStyle();
-	xgui_SetTextBgColor(XGUI_COLOR_BACK);
-	xgui_SetTextColor(XGUI_COLOR_FORE);
-	xgui_Page_OP_Paint("cancel", "confirm");
-	xgui_EndBatchPaint();
+	gui_set_text_bg_color(XGUI_COLOR_BACK);
+	gui_set_text_color(XGUI_COLOR_FORE);
+	gui_page_op_paint("cancel", "confirm");
+	gui_end_batch_paint();
 }
 
 //Select the next one to cycle. When the selected item is switched, it also sets the status of the currently selected item to receive key messages for the first time.
@@ -304,25 +301,25 @@ static int checkDateTime(DATETIME_ST * pdt)
 static int dateTime_Key(DATETIME_ST* pdt, int presskey)
 {
 	switch(presskey) {
-	case KEY_UP:case KEY_LEFT:
+	case GUI_KEY_UP:case GUI_KEY_LEFT:
 		_desCurrentSel(pdt);
 		_dateTime_Paint(pdt);
 		break;
-	case KEY_DOWN:case KEY_RIGHT:case KEY_JING:
+	case GUI_KEY_DOWN:case GUI_KEY_RIGHT:case GUI_KEY_JING:
 		_incCurrentSel(pdt);
 		_dateTime_Paint(pdt);
 		break;
-	case KEY_QUIT:
+	case GUI_KEY_QUIT:
 		return -1;
 		break;
-	case KEY_XING:
+	case GUI_KEY_XING:
 		break;
-	case KEY_1:	case KEY_2:	case KEY_3:	case KEY_4:	case KEY_5:
-	case KEY_6:case KEY_7:case KEY_8:case KEY_9:case KEY_0:
+	case GUI_KEY_1:	case GUI_KEY_2:	case GUI_KEY_3:	case GUI_KEY_4:	case GUI_KEY_5:
+	case GUI_KEY_6:case GUI_KEY_7:case GUI_KEY_8:case GUI_KEY_9:case GUI_KEY_0:
 		_dealInputNumKey(pdt, presskey - '0');
 		_dateTime_Paint(pdt);
 		break;
-	case KEY_OK:
+	case GUI_KEY_OK:
 		return 1;
 		break;
 	default:
@@ -334,7 +331,7 @@ static int dateTime_Key(DATETIME_ST* pdt, int presskey)
 int _dateTimeInput_Show(DATETIME_ST * pdt)
 {
 	int presskey;
-	MESSAGE pMsg;
+	st_gui_message pMsg;
 	DATETIME_ST  npdt;
 	memcpy(&npdt, pdt, sizeof(DATETIME_ST));
 	if (pdt == 0)
@@ -345,24 +342,24 @@ int _dateTimeInput_Show(DATETIME_ST * pdt)
 	_dateTime_Paint(pdt);
 
 	while(1){
-		if (xgui_GetMessageWithTime(&pMsg, 100) == MESSAGE_ERR_NO_ERR) {
-			if (pMsg.MessageId == XM_GUIPAINT)		{
+		if (gui_get_message(&pMsg, 100) == 0) {
+			if (pMsg.message_id == GUI_GUIPAINT)		{
 				_dateTime_Paint(pdt);
 			}
 
-			if (pMsg.MessageId == XM_KEYPRESS) {
-				presskey = pMsg.WParam;
+			if (pMsg.message_id == GUI_KEYPRESS) {
+				presskey = pMsg.wparam;
 
 				switch(presskey) {
-				case KEY_0: case KEY_1: case KEY_2: case KEY_3: case KEY_4: 
-				case KEY_5: case KEY_6: case KEY_7: case KEY_8: case KEY_9: 
-				case KEY_UP: case KEY_DOWN:case KEY_LEFT:case KEY_RIGHT:case KEY_JING:
+				case GUI_KEY_0: case GUI_KEY_1: case GUI_KEY_2: case GUI_KEY_3: case GUI_KEY_4: 
+				case GUI_KEY_5: case GUI_KEY_6: case GUI_KEY_7: case GUI_KEY_8: case GUI_KEY_9: 
+				case GUI_KEY_UP: case GUI_KEY_DOWN:case GUI_KEY_LEFT:case GUI_KEY_RIGHT:case GUI_KEY_JING:
 					dateTime_Key(pdt, presskey);
 					break;
-				case KEY_OK:
+				case GUI_KEY_OK:
 					if(checkDateTime(pdt) != 0)
 					{
-						xgui_messagebox_show("prompt",  "Input format error", "", "cancel", 100000);
+						gui_messagebox_show("prompt",  "Input format error", "", "cancel", 100000);
 						memcpy(pdt,&npdt,sizeof(DATETIME_ST));
 						_dateTime_Paint(pdt);
 						break;
@@ -370,16 +367,16 @@ int _dateTimeInput_Show(DATETIME_ST * pdt)
 					else
 						return 	dateTime_Key(pdt, presskey);
 					break;
-				case KEY_QUIT:
+				case GUI_KEY_QUIT:
 					return -1;
 					break;
 				default:
-					xgui_proc_default_msg(&pMsg);
+					gui_proc_default_msg(&pMsg);
 					break;
 				}
 			}
 			else{
-				xgui_proc_default_msg(&pMsg);
+				gui_proc_default_msg(&pMsg);
 			}
 		}
 	} 

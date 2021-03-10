@@ -1,36 +1,10 @@
-#include "upay_consum.h"
-#include "upay_track.h"
-#include "upay_print.h"
-#include "../pages/input_num_page.h"
-#include "../pages/inputcard_page.h"
-#include "xGui/inc/messagebox.h"
-#include "../sdk_log.h"
-#include "upay_define.h"
-#include "libapi_xpos/inc/def.h"
-#include "libapi_xpos/inc/libapi_emv.h"
-#include "pub/tracedef.h"
-#include "libapi_xpos/inc/libapi_security.h"
-#include "upay_consum.h"
-#include "sdk_readcard.h"
-#include "pub\common\misc\inc\mfmalloc.h"
+
+#include "../app_def.h"
+
 
 #define NORMAL_TIME_OUT			60000
 #define ENTER_AMOUNT_TIME_OUT	90000
 #define AMOUNT_MAX_LEN			9
-
-int tt_upay_consum(void)
-{	
-	int nChoice;
-	//m_tmf_param = upay_pub_create(1);
-	//upay_consum();
-	//upay_pub_destory( m_tmf_param);
-	return 0;
-}
-
-static void _pack_8583()
-{
-	return;
-}
 
 static void card_in_config(char*title, st_read_card_in *card_in)
 {
@@ -45,6 +19,7 @@ static void card_in_config(char*title, st_read_card_in *card_in)
 	card_in->data_dukpt_gid=1;//The key index of DUPKT Track data KEY	
 	card_in->pin_timeover=NORMAL_TIME_OUT;
 	strcpy(card_in->title, title);
+	//strcpy(card_in->card_page_msg,  "\xD9\x84\xD8\xA7\xDA\xAF");
 	strcpy(card_in->card_page_msg, "Please insert/swipe");//Swipe interface prompt information, a line of 20 characters, up to two lines, automatic branch.
 	card_in->forceIC=1;
 	card_in->show_PAN=0;    
@@ -57,14 +32,15 @@ int upay_consum( void )
 {
 	char *title = "SALE";
 	int ret;
+	float famt = 0.00;
     long long namt = 0;
 	st_read_card_in *card_in =NULL;
 	st_read_card_out *card_out =NULL;
 	st_card_info card_info={0};
+	st_input_pin st_msg;
+	SYS_TRACE( "upay_consum" );
 
-	APP_TRACE( "upay_consum" );
-
-	card_in=(st_read_card_in *)MALLOC(sizeof(st_read_card_in));
+	card_in=(st_read_card_in *)Util_Malloc(sizeof(st_read_card_in));
 	if(card_in==NULL)
 		return FAIL;
 
@@ -73,18 +49,26 @@ int upay_consum( void )
     namt = inputamount_page(title, AMOUNT_MAX_LEN, ENTER_AMOUNT_TIME_OUT);//Amount entering
 	if(namt <= 0)//INPUT_INPUT_RET_TIMEOVER or INPUT_INPUT_RET_QUIT
     {
-		FREE(card_in);
+		Util_Free(card_in);
         return FAIL;
     }
     sprintf(card_in->amt, "%lld" , namt);
 
-	card_out= (st_read_card_out *)MALLOC(sizeof(st_read_card_out));
+	card_out= (st_read_card_out *)Util_Malloc(sizeof(st_read_card_out));
     if(card_out==0)
 	{
-		FREE(card_in);
+		Util_Free(card_in);
 		return FAIL;
 	}
-
+	famt = (float)namt/100;
+	memset(&st_msg,0x00,sizeof(st_input_pin));
+	strcpy(st_msg.szFirstLine,"SALE");
+	sprintf(st_msg.szSecLine," AMOUNT INR : %.2f",famt);
+	strcpy(st_msg.szThirdLine,"   ENTER PIN");
+	strcpy(st_msg.szFourthLine,"PIN length(4-16)");	//ERRMSG
+	st_msg.PinType = 0;
+	//st_msg.IsErrShow = 1;
+	//EMV_SetPinInputMsg(st_msg);	//Custom interface
 	ret = upay_readcard_proc(card_in, card_out);//card reading process
 
 	//save card information to print
@@ -93,9 +77,9 @@ int upay_consum( void )
 	strcpy(card_info.pan, card_out->pan);
 	strcpy(card_info.expdate, card_out->exp_data);
 
-	//free memory
-	FREE(card_in);
-	FREE(card_out);
+	//Util_Free memory
+	Util_Free(card_in);
+	Util_Free(card_out);
 
 	if(EMVAPI_RET_SUCC == ret)//approved transaction will print receipt
 	{

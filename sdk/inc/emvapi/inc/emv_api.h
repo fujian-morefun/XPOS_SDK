@@ -68,11 +68,11 @@ typedef struct __st_read_card_in{
 	int pin_timeover;//Time over of PIN inputting page,normally 60000;
 	int key_pid;	//SEC_DUKPT_FIELD,SEC_MKSK_FIELD,SEC_FIXED_FIELD
 	int pin_dukpt_gid;//group ID of DUKPT mode, used for PIN encryption; gid<0 means not support;
-	int des_mode;		//DES_TYPE_ENCRYPT,DES_TYPE_DECRYPT
+	int des_mode;		//DES_MODE_ECB,DES_MODE_CBC
 	int data_dukpt_gid;//group ID of DUKPT mode, used for track or account data encryption; gid<0 means not support;
 	int pin_mksk_gid;	//group ID of MKSK mode, used for PIN encryption; gid<0 means not support;
 	int forceIC;		//0x00:not forced chip read priority; 0x01:chip card takes priority over magnetic stripe
-	int show_PAN;		//0x00:not show PAN during card reading; 0x01:show PAN during card reading;
+	int show_PAN;		//0x00:not show PAN during card reading; 0x01:show PAN during card reading; 0x02 show section PAN during card reading;
 	int bByPassPin;		//0x00  NotSupport ByPassPin	0x01 Support ByPassPin
 	char ic_tags[256];	//ASCII code; TAGs need get value from card reading; example:9F0282...;NULL value, will get default TAG list
 	char card_page_msg[50];	//Message of card reading page
@@ -148,9 +148,10 @@ typedef struct _st_input_pin
 	char szFirstLine[30];		// first line show message
 	char szSecLine[30];			//seccond line show message
 	char szThirdLine[30];		//third line show message
-	char szFourthLine[30];		//if this param is not null, input pin will show 5th line
+	char szFourthLine[30];		//if this param is not null, pin will show 5th line
 	char PinType;				//pinType 0:online PIN   1:offline pin 2:clear online msg (use default) 3:clear offline msg(use default)
-	char IsErrShow;				//1:the four line show pin , 5th show errmsg which data is szFourthLine
+	char IsErrShow;				
+	char szFifthLine[30];		//if fifth line messages are not null, pin wil show in 4th line
 }st_input_pin;
 
 typedef struct _st_read_card_show

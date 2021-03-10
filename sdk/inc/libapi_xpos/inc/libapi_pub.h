@@ -1,5 +1,4 @@
-#ifndef _LIBAPI_PUB_H_
-#define _LIBAPI_PUB_H_
+#pragma once
 
 #ifdef WIN32
 #ifdef DLL_EXPORTS
@@ -9,10 +8,13 @@
 #endif
 #else
 #define LIB_EXPORT
-
 #endif
 
+//#include <pub/pub.h>
 #include "def.h"
 
-#endif
+
+
+
+
 

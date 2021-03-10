@@ -1,14 +1,6 @@
-#include "xGui/inc/messagebox.h"
-#include "xGui/inc/2ddraw.h"
-#include "xGui/inc/message.h"
-#include "xGui/inc/xgui_key.h"
-
-#include "net/inc/mf_net.h"
-#include "net/inc/mf_sock.h"
+#include "app_def.h"
 #include "json/inc/json_tokener.h"
-#include "pub\osl\inc\osl_BaseParam.h"
-#include "pub\tracedef.h"
-#include "net/inc/mf_ssl.h"
+
 
 #define COMM_SOCK	m_comm_sock
 
@@ -16,6 +8,11 @@ static int m_connect_tick = 0;
 static int m_connect_time = 0;
 static int m_connect_exit = 0;
 static int m_comm_sock = 1;
+
+#define HTTP_ERR_NO200		-1
+#define HTTP_ERR_OTHER		-2
+#define HTTP_ERR_CANCEL		-3
+#define HTTP_ERR_TIMEOUT	-4
 
 // Pack the http header, the following code is the demo code, please refer to the http specification for the specific format.
 static void http_pack(char * buff, char * msg)
@@ -70,33 +67,33 @@ static int http_ContentLength(char *heads)
 
 void comm_page_set_page(char * title , char * msg ,int quit)
 {
-	xgui_BeginBatchPaint();
-	XGUI_SET_WIN_RC;
-	xgui_ClearDC();
-	xgui_SetTitle(title);
+	gui_begin_batch_paint();
+	gui_set_win_rc();
+	gui_clear_dc();
+	gui_set_title(title);
 
-	xgui_TextOut(0 , XGUI_LINE_TOP_1  , msg);
+	gui_text_out(0 , GUI_LINE_TOP(1)  , msg);
 	if (quit == 1){
-		xgui_Page_OP_Paint("Cancel" , "");
+		gui_page_op_paint("Cancel" , "");
 	}
 
-	xgui_EndBatchPaint();
+	gui_end_batch_paint();
 }
 
 int comm_page_get_exit()
 {
-	MESSAGE pMsg;
-	int ret = MESSAGE_ERR_NO_ERR;
+	st_gui_message pMsg;
+	int ret = 0;
 	int get_ret = 0;
 
-	while(ret == MESSAGE_ERR_NO_ERR){
-		ret = xgui_GetMessageWithTime(&pMsg, 0);
+	while(ret == 0){
+		ret = gui_get_message(&pMsg, 0);
 
-		if ( ret == MESSAGE_ERR_NO_ERR ){
-			if (pMsg.MessageId == XM_KEYPRESS && pMsg.WParam == KEY_QUIT){
+		if ( ret == 0 ){
+			if (pMsg.message_id == GUI_KEYPRESS && pMsg.wparam == GUI_KEY_QUIT){
 				get_ret = 1;
 			}
-			xgui_proc_default_msg(&pMsg);
+			gui_proc_default_msg(&pMsg);
 		}
 	}
 
@@ -114,7 +111,7 @@ static int _connect_server_func_proc()
 		m_connect_exit = 1;
 	}
 
-	num = time - osl_GetTickDiff(m_connect_tick) / 1000;
+	num =  Sys_TimerCheck(m_connect_tick) / 1000;
 	
 	if(num <= 0){
 		ret = 1;
@@ -143,16 +140,14 @@ static int http_recv(int sock, char *buff, int len, int timeover)
 	int nHttpBodyLen;
 	int nHttpHeadLen;
 
-	APP_TRACE( "http_recv");
-
-	tick1 = osl_GetTick();
+	tick1 = Sys_TimerOpen(timeover);
 
 	// Receive http packets cyclically until timeout or reception is complete
-	while (osl_CheckTimeover(tick1 , timeover) == 0 && index < len ){	
+	while (Sys_TimerCheck(tick1) > 0 && index < len ){	
 		int ret;
 		int num;
 
-		num = (timeover - osl_GetTickDiff(tick1)) /1000;
+		num = Sys_TimerCheck(tick1) /1000;
 		num = num < 0 ? 0 : num;
 		sprintf(msg , "%s(%d)" , "Recving" , num);
 
@@ -163,7 +158,7 @@ static int http_recv(int sock, char *buff, int len, int timeover)
 			return -2;
 		}
 		// 
-		ret = mf_sock_recv( sock, (unsigned char *)(buff + index), len - index , 700);
+		ret = comm_sock_recv( sock, (unsigned char *)(buff + index), len - index , 700);
 
 		if(ret >= 0){
 			index += ret;
@@ -171,32 +166,33 @@ static int http_recv(int sock, char *buff, int len, int timeover)
 			buff[index] = '\0';
 			phttpbody = (char *)strstr( buff ,"\r\n\r\n" ); // Http headend
 			if(phttpbody!=0){
-				char *p;				
+				//char *p;				
 				int nrescode = http_StatusCode(buff);
-				APP_TRACE( "http rescode: %d",nrescode );
+				printf( "http rescode: %d",nrescode );
 				if ( nrescode == 200){	
 
 					nHttpHeadLen = phttpbody + 4 - buff;	
 
 					nHttpBodyLen = http_ContentLength(buff);
 
-					APP_TRACE("HeadLen:%d  Content-Length: %d",nHttpHeadLen,nHttpBodyLen);
+					printf("HeadLen:%d  Content-Length: %d",nHttpHeadLen,nHttpBodyLen);
 
-					if(nHttpBodyLen<=0) return -1;
+					//if(nHttpBodyLen<=0) return -1;
 
 					if (index >= nHttpHeadLen+nHttpBodyLen){		
 						//The receiving length is equal to the length of the head plus
 						memcpy(buff , phttpbody + 4 , nHttpBodyLen);
-                        APP_TRACE( "http recv body: %s", buff );
+						printf( "http recv body: %s", buff );
 						return nHttpBodyLen;	// Receive completed, return to receive length
 					}
+					return ret;
 				}
 				else{  //not 200
 
 					return -1;
 				}
 			}
-                        
+
 
 		}
 		else {
@@ -206,7 +202,19 @@ static int http_recv(int sock, char *buff, int len, int timeover)
 
 	return -1;
 }
+static int app_https_recv(int sock, char * pdata, int size)
+{
+	int ret;
+	static int timer = 0;
+	if ( Sys_TimerCheck( timer ) == 0)
+	{
+		comm_ssl_recv3(sock);//clear receive buffer
+		timer = Sys_TimerOpen( 1000 );
+	}
+	ret = comm_ssl_recv(sock,(unsigned char *)pdata ,size);
 
+	return ret;
+}
 static int https_recv(int sock, char *buff, int len, int timeover)
 {
 	int index = 0;
@@ -216,16 +224,16 @@ static int https_recv(int sock, char *buff, int len, int timeover)
 	int nHttpBodyLen;
 	int nHttpHeadLen;
 
-	APP_TRACE( "https_recv");
+	printf( "https_recv");
 
-	tick1 = osl_GetTick();
+	tick1 = Sys_TimerOpen(timeover);
 
 	// Receive http packets cyclically until timeout or reception is complete
-	while (osl_CheckTimeover(tick1 , timeover) == 0 && index < len ){	
+	while (Sys_TimerCheck(tick1) > 0 && index < len ){	
 		int ret;
 		int num;
 
-		num = (timeover - osl_GetTickDiff(tick1)) /1000;
+		num = (timeover - Sys_TimerCheck(tick1)) /1000;
 		num = num < 0 ? 0 : num;
 		sprintf(msg , "%s(%d)" , "Recving" , num);
 
@@ -233,51 +241,48 @@ static int https_recv(int sock, char *buff, int len, int timeover)
 		ret = comm_page_get_exit();
 
 		if(ret == 1){ 
-			return -2;
+			return HTTP_ERR_CANCEL;
 		}
 		// 
-		ret = mf_ssl_recv2( sock, (unsigned char *)(buff + index), len - index );
+		ret = app_https_recv(sock,(buff + index), len - index);
+		//ret = mf_ssl_recv2( sock, (unsigned char *)(buff + index), len - index );
 
-		if(ret >= 0){
+		if(ret > 0){
 			index += ret;
 
 			buff[index] = '\0';
 			phttpbody = (char *)strstr( buff ,"\r\n\r\n" ); // Http headend
 			if(phttpbody!=0){
-				char *p;				
+				//char *p;				
 				int nrescode = http_StatusCode(buff);
-				APP_TRACE( "https rescode: %d",nrescode );
+				printf( "https rescode: %d",nrescode );
 				if ( nrescode == 200){	
-
 					nHttpHeadLen = phttpbody + 4 - buff;	
 
 					nHttpBodyLen = http_ContentLength(buff);
 
-					APP_TRACE("HeadLen:%d  Content-Length: %d",nHttpHeadLen,nHttpBodyLen);
+					printf("HeadLen:%d  Content-Length: %d",nHttpHeadLen,nHttpBodyLen);
 
-					if(nHttpBodyLen<=0) return -1;
+					//if(nHttpBodyLen<=0) return -1;
 
 					if (index >= nHttpHeadLen+nHttpBodyLen){		
 						//The receiving length is equal to the length of the head plus
 						memcpy(buff , phttpbody + 4 , nHttpBodyLen);
-						APP_TRACE( "https recv body: %s", buff );
+						printf( "https recv body: %s", buff );
 						return nHttpBodyLen;	// Receive completed, return to receive length
 					}
+					return ret;
 				}
 				else{  //not 200
-
-					return -1;
+					return HTTP_ERR_NO200;
 				}
 			}
-
-
 		}
-		else {
-			return -1;
-		}	
+		else{
+			Sys_Delay(200);
+		}
 	}
-
-	return -1;
+	return HTTP_ERR_TIMEOUT;
 }
 
 
@@ -285,188 +290,232 @@ static int https_recv(int sock, char *buff, int len, int timeover)
 static void http_test()
 {
 	char *msg = "hello world!";
-	char buff[1024]={0};
-	char recv[1024]={0};
+	char buff[2048]={0};
+	char recv[2048]={0};
 	char *ip = "www.baidu.com";//119.75.217.109
 	int port = 80;
-	int ret=0;
-    int i;
-	int nTime;
-	char tmp[32] = {0};
+	int ret = -1;
+	int sock = SOCK_INDEX1;
+	char apn[32]="CMNET";
+	int i;
+	int nret;	
+	int nTime = 3;
 
 	http_pack(buff, msg);		//  Package http data
 
-	ret = net_func_link("Dial","CMNET",1,30*1000);
-
-	if (ret != 0){
-
-		xgui_messagebox_show("Http" , "Dial Fail", "" , "confirm" , 0);
+	nret = comm_net_link("", apn ,30000);		// 30s
+	if (nret != 0)
+	{
+		gui_messagebox_show("Http" , "Link Fail", "" , "confirm" , 0);
 		return;
 	}
 
-	mf_set_connnect_server_func(COMM_SOCK , (void*) _connect_server_func_proc);
+	COMM_SOCK = comm_sock_create(sock);	//  Create sock
 
-	for ( i = 0 ; i < nTime ; i ++){
-		
 
-		m_connect_tick = osl_GetTick();
+	for ( i = 0 ; i < nTime ; i ++)
+	{		
+		char tmp[32] = {0};
+
+		m_connect_tick = Sys_TimerOpen(30000);
 		m_connect_exit = 0;
-
-		m_comm_sock = mf_sock_create();
 		m_connect_time = i+1;
 
-		APP_TRACE("connect server ip=%s, port=%d\r\n", ip,  port);
+		printf("connect server ip=%s, port=%d\r\n", ip,  port);
 
 		sprintf(tmp , "Connect server%dtimes" , i + 1);
 		comm_page_set_page("Http", tmp , 1);
 
-		ret = mf_sock_connect(COMM_SOCK , ip , port);
-
-		if (comm_page_get_exit() || m_connect_exit == 1)	{
-			APP_TRACE("comm_func_connect_server Cancel" );
-			mf_sock_close(COMM_SOCK);
-			ret = -1;
+		ret = comm_sock_connect(COMM_SOCK, ip, port);	//  Connect to http server
+		printf( "--------------------comm_sock_connect: %d ---------------------------\r\n", ret );
+		if (ret == 0)			
 			break;
-		}
 
-		if (ret == 0){
-		
-			break;
-		}
-
-		mf_sock_close(COMM_SOCK);
-		osl_Sleep(500);
+		comm_sock_close(COMM_SOCK);
+		Sys_Delay(500);
 	}
 
-	mf_set_connnect_server_func(COMM_SOCK , (void*) 0);
 
-	APP_TRACE("connect server ret= %d,%s:%d\r\n" , ret , ip , port);
-        
+
+	printf("connect server ret= %d,%s:%d\r\n" , ret , ip , port);
+
 	if(ret == 0){
-		ret = mf_sock_send(COMM_SOCK , (unsigned char *)buff ,  strlen(buff));	// 		Send http request
-		if(ret == 0){
-			ret = http_recv(COMM_SOCK, recv, sizeof(recv), 30000);		// Receive http response
-			if (ret < 0)
-			{
-				xgui_messagebox_show("Http" , "Receive Fail", "" , "confirm" , 0); 
-			}
-			else
-			{
-				sprintf(buff, "recv buff:%s", recv);
-				APP_TRACE(buff);
-				xgui_messagebox_show("Http" , "recv ok", "" , "confirm" , 0);
-			}
+		comm_sock_send(COMM_SOCK , (unsigned char *)buff ,  strlen(buff));	// 		Send http request
+		ret = http_recv(COMM_SOCK, recv, 1024, 30000);		// Receive http response
+		if (ret > 0)
+		{
+			sprintf(buff, "recv buff:%s", recv);
+			printf("recv buff:%s", recv);
+			gui_messagebox_show("Http" , buff, "" , "confirm" , 0);		
 		}
 		else
 		{
-			xgui_messagebox_show("Http" , "Send Fail", "" , "confirm" , 0);              
+			gui_messagebox_show("Http" , "Recv Fail", "" , "confirm" , 0);
 		}
 	}
-    else
-    {
-        xgui_messagebox_show("Http" , "Connect Fail", "" , "confirm" , 0);
-    }
-	mf_sock_close(COMM_SOCK);
+	else {
+		gui_messagebox_show("Http" , "Connect Fail", "" , "confirm" , 0);
+	}
+
+	comm_sock_close(COMM_SOCK);	   
+
+	comm_net_unlink();
 }
 
 
 static void https_test()
 {
-	char *msg = "hello world!";
-	char buff[1024]={0};
-	char recv[1024]={0};
-	char *ip = "www.baidu.com";//14.215.177.38
-	int port = 443;
-	int ret;
-	int nTime;
-	char tmp[32] = {0};
+	char *msg = "hello world!";//080022380000008000009A00000530081329000001081329053020390013
+	char buff[2048]={0};
+	char recv[2048]={0};
+	char *ip = "www.baidu.com";//104.27.134.11
+	int port = 80;
+	int ret = - 1;
+	char apn[32]="CMNET";
 	int i;
+	int nret;	
+	int nTime = 3;
 
-	http_pack(buff, msg);		//  Package https data
+	//mbed_ssl_set_log(10); 
+	http_pack(buff, msg);		//  Package http data
 
-	ret = net_func_link("Dial","CMNET",1,30*1000);
-
-	if (ret != 0){
-
-		xgui_messagebox_show("Https" , "Dial Fail", "" , "confirm" , 0);
+	nret = comm_net_link( "" , apn,  30000);
+	if (nret != 0)
+	{
+		gui_messagebox_show("Https" , "Link Fail", "" , "confirm" , 0);
 		return;
 	}
 
-	mf_set_connnect_server_func(COMM_SOCK , (void*) _connect_server_func_proc);
-
-	for ( i = 0 ; i < nTime ; i ++){
+	COMM_SOCK = comm_sock_create(SOCK_INDEX1);	//  Create sock
 
 
-		m_connect_tick = osl_GetTick();
+	for ( i = 0 ; i < nTime ; i ++)
+	{
+
+		char tmp[32] = {0};
+
+		m_connect_tick = Sys_TimerOpen(30000);
 		m_connect_exit = 0;
-
-		m_comm_sock = mf_sock_create();
 		m_connect_time = i+1;
 
-		APP_TRACE("connect server ip=%s, port=%d\r\n", ip,  port);
+		SYS_TRACE("connect server ip=%s, port=%d\r\n", ip,  port);
+		SYS_TRACE("--------------------comm_ssl_init---------------------------\r\n" );
 
-		//mf_ssl_mbedtls(1);//Use TLS 1.2
-		APP_TRACE("--------------------mf_ssl_init---------------------------" );
-		ret = mf_ssl_init(COMM_SOCK ,0,0,0,0);
-		if(ret != 0) return;
-// #ifndef WIN32
-// 		if(aq_set_cfg("sslversion",m_comm_sock,"1") != 0) return;
-// #endif
+		//ret = mf_ssl_init(index, "xxxx\\cacert.der","xxxx\\client.der","xxxx\\userkey.der", 2);
+		//ret = mbed_ssl_ciphersuites(index,ssl_preset_suiteb_ciphersuites);
+		comm_ssl_init(COMM_SOCK ,0,0,0,0);	
+		//comm_ssl_init(COMM_SOCK ,0/*"xxxx\\gp_ca.der"*/,"xxxx\\gp_client.der","xxxx\\gp_key.der",0);	
 		sprintf(tmp , "Connect server%dtimes" , i + 1);
 		comm_page_set_page("Https", tmp , 1);
 
-		mf_sock_fifo_resize(COMM_SOCK, 5*1024);
-		ret = mf_ssl_connect(COMM_SOCK, ip, port, (void*) _connect_server_func_proc);	//  Connect to https server
-		APP_TRACE( "--------------------mf_ssl_connect: %d ---------------------------", ret );
+		//c_ret = comm_ssl_connect(COMM_SOCK, ip, port);	//  Connect to http server
+		ret = comm_sock_connect(COMM_SOCK, ip, port);
+		ret = comm_ssl_connect2(COMM_SOCK, ip, port, (void *)_connect_server_func_proc);	//  Connect to http server
+		SYS_TRACE( "--------------------comm_ssl_connect: %d ---------------------------\r\n", ret );
 
 		if (comm_page_get_exit() || m_connect_exit == 1)	{
-			APP_TRACE("comm_func_connect_server Cancel" );
-			mf_ssl_close(COMM_SOCK);
+			SYS_TRACE("comm_func_connect_server Cancel" );
+			comm_ssl_close(COMM_SOCK);
 			ret = -1;
 			break;
 		}
 
-		if (ret == 0){
-			ret = 0;
+		if (ret == 0){		
 			break;
 		}
 
-		mf_ssl_close(COMM_SOCK);
-		osl_Sleep(500);
-	}
+		comm_ssl_close(COMM_SOCK);
+		Sys_Delay(500);
+	}	
 
-	mf_set_connnect_server_func(COMM_SOCK , (void*) 0);
 
-	APP_TRACE("connect server ret= %d,%s:%d\r\n" , ret , ip , port);
-	
+	SYS_TRACE("connect server ret= %d,%s:%d\r\n" , ret , ip , port);
+
 	if(ret == 0){
-		ret = mf_ssl_send(COMM_SOCK , buff ,  strlen(buff));		// 		Send http request
-		if(ret == 0){
-			ret = https_recv(COMM_SOCK, recv, sizeof(recv), 30000);		// Receive http response
-			if (ret < 0)
-			{
-				xgui_messagebox_show("Https" , "Receive Fail", "" , "confirm" , 0); 
-			}
-			else
-			{
-				sprintf(buff, "recv buff:%s", recv);
-				APP_TRACE(buff);
-				xgui_messagebox_show("Https" , "Recv OK", "" , "confirm" , 0);
-			}
+		comm_ssl_send(COMM_SOCK , buff ,  strlen(buff));		// 		Send http request		
+		ret = https_recv(COMM_SOCK, recv, 2048, 30000);		// Receive http response
+		if (ret > 0)
+		{
+			sprintf(buff, "recv buff:%s", recv);
+			SYS_TRACE("recv buff:%s", recv);
+			gui_messagebox_show("Https" , buff, "" , "confirm" , 0);
 		}
 		else
 		{
-			xgui_messagebox_show("Https" , "Send Fail", "" , "confirm" , 0);              
+			gui_messagebox_show("Https" , "Recv Fail", "" , "confirm" , 0);
 		}
 	}
 	else
 	{
-		xgui_messagebox_show("Https" , "Connect Fail", "" , "confirm" , 0);
-	}
+		gui_messagebox_show("Https" , "Connect Fail", "" , "confirm" , 0);
+	}		
 
-	mf_ssl_close(COMM_SOCK);
+	comm_ssl_close(COMM_SOCK);
+
+	comm_net_unlink();
 }
 
+static int ssl_test_ap2()
+{
+	char recv[1024];
+	char send[128];
+	int ret;
+	int i=0;
+	int nTime=3;
+	int index =0;
+	char tmp[100];
+	//ap2_mbedtls_init(1,0);//init in main.c once app start
+	for ( i = 0 ; i < nTime ; i ++){
+		m_connect_tick = Sys_GetTick();
+		m_connect_exit = 0;
+
+		m_comm_sock =ap2_sock_create(1);;
+		m_connect_time = i+1;
+
+		SYS_TRACE("--------------------mf_ssl_init---------------------------" );
+		//ap2_sock_setproxy(index,"127.0.0.1" , 1080);
+		ap2_ssl_init( COMM_SOCK,0,0,0,0);
+
+		sprintf(tmp , "Connect server%dtimes" , i + 1);
+		comm_page_set_page("Https", tmp , 1);
+		ret = ap2_sock_connect(COMM_SOCK, "pretran.tianquetech.com", 443, 0);	//  Connect to https server
+		SYS_TRACE( "--------------------mf_ssl_connect: %d ---------------------------", ret );
+
+		if (comm_page_get_exit() || m_connect_exit == 1)	{
+			SYS_TRACE("comm_func_connect_server Cancel" );
+			ap2_sock_close(COMM_SOCK);
+			ret = -1;
+			break;
+		}
+		if (ret == 0){
+			break;
+		}
+		ap2_sock_close(COMM_SOCK);
+		Sys_Delay(500);
+	}
+	if(ret == 0){
+		strcpy(send, "GET /?length=00009 HTTP/1.0\r\n\r\n" );
+		ret = ap2_sock_send(COMM_SOCK , send ,  strlen(send));		// 		Send http request
+		if(ret == 0){
+			memset(recv,0x00, sizeof(recv));
+			ret = ap2_sock_recv( COMM_SOCK, recv, sizeof(recv) ,1000);
+			if (ret < 0)
+				gui_messagebox_show("Https" , "Receive Fail", "" , "confirm" , 0); 
+			else
+			{
+				//sprintf(buff, "recv buff:%s", recv);
+				//SYS_TRACE(buff);
+				gui_messagebox_show("Https" , "Recv OK", "" , "confirm" , 0);
+			}
+		}
+		else
+			gui_messagebox_show("Https" , "Send Fail", "" , "confirm" , 0);              
+	}
+	else
+		gui_messagebox_show("Https" , "Connect Fail", "" , "confirm" , 0);
+	ap2_sock_close(COMM_SOCK);
+	return ret;
+}
 static void json_test()
 {
 	struct json_object *rootobj = 0;

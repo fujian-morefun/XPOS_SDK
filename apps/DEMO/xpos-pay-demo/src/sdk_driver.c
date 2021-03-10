@@ -1,39 +1,35 @@
-#include "sdk_driver.h"
-#include "driver/mf_driverlib.h"
-#include "driver/mf_simple_rfid.h"
 #include "driver/uart.h"
 #include "driver/mf_serial.h"
-#include "xGui/inc/messagebox.h"
-#include "xGui/inc/2ddraw.h"
-#include "xGui/inc/message.h"
-#include "libapi_xpos/inc/libapi_comm.h"
-#include "pub\tracedef.h"
-#include "libapi_xpos\inc\libapi_util.h"
+#include "app_def.h"
+
+enum{
+	DRIVER_TYPE_MAG,
+	DRIVER_TYPE_ICC,
+	DRIVER_TYPE_RF,
+};
 
 static void sdk_show_msg(char *title, char *msg)
 {
 	// Batch refresh, because the LCD refresh takes a long time, all systems provide xgui_EndBatchPaint interface to uniformly send display data to the LCD screen
-	xgui_BeginBatchPaint();				
-	xgui_ClearDC();			//  Clear the entire screen
-	xgui_TextOut_Line_Center(title , XGUI_LINE_TOP_0);		// Display the content of title at line 0
-	xgui_TextOut(0, XGUI_LINE_TOP_2, msg);   // Display msg content on line 2
-	xgui_EndBatchPaint();     
+	gui_begin_batch_paint();				
+	gui_clear_dc();			//  Clear the entire screen
+	gui_textout_line_center(title , GUI_LINE_TOP(0));		// Display the content of title at line 0
+	gui_text_out(0, GUI_LINE_TOP(2), msg);   // Display msg content on line 2
+	gui_end_batch_paint();     
 }
-
-
 void sdk_driver_magtek()
 {
 	unsigned char msg[512]={0};
 	struct magtek_track_info info;
 
-	mf_magtek_flush();			// Empty the magnetic stripe card buffer
+	card_magtek_flush();			// Empty the magnetic stripe card buffer
 	// Waiting for credit card
-	xgui_messagebox_show("magcard" , "Please brush your cards", "" , "confirm" , 0); 
-	if(mf_magtek_read(&info) == 1){		// Determine if you are all on the card
+	gui_messagebox_show("magcard" , "Please brush your cards", "" , "confirm" , 0); 
+	if(emvapi_check_magtek(&info) == 1){		// Determine if you are all on the card
 		sprintf(msg + strlen(msg), "track A:%s\r\n", info.a_chars.chars);
 		sprintf(msg + strlen(msg), "track B:%s\r\n", info.b_chars.chars);
 		sprintf(msg + strlen(msg), "track C:%s\r\n", info.c_chars.chars);
-		xgui_messagebox_show("magcard" , msg, "" , "confirm" , 0);	// Display card information
+		gui_messagebox_show("magcard" , msg, "" , "confirm" , 0);	// Display card information
 	}
 }
 
@@ -42,32 +38,32 @@ void sdk_driver_icc()
 	int ret, atrlen;
 	unsigned char atr[64], rbuffer[64];
 	unsigned char buffer[128];
-	int icc_socket = ICC_SOCKET1; 
+	int icc_socket = SLOT_ICC_SOCKET1; 
 	unsigned char test_cmd[] = {0x00,0xA4,0x04,0x00,0x08,0xA0,0x00,0x00,0x03,0x33,0x01,0x01,0x01,0x00}; 
 
 
 	atrlen = -1;
 	ret = 0;
-	icc_open(icc_socket);		// Open the card reader
+	Icc_Open(icc_socket);		// Open the card reader
 
 	if(icc_present(icc_socket) == 1) {		// Check if the card is in place
 		ret = icc_powerup(icc_socket, atr, sizeof(atr));	// Card power up
 		if(ret >=0){
 			ret = icc_send_apdu(icc_socket, test_cmd, sizeof(test_cmd), rbuffer);	// Tpdu data exchange
 			if(ret >=0 ){
-				xgui_messagebox_show("icc" , "send apdu succ", "" , "confirm" , 0);
+				gui_messagebox_show("icc" , "send apdu succ", "" , "confirm" , 0);
 			}
 			else{
-				xgui_messagebox_show("icc" , "send apdu ok", "" , "confirm" , 0);
+				gui_messagebox_show("icc" , "send apdu ok", "" , "confirm" , 0);
 			}
 		}
 		else{
-			xgui_messagebox_show("icc" , "power fail", "" , "confirm" , 0);
+			gui_messagebox_show("icc" , "power fail", "" , "confirm" , 0);
 		}
 		icc_powerdown(icc_socket);	// Card power down
 	}
 	else{
-		xgui_messagebox_show("icc" , "icc_present fail", "" , "confirm" , 0);
+		gui_messagebox_show("icc" , "icc_present fail", "" , "confirm" , 0);
 	}
 	icc_close(icc_socket);   // close the card reader
 }
@@ -81,25 +77,25 @@ void sdk_driver_rf()
 	int uidlen = 0;
 	unsigned char cmd1[19]={"\x00\xa4\x04\x00\x0e\x32\x50\x41\x59\x2e\x53\x59\x53\x2e\x44\x44\x46\x30\x31"};
 
-	rc = mf_rfid_tcl_open();			// Open the card reader,Check whether the card is powered on successfully.
+	rc = emvapi_check_rf();			// Open the card reader,Check whether the card is powered on successfully.
 	if(rc >= 0) {
 		uidlen = mf_rfid_getuid(uid);	// Read cpuid
 		
 		if(uidlen >=0){
 			rc = mf_rfid_tcl_exchange(cmd1, sizeof(cmd1), &rxbuf, &rxlen);		// Tpdu data exchange
 			if(rc == 0 ){
-				xgui_messagebox_show("rf ic" , "send apdu succ", "" , "confirm" , 0);
+				gui_messagebox_show("rf ic" , "send apdu succ", "" , "confirm" , 0);
 			}
 			else{
-				xgui_messagebox_show("rf ic" , "send apdu ok", "" , "confirm" , 0);
+				gui_messagebox_show("rf ic" , "send apdu ok", "" , "confirm" , 0);
 			}
 		}
 		else{
-			xgui_messagebox_show("rf ic" , "rf get uid fail", "" , "confirm" , 0);
+			gui_messagebox_show("rf ic" , "rf get uid fail", "" , "confirm" , 0);
 		}
 	}
 	else{
-		xgui_messagebox_show("rf ic" , "rf open fail", "" , "confirm" , 0);
+		gui_messagebox_show("rf ic" , "rf open fail", "" , "confirm" , 0);
 	}
 }
 
@@ -112,12 +108,12 @@ void sdk_driver_led()
 	for(i =0 ; i < 4; i ++){
 		sprintf(msg, "test led:%d", i);
 		sdk_show_msg("led", msg);
-		mf_led_control(i, 1);		// led power on
-		osl_Sleep(500);
-		mf_led_control(i, 0);		// led power off
-		osl_Sleep(500);
+		Util_Led(i, 1);		// led power on
+		Sys_Delay(500);
+		Util_Led(i, 0);		// led power off
+		Sys_Delay(500);
 	}
-	xgui_PostMessage(XM_GUIPAINT, 0 , 0);
+	gui_post_message(GUI_GUIPAINT, 0 , 0);
 	
 }
 
@@ -139,7 +135,7 @@ void sdk_driver_barcode()
 	mf_serial_close(com);
 
 	if(ret>0) {
-		xgui_messagebox_show("barcode" , rbuf, "" , "confirm" , 0);
+		gui_messagebox_show("barcode" , rbuf, "" , "confirm" , 0);
 	}	
 }
 
@@ -153,68 +149,183 @@ void wifi_link_test()
 	char name[1024];
 	int ret = 0;
 
-	APP_TRACE( "wifi_link_test" );
+	SYS_TRACE( "wifi_link_test" );
 
 	sdk_show_msg("wifi", "scan...");
 
 	count = comm_wifi_list_ap(ap_list);
-	APP_TRACE( "comm_wifi_list_ap:%d", count);
+	SYS_TRACE( "comm_wifi_list_ap:%d", count);
 
 	if(count > 0){
 		for(i = 0; i< count ; i ++){
 			sprintf(temp, "%d.%s(%d)\r\n", i+1, ap_list[i].ssid, ap_list[i].rssi);
-			APP_TRACE( temp );
+			SYS_TRACE( temp );
 			strcat(name, temp);
 		}
-		xgui_messagebox_show("WiFi List" , name, "" , "confirm" , 5000);
+		gui_messagebox_show("WiFi List" , name, "" , "confirm" , 5000);
 		
 		comm_wifi_link_ap(&ap_list[0], "12345678");
 		comm_wifi_unlink_ap();
 	}
 }
 
-// void input_test()
-// {
-// 	char str[128] = {0};
-// 
-// 	Util_InputMethod(0, "input_test", 1, str, 0, 64, 0, 60000);
-// 
-// }
 
-#define ADMIN_PWD "88888888"
 
-void SetDukptKey()
+#define RECV_BUFF_SIZE		256//(1024 * 5)
+#define RECV_TMP_SIZE		128
+
+#define	STX_CODE_1 			0x4D
+#define	STX_CODE_2 			0x46
+#define	ETX_CODE 			0x02
+
+static unsigned char recv_tmp[RECV_TMP_SIZE+1];
+static unsigned char m_recv_buff[RECV_BUFF_SIZE+1];
+
+static int driver_get_ll_len(unsigned char *pbuff)
 {
-	char ksn_str[21] = {0};
-	char key_str[33] = {0};
-	char ksn[11] = {0};
-	char key[17] = {0};
-	int ret = 0;
-	char pwd[9] = {0};
-	
-	ret = input_num_page(pwd, "input password", 1, 8, 60000, 1, 0);
+	int len = 0;
+	len = (pbuff[0] & 0xf0) / 16 * 1000 + (pbuff[0] & 0x0f) * 100;
+	len +=	(pbuff[1] & 0xf0) / 16 * 10 + (pbuff[1] & 0x0f);
+	return len;
+}
+static void driver_check_sum_update(unsigned char * check_value , unsigned char *buff , int length)
+{
+	int i ; 
+	for(i = 0 ; i < length ; i++){
+		*check_value = *check_value ^ buff[i];
+	}
+}
+static int test_func_proc(unsigned char * data , int len)
+{
+	int ret ;
+	char messge[128]={0};
+	memcpy(messge,data,len);
+	gui_messagebox_show( "Uart Test" , messge, "" , "confirm" , 0);
 
-	if (ret==0 && memcmp(pwd, ADMIN_PWD, 8) == 0)
-	{
-		memcpy(ksn_str, "FFFF", 4);
-		ret = Util_InputMethod(0, "input ksn", 1, ksn_str, 16, 16, 4, 60000);
-		if (ret == 16)
-		{
-			memcpy(ksn_str+16, "0000", 4);
-			Util_Asc2Bcd(ksn_str, ksn, 20);
+	return 0;
+}
+static int uart_test_proc (void * pParam)
+{
+	int i;
+	int recv_count ; 
+	int m_recv_index = 0;
+	int data_len = 0;
 
-			ret = Util_InputMethod(0, "input key", 1, key_str, 32, 32, 0, 60000);
-			if (ret == 32)
-			{
-				Util_Asc2Bcd(key_str, key, 32);
-				dukpt_init_ipek(0, ksn, key);
+	int m_log_count = 0;
+	unsigned char check_sum = 0;
+	//\x4d\x46\x00\x05\x68\x65\x6C\x6C\x6F\x02\x65
+	while(UartGetRXBufCount(APP_COM) > 0){
+		memset(recv_tmp, 0x00, RECV_TMP_SIZE);
+		recv_count = UartRecv(APP_COM , recv_tmp, RECV_TMP_SIZE ,1);
+		printf("\r\nm_recv_buff>>>%d %x%x%x\r\n", recv_count, recv_tmp[0],recv_tmp[1],recv_tmp[2]);
+		SYS_TRACE_BUFF(recv_tmp,recv_count,"UartRecv>>DATA");
+		for (i = 0 ; i < recv_count; i ++)	{
+			m_recv_buff[m_recv_index] = recv_tmp[i];
+			m_log_count ++;
 
-				xgui_messagebox_show("SetKey" , "Set DUKPT Init Key OK!", "" , "confirm" , 0);
+			if (m_recv_index == 0 ){			
+				if (m_recv_buff[m_recv_index] == STX_CODE_1)	
+					m_recv_index ++;			
+				else
+					m_recv_index = 0;			
+			}
+			else if (m_recv_index == 1 ){			
+				if (m_recv_buff[m_recv_index] == STX_CODE_2)	
+					m_recv_index ++;			
+				else
+					m_recv_index = 0;			
+			}
+			else if (m_recv_index == 2 ){						
+				m_recv_index++;
+			}
+			else if (m_recv_index == 3 ){						
+				data_len = driver_get_ll_len(&m_recv_buff[2]) + 2;
+
+				if (data_len > RECV_BUFF_SIZE - 10)				
+					m_recv_index = 0;
+				else
+					m_recv_index ++;
+			}
+			else if (m_recv_index > 3)	{						
+				data_len --;
+				m_recv_index ++;
+				if (data_len == 0){						
+					check_sum = 0;
+					driver_check_sum_update(&check_sum , m_recv_buff + 2 , m_recv_index - 3);
+					if (m_recv_buff[m_recv_index -2] == ETX_CODE && check_sum == m_recv_buff[m_recv_index -1])	{
+						SYS_TRACE_BUFF(recv_tmp,recv_count,"m_recv_buff>>DATA");
+						printf("m_recv_buff>>>\r\n");
+						if (m_log_count > 0 ){
+							m_log_count = 0;
+						}
+						return test_func_proc(m_recv_buff + 4, m_recv_index - 6);
+					}
+					else{
+						if (m_log_count > 0 ){
+							m_log_count = 0;
+						}							
+					}
+					m_recv_index = 0;			
+					memset(m_recv_buff,0x00,sizeof(m_recv_buff));
+				}
 			}
 		}
 	}
-	else
-	{
-		xgui_messagebox_show("SetKey" , "Please enter the correct administrator password!", "" , "confirm" , 0);
+	return 0;
+}
+
+int uart_test_page()
+{
+	int ret =0;
+	st_gui_message pmsg;
+	unsigned int quitTick = Sys_TimerOpen(60000);	//Timeout exit timer
+	UartOpen(APP_COM,115200,UART_DATABIT8,UART_STOPBIT1,UART_NOPARITY);
+	gui_post_message(GUI_GUIPAINT, 0 , 0);
+
+	while(1){
+		if (Sys_TimerCheck(quitTick) == 0){		// Detection timeout
+			ret = READ_CARD_RET_TIMEOVER;	
+			break;
+		}
+		if (gui_get_message(&pmsg, 100) == 0) {
+			if (pmsg.message_id == GUI_GUIPAINT){
+				gui_begin_batch_paint();
+				gui_clear_dc();
+				gui_text_out(0,0, "uart test");
+				gui_text_out(0, GUI_LINE_TOP(2), "receiving..");	
+				gui_end_batch_paint();
+			}
+			else if (pmsg.message_id == GUI_KEYPRESS){
+				if ( pmsg.wparam == GUI_KEY_QUIT ){
+					ret =  READ_CARD_RET_CANCEL;
+					break;
+				}
+			}
+			else{
+				gui_proc_default_msg(&pmsg);	//  Let the system handle some common messages
+			}
+		}
+		else{
+			uart_test_proc(0);
+			gui_post_message(GUI_GUIPAINT, 0 , 0);
+		}		
 	}
+	UartClose(APP_COM);
+	return ret;
+}
+
+
+typedef struct{
+	char sRsaKey[2048];
+	char sToken[20];
+}ST_SecurityData;
+void test_flash_api()
+{
+	ST_SecurityData * sSdata;
+	sSdata=(ST_SecurityData *)Util_Malloc(sizeof(ST_SecurityData));
+	memset(sSdata,0x00,sizeof(ST_SecurityData));
+	Sys_ReadFlashData((char*)sSdata,sizeof(ST_SecurityData));
+	memcpy(sSdata->sToken,"12345678901234567890",20);
+	memcpy(sSdata->sRsaKey,"\xff",2048);
+	Sys_WriteFlashData((char*)sSdata,sizeof(ST_SecurityData));
 }

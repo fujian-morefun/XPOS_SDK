@@ -1143,5 +1143,8 @@ typedef struct _card_magtek_track_info{
 }card_magtek_track_info;
 
 
+#define GUI_LCD_LIGHT_MAX	99999999
+
+
 #endif
 

@@ -1,30 +1,22 @@
+#include "../app_def.h"
 #include "driver/mf_misc.h"
-#include "pub/osl/inc/osl_system.h"
-#include "pub/osl/inc/osl_BaseParam.h"
-#include "xGui/inc/draw_buf.h"
-#include "xGui/inc/2ddraw.h"
-#include "xGui/inc/xgui_key.h"
-#include "xGui/inc/message.h"
-#include <string.h>
-#include "xGui/inc/pageproc.h"
-#include <stdio.h>
+
 
 
 static void _paint_msg(char* msg)
 {
 	char* pstr;
 	int yPos = 0;
-	//处理有换行符的情况
 	while ((pstr = strstr(msg, "\n")) != 0)
 	{
 		pstr[0] = '\0';
-		xgui_TextOut(0, xgui_GetLineTop(yPos) , msg);
+		gui_text_out(0, GUI_LINE_TOP(yPos) , msg);
 		pstr ++;
 		msg = pstr;
 		yPos ++;
 	}
 
-	xgui_TextOut(0, xgui_GetLineTop(yPos) , msg);
+	gui_text_out(0, GUI_LINE_TOP(yPos) , msg);
 
 }
 
@@ -47,7 +39,7 @@ static void _lcdLight_paint(int nTime ,char * szMsg)
 	case 30 * 60:
 		sprintf(szContent,"  30 sec   1 min\n  3 min   10 min\n->30 min   %s",szMsg);
 		break;
-	case LCD_LIGHT_MAX:
+	case GUI_LCD_LIGHT_MAX:
 		sprintf(szContent, "  30 sec   1 min\n  3 min   10 min\n  30 min ->%s",szMsg);
 		break;
 	default:
@@ -55,30 +47,29 @@ static void _lcdLight_paint(int nTime ,char * szMsg)
 		break;
 	}
 
-	xgui_BeginBatchPaint();
+	gui_begin_batch_paint();
 
-	xgui_ClearDC();
+	gui_clear_dc();
 
 	_paint_msg(szContent);
 
-	xgui_Page_OP_Paint( "Cancel" , "Save");
+	gui_page_op_paint( "Cancel" , "Save");
 
-	xgui_EndBatchPaint();
+	gui_end_batch_paint();
 }
 
 int TimeSet_Show(int nLightTime , char * szMsg)
 {
 	int presskey;
 
-	int time[6] = {30, 60, 3 * 60, 10 * 60, 30 * 60, LCD_LIGHT_MAX};
+	int time[6] = {30, 60, 3 * 60, 10 * 60, 30 * 60, GUI_LCD_LIGHT_MAX};
 	int nCurIndex = 0;
 	int nTotalCount = sizeof(time) / sizeof(int);
 	int i;
-	MESSAGE pMsg;
+	st_gui_message pMsg;
 
 	_lcdLight_paint(nLightTime , szMsg);
 
-	//获取当前值在数组中的索引，之后加减只对索引进行加减，刷新的时候再根据索引从数组中读取对应的值
 	for (i = 0; i < nTotalCount; ++ i)	{
 		if (nLightTime == time[i])		{
 			nCurIndex = i;
@@ -87,32 +78,32 @@ int TimeSet_Show(int nLightTime , char * szMsg)
 	}
 
 	while(1){
-		if (xgui_GetMessageWithTime(&pMsg, 100) == MESSAGE_ERR_NO_ERR) {
+		if (gui_get_message(&pMsg, 100) == 0) {
 
-			if (pMsg.MessageId == XM_KEYPRESS) {
-				presskey = pMsg.WParam;
+			if (pMsg.message_id == GUI_KEYPRESS) {
+				presskey = pMsg.wparam;
 
 				switch(presskey) {
-					case KEY_UP:case KEY_LEFT: case KEY_1 : case KEY_XING:
+					case GUI_KEY_UP:case GUI_KEY_LEFT: case GUI_KEY_1 : case GUI_KEY_XING:
 						nCurIndex = (-- nCurIndex < 0 ? nTotalCount - 1 : nCurIndex);
 						_lcdLight_paint(time[nCurIndex] , szMsg);
 						break;
-					case KEY_DOWN:case KEY_RIGHT: case KEY_2 : case KEY_JING:
+					case GUI_KEY_DOWN:case GUI_KEY_RIGHT: case GUI_KEY_2 : case GUI_KEY_JING:
 						nCurIndex = (++ nCurIndex % nTotalCount);
 						_lcdLight_paint(time[nCurIndex] , szMsg);
 						break;
-					case KEY_QUIT:
+					case GUI_KEY_QUIT:
 						return -1;
-					case KEY_OK:	
+					case GUI_KEY_OK:	
 						return time[nCurIndex];
 						break;
 					default:
-						xgui_proc_default_msg(&pMsg);
+						gui_proc_default_msg(&pMsg);
 						break;
 				}
 			}
 			else{
-				xgui_proc_default_msg(&pMsg);
+				gui_proc_default_msg(&pMsg);
 			}
 		}
 	} 
@@ -122,33 +113,33 @@ int TimeSet_Show(int nLightTime , char * szMsg)
 
 void PowerDownTimeSet_Show()
 {
-	int nLightTime = osl_lcd_PowerDownTime();
+	int nLightTime = Sys_GetPowerDownTime();
 	int nRet = 0;
 
 	nRet = TimeSet_Show(nLightTime , "Disable");
 	if(nRet != -1){
-		osl_lcd_SetPowerDownTime(nRet);
+		Sys_SetPowerDownTime(nRet);
 	}
 }
 
 void eneyTimeSet_Show()
 {
-	int nLightTime = osl_Enercy_Time();
+	int nLightTime = Sys_Enercy_Time();
 	int nRet=0;
 	
 	nRet = TimeSet_Show(nLightTime , "Disable");
 	if(nRet != -1){
-		osl_Enercy_SetTime(nRet);
+		Sys_Enercy_SetTime(nRet);
 	}
 }
 
 void lcdLightSet_Show()
 {
-	int nLightTime = osl_lcd_BackLightTime();
+	int nLightTime = Sys_GetBackLightTime();
 	int nRet=0;
 	nRet = TimeSet_Show(nLightTime , "Always");
 
 	if(nRet != -1){
-		osl_lcd_SetBackLightTime(nRet);
+		Sys_SetBackLightTime(nRet);
 	}
 }

@@ -1,19 +1,9 @@
-#include <stdio.h>
-#include "xGui/inc/message.h"
-#include "pub/osl/inc/osl_log.h"
-#include "xGui/inc/xgui_key.h"
-#include "xGui/inc/draw_buf.h"
-#include "xGui/inc/2ddraw.h"
-#include "xGui/inc/mtext.h"
-#include "xGui/inc/messagebox.h"
-#include "pub/osl/inc/osl_time.h"
-#include "libapi_xpos/inc/libapi_system.h"
+#include "../app_def.h"
+
+//#include "pub/osl/inc/osl_time.h"
+
 #include "driver/uart.h"
-#include "input_public.h"
 
-
-
-#define  APP_TRACE 
 
 static char keybuff[][2] = {
 	{'A',3},//2
@@ -30,7 +20,7 @@ static char keybuff[][2] = {
 
 static char newchar(char oldchar,int keycode)
 {
-	int i = keycode - KEY_0 - 2;
+	int i = keycode - GUI_KEY_0 - 2;
 	if ( i < 0 ){
 		return oldchar;
 	}
@@ -53,87 +43,74 @@ static char newchar(char oldchar,int keycode)
 	}
 }
 
-#ifdef LCD_320_240
 #define LINE_SIZE		20
 #define	LINE_PER_PAGE	4	
-#else
-#define LINE_SIZE	16
-#define	LINE_PER_PAGE	2
-#endif
 
-
-int scan_page_proc(char *title, char *buff ,  int min  , int max , int timeover, int scan_time ,int input_mode,int *input_type)
+int scan_page_proc(char *title, char *buff, int size,  int timeover)
 {
-	MESSAGE pMsg;
+	st_gui_message pMsg;
 	int len = 0;
 	int ret=0;
 	unsigned int tick1;
 	int state = 0;
 	char *msg;
-	int it;
 	char tmp[32]={0};
 
 
-	it = 0;	
-	tick1 = osl_GetTick();
+	tick1 = Sys_TimerOpen(timeover);
 	len = strlen(buff);
 
-
-
-	if(osl_get_is_m69() == 1 ) {
-		xgui_PostMessage(XM_KEYPRESS, KEY_F2 , 0);
-	}
-
-	xgui_PostMessage(XM_GUIPAINT, 0 , 0);
+	SYS_TRACE("begtin sacn --------------------");
+	gui_post_message(GUI_GUIPAINT, 0 , 0);
 
 	while(1){
 		if (timeover > 0)		{
-			if(osl_CheckTimeover(tick1,timeover) != 0){
+			if(Sys_TimerCheck(tick1) == 0){
 				ret = -2;
 				break;
 			}
 		}
 
 
-		if (xgui_GetMessageWithTime(&pMsg, 100) == MESSAGE_ERR_NO_ERR) {
+		if (gui_get_message(&pMsg, 100) == 0) {
 
-			if (pMsg.MessageId == XM_SCAN_OK) {
-				strcpy(buff, pMsg.WParam);
+			if (pMsg.message_id == GUI_SCAN_OK) {
+				strcpy(buff, (char *)pMsg.wparam);
 				len = strlen(buff);
-				it = 1; 
-				osl_BuzzerSound(200);
+				Util_BuzzerSound(200);
 				ret = 0;
 				break;
 			}
-			else if (pMsg.MessageId == XM_GUIPAINT) {
-				xgui_BeginBatchPaint();
-				XGUI_SET_WIN_RC;
-				xgui_ClearDC();
+			else if (pMsg.message_id == GUI_GUIPAINT) {
+				SYS_TRACE("&&&&&&&&&&&&enter_GUI_GUIPAINT&&&&&&");
+				gui_begin_batch_paint();
+				gui_set_win_rc();
+				gui_clear_dc();
 
 				if(state == 0) msg = "wait scan";
 				if(state == 1) msg = "scan...";
 
-				xgui_SetTitle(title);
-				xgui_TextOut_Line_Left(msg,XGUI_LINE_TOP_4);
-				xgui_Page_OP_Paint("Cancel" , "");
+				gui_set_title(title);
+				gui_textout_line_left(msg,GUI_LINE_TOP(4));
+				gui_page_op_paint("Cancel" , "");
 
-				xgui_EndBatchPaint();
+				gui_end_batch_paint();
 			}
-			else if (pMsg.MessageId == XM_KEYPRESS) {
-				tick1 = osl_GetTick();
+			else if (pMsg.message_id == GUI_KEYPRESS) {
+				tick1 = Sys_TimerOpen(timeover);
 
-				if (pMsg.WParam == KEY_QUIT)	{
+				if (pMsg.wparam == GUI_KEY_QUIT)	{
 					ret = -1;
 					break;
 				}
-				else if (pMsg.WParam == KEY_F1 || pMsg.WParam == KEY_F2){
+				else if (pMsg.wparam == GUI_KEY_F1 || pMsg.wparam == GUI_KEY_F2){
 					Sys_scaner_start(0,0);
 					state = 1;
-					xgui_PostMessage(XM_GUIPAINT, 0 , 0);
+					gui_post_message(GUI_GUIPAINT, 0 , 0);
 				}
 			}
 			else{
-				xgui_proc_default_msg(&pMsg);	
+				gui_proc_default_msg(&pMsg);	
 			}
 		}
 
@@ -141,8 +118,6 @@ int scan_page_proc(char *title, char *buff ,  int min  , int max , int timeover,
 
 	Sys_scaner_stop();
 
-
-	if(input_type != NULL)	*input_type = it; 	
 	return	ret ;
 }
 

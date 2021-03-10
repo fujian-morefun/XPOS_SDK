@@ -1,76 +1,69 @@
-#include "xgui\inc\2ddraw.h"
-#include "xgui\inc\message.h"
-#include "xgui\inc\xgui_key.h"
-#include "input_num_page.h"
-#include "pub\common\misc\inc\mfmalloc.h"
-
+#include "../app_def.h"
 
 
 int input_num_page(char *buff , char *title , int min  , int max , int timeover , char pw, char argot )
 {
-	MESSAGE pMsg;
+	st_gui_message pMsg;
 	int len = 0;
 	int ret;
-	unsigned int tick1;
 	unsigned char *pwdbuff;
-
-	tick1 = osl_GetTick();							// Get current tick
-	xgui_PostMessage(XM_GUIPAINT, 0 , 0);			// Send a paint message
+	unsigned int tick1 = Sys_TimerOpen(timeover);
+	gui_post_message(GUI_GUIPAINT, 0 , 0);			// Send a paint message
 	len = strlen(buff);
 
-	pwdbuff = MALLOC(max + 1);
+	pwdbuff = Util_Malloc(max + 1);
 	memset(pwdbuff , 0, max + 1);
 
 	while(1){
 
 		if (timeover > 0)		{				// Detection timeout
-			if(osl_CheckTimeover(tick1,timeover) != 0){
+			if(Sys_TimerCheck(tick1) == 0){
 				ret = INPUT_NUM_RET_TIMEOVER;
 				break;
 			}
 		}
 
-		if (xgui_GetMessageWithTime(&pMsg, 100) == MESSAGE_ERR_NO_ERR) {	// Receive message
-			if (pMsg.MessageId == XM_GUIPAINT) {
-				xgui_BeginBatchPaint();
-				xgui_ClearDC();				// Clear full screen
+		if (gui_get_message(&pMsg, 100) == 0) {	// Receive message
+			if (pMsg.message_id == GUI_GUIPAINT) {
+				gui_begin_batch_paint();
+				gui_clear_dc();				// Clear full screen
 
-				xgui_SetTitle(title);		//  Show title
+				gui_set_title(title);		//  Show title
 
 				if (pw == 0){				// If not the password mode shows the actual string
-					xgui_TextOut_Line_Left(buff , XGUI_LINE_TOP_1 );
+					gui_textout_line_left(buff , GUI_LINE_TOP(1) );
 				}
 				else{			// If it is a password mode display string *
 					memset(pwdbuff , '*' , len);
 					pwdbuff[len] = 0;
-					xgui_TextOut_Line_Left( pwdbuff, XGUI_LINE_TOP_1);
+					gui_textout_line_left( pwdbuff, GUI_LINE_TOP(1));
 				}
-				xgui_Page_OP_Paint("cancel" , "confirm");		// Show 2 buttons at the bottom
-				xgui_EndBatchPaint();							// Output to the LCD screen
+				gui_page_op_paint("cancel" , "confirm");		// Show 2 buttons at the bottom
+				gui_end_batch_paint();							// Output to the LCD screen
 			}
-			else if (pMsg.MessageId == XM_KEYPRESS) {		// key message
-				tick1 = osl_GetTick();
+			else if (pMsg.message_id == GUI_KEYPRESS) {		// key message
+				tick1 = Sys_TimerOpen(timeover);
                                 if (argot == 1){
-                                    argot_keyinput(pMsg.WParam);
+                                    argot_keyinput(pMsg.wparam);
 				}
-				if (pMsg.WParam >= KEY_0 && pMsg.WParam <= KEY_9){
+				if (pMsg.wparam >= GUI_KEY_0 && pMsg.wparam <= GUI_KEY_9){
 					if (len < max)	{
-						buff[len] = pMsg.WParam;
+						buff[len] = pMsg.wparam;
 						len ++;
 						buff[len] = 0;
-						xgui_PostMessage(XM_GUIPAINT, 0 , 0);
+						gui_post_message(GUI_GUIPAINT, 0 , 0);
 					}
 				}
-				else if (pMsg.WParam == KEY_BACKSPACE)	{
+				else if (pMsg.wparam == GUI_KEY_BACKSPACE)	{
 					if (len > 0)	{
 						len --;
 						buff[len] = 0;
-						xgui_PostMessage(XM_GUIPAINT, 0 , 0);
+						gui_post_message(GUI_GUIPAINT, 0 , 0);
 					}
 				}
-				else if (pMsg.WParam == KEY_OK)	{
+				else if (pMsg.wparam == GUI_KEY_OK)	{
 					if (len <min){
-						xgui_PostMessage(XM_GUIPAINT, 0 , 0);
+						gui_post_message(GUI_GUIPAINT, 0 , 0);
 					}
 
 					if (len >=min && len <= max ){
@@ -78,19 +71,19 @@ int input_num_page(char *buff , char *title , int min  , int max , int timeover 
 						break;
 					}
 				}
-				else if (pMsg.WParam == KEY_QUIT)	{
+				else if (pMsg.wparam == GUI_KEY_QUIT)	{
 					ret = INPUT_NUM_RET_QUIT;
 					break;
 				}
 			}
 			else{
-				xgui_proc_default_msg(&pMsg);	//  Let the system handle some common messages
+				gui_proc_default_msg(&pMsg);	//  Let the system handle some common messages
 			}
 		}
 
 	}	
 
-	FREE(pwdbuff);
+	Util_Free(pwdbuff);
 	return ret ;
 }
 

@@ -1,53 +1,51 @@
-#include "pub/osl/inc/osl_filedef.h"
-#include "sdk_file.h"
-#include "driver/mf_system.h"
-#include "sdk_log.h"
-
-#define FILE_NAME	"data\\test.ini"
+#include "app_def.h"
 
 
-static int init = 0;
+#define FILE_NAME	"test.ini"
+
+
 void fileTest()
 {
+	int ret = 0;
 	int fp;
 	char *str = "1234567890";
-	char buff[16]={0};
+	char buff[50]={0};
+	char buffer[32]={0};
 
-	//if(init == 0){
-	//	mf_file_init();		// Initialize file system
-	//}
-
-	fp = mf_file_open(FILE_NAME, FILE_CREAT_FLAG, FILE_WRITE_MODE);
-	if(fp>=0){
-		mf_file_write(fp, str, strlen(str));		// write 10 byte "1234567890"
-		mf_file_close(fp);
-		gui_messagebox_show( "FileTest" , "Write OK" , "" , "confirm" , 0);
+	ret = UFile_OpenCreate(FILE_NAME, FILE_PRIVATE, FILE_CREAT, &fp, 0);//File open / create
+	if( ret == UFILE_SUCCESS){
+		UFile_Write(fp, str, strlen(str));// write 10 byte "1234567890"
+		UFile_Close(fp);				  // Close the file
+		sprintf(buffer, "Write: %s", str);
+		gui_messagebox_show( "FileTest" , buffer , "" , "confirm" , 0);
 	}
-	else
-	{		
-		gui_messagebox_show( "FileTest" , "Open File Fail" , "" , "confirm" , 0);
+	else{
+		gui_messagebox_show( "FileTest" , "File open or create fail" , "" , "confirm" , 0);
 	}
-
-	fp = mf_file_open(FILE_NAME, FILE_READ_FLAG, FILE_READ_MODE);
-	if(fp >= 0){
-		
-		mf_file_lseek(fp, 0, SEEK_SET);	// seek 0 
+	ret = UFile_GetLength(FILE_NAME,FILE_PRIVATE);
+	memset(buffer,0x00,sizeof(buffer));
+	sprintf(buffer, "file length: %d", ret);
+	gui_messagebox_show( "FileTest" , buffer , "" , "confirm" , 0);
+	ret = UFile_OpenCreate(FILE_NAME, FILE_PRIVATE, FILE_RDWR, &fp, 0);
+	if( ret == UFILE_SUCCESS){
+		UFile_Lseek(fp, 0, 0);	// seek 0 
 		memset(buff, 0, sizeof(buff));
-		mf_file_read(fp, buff, 5);		// read 5 byte
-		sdk_log_out("buff1:%s\r\n", buff);
+		UFile_Read(fp, buff, 5);		// read 5 byte
+		sprintf(buffer, "Read 5: %s", buff);
+		gui_messagebox_show( "FileTest" , buffer , "" , "confirm" , 0);
 
-		mf_file_lseek(fp, 8, SEEK_SET);	// move 8 
+		UFile_Lseek(fp, 8, 0);	// move 8 
 		memset(buff, 0, sizeof(buff));
-		mf_file_read(fp, buff, 2);		// read 2 byte
-		sdk_log_out("buff2:%s\r\n", buff);  // log out "90"
-
-		mf_file_close(fp);
-
-		gui_messagebox_show( "FileTest" , "Read OK" , "" , "confirm" , 0);
-
+		UFile_Read(fp, buff, 2);		// read 2 byte
+		//sdk_log_out("buff2:%s\r\n", buff);// log out "90"
+		sprintf(buffer, "Read 2: %s", buff);
+		gui_messagebox_show( "FileTest" , buffer , "" , "confirm" , 0);
+		UFile_Close(fp);				// Close the file
 	}
-	else
-	{		
-		gui_messagebox_show( "FileTest" , "Open File Fail" , "" , "confirm" , 0);
+	else{
+		gui_messagebox_show( "FileTest" , "File open or create fail" , "" , "confirm" , 0);
 	}
+
+	UFile_Remove(FILE_NAME, FILE_PUBLIC);//Delete file
 }
+

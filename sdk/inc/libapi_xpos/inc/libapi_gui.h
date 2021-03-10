@@ -15,6 +15,8 @@
 #define GUI_GUIPAINT				0x000A0001
 #define GUI_KEYPRESS				0x00050001
 #define GUI_SCAN_OK					0x000E0021
+#define GUI_POWERDOWN				0x00000001
+#define GUI_POWNLOWER				0x00000002
 
 #define GUI_KEY_0		'0'
 #define GUI_KEY_1		'1'
@@ -91,6 +93,8 @@ typedef struct __st_gui_message{
 	unsigned int lparam;
 	unsigned int time;
 }st_gui_message;
+
+#define GUI_MENU_ITEM_COUNT(a)		sizeof(a)/sizeof(st_gui_menu_item_def)
 
 
 
@@ -691,7 +695,10 @@ return: 0			success
 LIB_EXPORT void  gui_textout_line_center(char *pMsg , int top);
 
 LIB_EXPORT void  gui_textout_line_right(char *pMsg , int top);
+LIB_EXPORT void  gui_textout_line_left(char *pMsg , int top);
 
+LIB_EXPORT int gui_text_out_heghlight(int x, int y, int y2,char * text);
+LIB_EXPORT int gui_rect_heghlight(int x, int x2, int y, int y2);
 
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
@@ -713,3 +720,9 @@ enum{
 	GUI_LCD_INDEX_2,
 };
 LIB_EXPORT void gui_lcd_set_index( int index);
+
+LIB_EXPORT void gui_set_win_rc();
+LIB_EXPORT void gui_set_title(char *tilte);
+LIB_EXPORT void gui_clear_win();
+LIB_EXPORT void gui_text_out_win_center(char *pmsg);
+LIB_EXPORT int gui_text_width_ex(char * str);
