@@ -307,7 +307,17 @@ Remarks: Power off protection,
 		In search of Success, Record is filled with search results
 *************************************************************************************/
 LIB_EXPORT int UFile_UpdateRecordByIndex(cchar *FileName, int iFileLocation, void *Record, int Record_Len, uint Index);
-
+/*************************************************************************************
+Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
+Author:George
+Functions: Write data Block By file name£¨UFile_UpdateRecordByIndex£©
+Input : file_name£ºFile Name 
+		write_start: the offset start to write
+		write_buff£ºthe buffer to write
+		write_size£ºthe size to write
+return: actual size wrote
+*************************************************************************************/
+LIB_EXPORT int UFile_WriteBlockByName(char * file_name,int write_start, char * write_buff,int write_size);
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:yangjy

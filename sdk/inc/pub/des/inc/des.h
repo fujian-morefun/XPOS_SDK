@@ -61,6 +61,7 @@ LIB_EXPORT DES_BOOLEAN RunDes_l(DES_BOOLEAN bType,DES_BOOLEAN bMode,char* In,cha
 * @return Is encryption successful?
 */
 LIB_EXPORT DES_BOOLEAN RunDes(DES_BOOLEAN bType,DES_BOOLEAN bMode,char* In,char* Out,unsigned datalen,const char* Key,const unsigned char keylen);
+LIB_EXPORT DES_BOOLEAN RunDes2(DES_BOOLEAN bType,DES_BOOLEAN bMode,char* In,unsigned char cvec[8],char* Out,unsigned datalen,const char* Key,const unsigned char keylen);
 
 	//Compute and populate subkeys into SubKey data
 static void SetSubKey(PSubKey pSubKey, const char Key[8]);

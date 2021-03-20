@@ -58,9 +58,7 @@ extern "C"{
 
 LIB_EXPORT void mfs_set_key_save_type(int type, unsigned int addr);
 LIB_EXPORT int mfs_security_init(void);
-LIB_EXPORT int mfs_setkeylen(int keylen);
-LIB_EXPORT int mfs_setwkeylen(int keylen);
-LIB_EXPORT int mfs_setkeklen(int len);
+LIB_EXPORT void mfs_set_key_size(int size);
 
 LIB_EXPORT int mfs_security_close(void);
 
@@ -73,6 +71,10 @@ LIB_EXPORT int mfs_save_plaintext_key(unsigned int fid, unsigned int gid, unsign
 
 LIB_EXPORT int mfs_save_encrypted_key(unsigned int fiD, unsigned int giD, unsigned int type,const unsigned char * key,
 							const unsigned char * ksn, unsigned char * kvc);
+
+
+LIB_EXPORT int mfs_save_encrypted_key_ex(unsigned int fiD, unsigned int giD, unsigned int type,const unsigned char * key,
+									  const unsigned char * ksn, int des_mode,unsigned char * kvc);
 
 LIB_EXPORT int mfs_get_des(unsigned int fid, unsigned int gid, unsigned char *inData, unsigned char *outData);
 
@@ -139,7 +141,6 @@ LIB_EXPORT int mfs_set_mac_xor(int gid, char *data, int len, unsigned char *mac)
 
 
 
-
 #define MFSDK_KT_MAINKEY		0x00
 #define MFSDK_KT_PINENC			0x01
 #define MFSDK_KT_MACENC			0x02
@@ -167,10 +168,12 @@ LIB_EXPORT int mfsdk_save_plaintext_key(int type, int gid, unsigned char * key, 
 * @param [type] Key type, one of MFSDK_KT_MAINKEY to MFSDK_KT_MAGDEC
 * @param [gid] Key Index 0-9
 * @param [key] 16-byte key ciphertext
+* @param [des_mod] 0 ECB,1 CBC
 * @param [kvc] 4 bytes kvc
 * @return 0 succ
 */
 LIB_EXPORT int mfsdk_save_encrypted_key(int type, int gid, unsigned char * key, unsigned char *kvc);
+LIB_EXPORT int mfsdk_save_encrypted_key_ex(int type, int gid, unsigned char * key,int des_mode, unsigned char *kvc);
 
 /**
 * @brief Encryption and decryption operation
@@ -184,6 +187,14 @@ LIB_EXPORT int mfsdk_save_encrypted_key(int type, int gid, unsigned char * key, 
 */
 LIB_EXPORT int mfsdk_3des_run(int type, int gid, int mode, unsigned char *ind, int size, unsigned char *outd);
 
+LIB_EXPORT int mfsdk_3des_run_ex(int type, int gid, int mode, unsigned char *ind, int size, unsigned char *outd, int des_mode);
+LIB_EXPORT int mfsdk_3des_run_ex2(int type, int gid, int mode, unsigned char *ind, int size, unsigned char iv[8],unsigned char *outd, int des_mode);
+
+LIB_EXPORT char * mfs_get_hw_ver();
+LIB_EXPORT char * mfs_get_fw_ver();
+
+LIB_EXPORT int mfs_pin_encrypt(char *pin, char * span, int format, char * key, int keysize, char *pindata);
+LIB_EXPORT int mfs_encrypt_pin_proc(int fid, int format, int gid, char * pan, char *pinblock, char * pin);
 #ifdef __cplusplus
 }
 #endif

@@ -104,7 +104,7 @@ Input : index		sock index
 		  buff		Send buffer
 		  len		Send length
 Output : Nothing			
-return: 0,     success
+return: >0,     length ot sent
 		Other, failure		
 *************************************************************************************/
 LIB_EXPORT int comm_sock_send(int index, unsigned char * buff , int size);

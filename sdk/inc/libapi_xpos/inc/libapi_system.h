@@ -604,8 +604,8 @@ LIB_EXPORT int Sys_model_type();
 LIB_EXPORT const char * Sys_getDeviceVision();
 LIB_EXPORT void Sys_get_psn(char * psn);
 		  
-#define SYS_TRACE( ...)	osl_log( "app", 2 , __VA_ARGS__ )
-#define SYS_TRACE_BUFF(buff,size,tip) 	osl_log_buff_tip("app",2,buff, size , tip ,1 );
+#define SYS_TRACE( ...)	osl_log( "uninpay", 0 , __VA_ARGS__ )
+#define SYS_TRACE_BUFF(buff,size,tip) 	osl_log_buff_tip("uninpay",0,buff, size , tip ,1 );
 
 
 

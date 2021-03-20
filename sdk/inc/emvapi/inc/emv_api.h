@@ -49,11 +49,6 @@ enum{
 	EMVCARD_RET_TIME_OVER ,	// timeouts
 	EMVCARD_RET_RFS,//    two or more RF card
 };
-//Vendor ID
-enum{
-	SWIPE_LINC = 1,
-};
-
 typedef struct __st_read_card_in{
 	char title[32];//title of card reading pages
 	int trans_type;//Transaction Type refer DE3.1(ISO 8583). example 0x00 as SALE;
@@ -80,7 +75,6 @@ typedef struct __st_read_card_in{
 	int nTransSerial_9f41;	//Transcation Sequence Counter of chip card reading
 	int pin_format;//refer to SEC_PIN_FORMAX in libapi_security.h
 	char sDccCurrency[2];//DCC Currency
-	int VendorID;
 }st_read_card_in;
 
 #define TRACK_MAX_LENTH		144

@@ -67,7 +67,7 @@ return: 0,     success
 		Other, failure	
 *************************************************************************************/
 LIB_EXPORT int mksk_save_encrypted_key(int type, int gid, unsigned char * key, unsigned char *kvc);
-
+LIB_EXPORT int mksk_save_encrypted_key_ex(int type, int gid, unsigned char * key, int des_mode,unsigned char *kvc);
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:lx
@@ -98,7 +98,7 @@ return: 0,     success
 		Other, failure	
 *************************************************************************************/
 LIB_EXPORT int mksk_3des_run_ex(int type, int gid, int mode, unsigned char *ind, int size, unsigned char *outd, int des_mode);
-
+LIB_EXPORT int mksk_3des_run_ex2(int type, int gid, int mode, unsigned char *ind, int size, unsigned char iv[8],unsigned char *outd, int des_mode);
 /*************************************************************************************
 Copyright: Fujian MoreFun Electronic Technology Co., Ltd.
 Author:lx
@@ -148,7 +148,7 @@ Input : 	type:		Initial key type
 						0 = ipek 1= bdk
 			mode:		Encryption method of initial key
 						0=Plaintext 1= tmk encryption 2= kek encryption
-			gid:		Key grouping£¬0
+			gid:		Key grouping,max 8 group, value 0-7
 			init_ksn:	Initial ksn	
 			init_key:	Initial key
 			kvc		:	Key kvc(Key plaintext encryption 8 0x00)
