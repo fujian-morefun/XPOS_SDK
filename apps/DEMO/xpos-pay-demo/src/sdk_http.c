@@ -292,7 +292,7 @@ static void http_test()
 	char *msg = "hello world!";
 	char buff[2048]={0};
 	char recv[2048]={0};
-	char *ip = "www.baidu.com";//119.75.217.109
+	char *ip = "in.tms.morefun-et.com";//119.75.217.109
 	int port = 80;
 	int ret = -1;
 	int sock = SOCK_INDEX1;
@@ -368,7 +368,7 @@ static void https_test()
 	char *msg = "hello world!";//080022380000008000009A00000530081329000001081329053020390013
 	char buff[2048]={0};
 	char recv[2048]={0};
-	char *ip = "www.baidu.com";//104.27.134.11
+	char *ip = "in.tms.morefun-et.com";//104.27.134.11
 	int port = 80;
 	int ret = - 1;
 	char apn[32]="CMNET";
@@ -464,6 +464,8 @@ static int ssl_test_ap2()
 	int nTime=3;
 	int index =0;
 	char tmp[100];
+	char *ip = "in.tms.morefun-et.com";//104.27.134.11
+	int port = 80;
 	//ap2_mbedtls_init(1,0);//init in main.c once app start
 	for ( i = 0 ; i < nTime ; i ++){
 		m_connect_tick = Sys_GetTick();
@@ -478,7 +480,7 @@ static int ssl_test_ap2()
 
 		sprintf(tmp , "Connect server%dtimes" , i + 1);
 		comm_page_set_page("Https", tmp , 1);
-		ret = ap2_sock_connect(COMM_SOCK, "pretran.tianquetech.com", 443, 0);	//  Connect to https server
+		ret = ap2_sock_connect(COMM_SOCK, ip, port, 0);	//  Connect to https server
 		SYS_TRACE( "--------------------mf_ssl_connect: %d ---------------------------", ret );
 
 		if (comm_page_get_exit() || m_connect_exit == 1)	{
@@ -496,7 +498,7 @@ static int ssl_test_ap2()
 	if(ret == 0){
 		strcpy(send, "GET /?length=00009 HTTP/1.0\r\n\r\n" );
 		ret = ap2_sock_send(COMM_SOCK , send ,  strlen(send));		// 		Send http request
-		if(ret == 0){
+		if(ret >0){
 			memset(recv,0x00, sizeof(recv));
 			ret = ap2_sock_recv( COMM_SOCK, recv, sizeof(recv) ,1000);
 			if (ret < 0)
@@ -549,6 +551,7 @@ void sdk_http_test()
 
 void sdk_https_test()
 {
+	//ssl_test_ap2();
 	https_test();
 	//json_test();
 

@@ -5,11 +5,11 @@
 #define QR_WIDTH	240
 #define QR_HEIGHT	240
 
+#define QRBMP "xxxx\\qr.bmp"
 
 
-int generate_code( char *data,char **outbitmap,int *outwidth  )
+static int generate_code( char *data,char **outbitmap,int *outwidth,int *height )
 {
-#define TEMP "xxxx\\qr.tmp"
 
 	int version = -1;
 	int mode = QR_EM_AUTO;
@@ -17,11 +17,8 @@ int generate_code( char *data,char **outbitmap,int *outwidth  )
 	int masktype = -1;
 
 	int errcode = QR_ERR_NONE;
-	int has_data = 0;
 
 	char * bitmap = 0;
-	int width = 0;
-	int height = 0;
 	int datalen;
 	int nsize = 0;
 	int sep = 1;
@@ -44,63 +41,47 @@ int generate_code( char *data,char **outbitmap,int *outwidth  )
 	SYS_TRACE("qrGetSymbol nsize=%d\r\n" , nsize);
 	if (  nsize > 0 )
 	{
-		File_WriteBlockByName( TEMP ,0,bitmap,nsize);
+		UFile_WriteBlockByName( QRBMP, 0, bitmap, nsize);
 	}
-	else{
-		Util_Free(bitmap);
-	}
+	
+	Util_Free(bitmap);
+
 	qrDestroy(qr);
 
 	SYS_TRACE("qrDestroy nsize = %d\r\n",nsize);
 
 	if ( nsize > 0 )
-	{//??????
-		*outbitmap = gui_load_bmp(TEMP,outwidth,&height);
+	{
+		*outbitmap = gui_load_bmp(QRBMP,outwidth,height);
 	}
 	else{
-		//???????
 		*outbitmap = 0 ;
 		*outwidth = 0;
+		*height=0;
 	}
-	//	*outbitmap = bitmap;
-	//	*outwidth = lastwidth;
-
-	return 0;
+	return nsize;
 }
 
 
 void showQrTest()
 {
-	Param_QR_INFO qr_info;
-	int i;
-	int msg_ret; 
+	int msg_ret=0;
 	st_gui_message pMsg;
-	char * bitmap = (char *)Util_Malloc(QR_HEIGHT*QR_HEIGHT/8);
+	char * bitmap;// = (char *)Util_Malloc(QR_HEIGHT*QR_HEIGHT/8);
 	int width = 0;
+	int height = 0;
 	int ret = 0;
 	unsigned int tick1 = Sys_TimerOpen(60000);	
-	//unsigned int tick2 = osl_GetTick();
 	int zoom =  1;
 	int left,top;
 	char *data= "test qr code";
 
-#define USELIBQR
-#ifndef USELIBQR
-	qr_info.moudleWidth = 8;		// gain
-	qr_info.nLevel = 1;				// Error correction level
-	qr_info.nVersion = 0;			// Qr version
-	
-	memset(bitmap , 0 , QR_HEIGHT*QR_HEIGHT/8);
 
-	width = mfGeneCodePic(data , strlen(data) , &qr_info , bitmap);
+	generate_code( data, &bitmap, &width,&height);
 
-#else
-	generate_code( data, &bitmap, &width );
-#endif
 	gui_post_message(GUI_GUIPAINT, 0 , 0);  // Send a paint message
 
 	if(width > 0){
-
 		while(1){
 			if (Sys_TimerCheck(tick1) == 0)	{	// Check page timeout
 				ret = -3;
@@ -112,11 +93,11 @@ void showQrTest()
 				if (pMsg.message_id == GUI_GUIPAINT) {			// 	If it is a paint message, draw the page	
 					gui_begin_batch_paint();
 					gui_clear_dc();
-					
+					zoom = (gui_get_height() - 10) / height;
 					// Calculate barcode position, centered display
 					left = (gui_get_width() - width * zoom)  / 2;	
-					top = (gui_get_height() - width * zoom) / 2;
-					gui_out_bits(left, top ,(unsigned char *)bitmap , width , width , 0);	
+				top = (gui_get_height() - height * zoom) / 2;
+					gui_out_bits(left, top ,(unsigned char *)bitmap , width , height , zoom);	
 					
 					gui_end_batch_paint();
 				}
@@ -131,16 +112,11 @@ void showQrTest()
 				}
 				gui_proc_default_msg(&pMsg);				//  Let the system handle some common messages
 			}
-
-
 		}
+		Util_Free(bitmap);
 	}
-	else{
-
-	}
-	Util_Free(bitmap);
-
-
+	else
+		gui_messagebox_show( "QR test", "QR generate FAIL!" ,"","Confirm" ,0);
 
 	return ;
 }

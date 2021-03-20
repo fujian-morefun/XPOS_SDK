@@ -33,12 +33,13 @@ void sdk_driver_magtek()
 	}
 }
 
-void sdk_driver_icc()
+void sdk_driver_icc(SlotType nSlotIndex)
 {
 	int ret, atrlen;
-	unsigned char atr[64], rbuffer[64];
-	unsigned char buffer[128];
-	int icc_socket = SLOT_ICC_SOCKET1; 
+	unsigned char atr[64]={0};
+	unsigned char rbuffer[64]={0};
+	unsigned char buffer[128]={0};
+	int icc_socket = nSlotIndex; 
 	unsigned char test_cmd[] = {0x00,0xA4,0x04,0x00,0x08,0xA0,0x00,0x00,0x03,0x33,0x01,0x01,0x01,0x00}; 
 
 
@@ -49,7 +50,9 @@ void sdk_driver_icc()
 	if(icc_present(icc_socket) == 1) {		// Check if the card is in place
 		ret = icc_powerup(icc_socket, atr, sizeof(atr));	// Card power up
 		if(ret >=0){
+			SYS_TRACE_BUFF(test_cmd,sizeof(test_cmd),"icc write buffer");
 			ret = icc_send_apdu(icc_socket, test_cmd, sizeof(test_cmd), rbuffer);	// Tpdu data exchange
+			SYS_TRACE_BUFF(rbuffer,sizeof(rbuffer),"icc read buffer");
 			if(ret >=0 ){
 				gui_messagebox_show("icc" , "send apdu succ", "" , "confirm" , 0);
 			}

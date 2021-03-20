@@ -14,6 +14,10 @@ int upay_print_proc( st_card_info *card_info )
 	char samt[32]={0};
 
 
+	if(Sys_GetDeviceType() == DEVICE_TYPE_MP70){
+		xgui_messagebox_show("Sale", "OK" , "" , "confirm" ,  15000);
+		return 0;
+	}
 
 	while(1)
 	{

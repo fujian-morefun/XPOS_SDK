@@ -3,7 +3,11 @@
 
 #define LOGOIMG "data\\logo2.bmp"
 #define MAIN_MENU_PAGE	"main"
-
+// #define STR_MENU_MAIN			"Horizon Pay"
+// #define STR_MENU_PURCHASE		"Purchase"
+// #define STR_MENU_BALANCE			"Balance"
+// #define STR_MENU_REVERSAL		"Reversal"
+// #define STR_MENU_SETUP			"Setup"
 
 // Define the menu array, the first parameter is the name of the parent menu, 
 // the second parameter is the name of the current menu,
@@ -32,6 +36,7 @@ static  st_gui_menu_item_def _menu_def[] = {
     {"Test",    "Led",          ""},
 	{"Test",    "uart test",          ""},
 	{"Test",	"Wifi Link",    ""},
+	{"Test",	"ICC PSAM",    ""},
 
 	{"Settings",	"Net Select",	""},
 	{"Settings",	"Wifi Set",	""},
@@ -140,7 +145,7 @@ static int _menu_proc(char *pid)
 		sdk_driver_magtek();
 	}
 	else if (strcmp(pid , "Ic") == 0){
-		sdk_driver_icc();
+		sdk_driver_icc(SLOT_ICC_SOCKET1);
 	}
 	else if (strcmp(pid , "RF") == 0){
 		sdk_driver_rf();
@@ -168,6 +173,9 @@ static int _menu_proc(char *pid)
 	}
 	else if (strcmp(pid , "Security") == 0)	{
 		securityTest();
+	}
+	else if(strcmp(pid,"ICC PSAM")==0){
+		sdk_driver_icc(SLOT_ICC_SOCKET4);
 	}
 	else if(strcmp(pid, "KeyCheck")==0){
 		char szMac[21]={0};
