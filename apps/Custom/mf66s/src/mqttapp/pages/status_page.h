@@ -12,3 +12,4 @@ void status_page_showwaiting(const char *msg);
 
 
 void status_page();
+int rf_enterAmount_page(long long *llAmount);

@@ -9,3 +9,4 @@
 
 
 void sdk_pay(int key);
+int upay_barscan();

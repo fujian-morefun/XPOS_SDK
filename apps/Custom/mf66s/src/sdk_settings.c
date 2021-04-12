@@ -21,43 +21,71 @@ static void key_sound_page()
 }
 
 
-static void tts_volume_page()
+static void tts_volume_page_paint(int value)
 {
-	char *items[]={"volume 0", "volume 1", "volume 2" , "volume 3" , "volume 4",
-	               "volume 5", "volume 6", "volume 7" , "volume 8" , "volume 9",};
-	int itemcount =  sizeof(items)/ sizeof(items[0]);
-	int ret;
-	int def = Sys_GetTtsVolume();  //get the current value
-	char str[64]={0};
+	char acBuf[32+1] ={0};
+	gui_begin_batch_paint();
+	gui_clear_dc();
 
-	ret = gui_select_page_ex( "tts volume" , items,itemcount , 60000, def);
-	if(ret >=0){
-		Sys_SetTtsVolume(ret);	// set the current value
-		sprintf(str, "volume %d", ret);
-		Play_Voice(str);
-	}
+	sprintf(acBuf,"volume:%d",value);
+	gui_text_out(0, GUI_LINE_TOP(0),acBuf);
+	gui_text_out(0, GUI_LINE_TOP(1),"Up or Down");
 
+	gui_page_op_paint( "Cancel" , "Ok");
+	gui_end_batch_paint();
 }
 
-
-static void tts_speed_page()
+void tts_volume_page()
 {
-	char *items[]={"speed 0", "speed 1", "speed 2" , "speed 3" , "speed 4",};
-	int itemcount =  sizeof(items)/ sizeof(items[0]);
-	int ret;
-	static int def = 0;
-	char str[64]={0};
+	int presskey;
+	int iIndex;
+	st_gui_message pMsg;
 
-	ret = gui_select_page_ex( "tts speed" , items,itemcount , 60000, def);
-	if(ret >=0){
-		def = ret;
-		//Sys_SetTtsSpeed(ret);	// set the current value
-		sprintf(str, "speed %d", ret);
-		Play_Voice(str);
-	}
+	iIndex = Sys_GetTtsVolume();
+	tts_volume_page_paint(iIndex);
+	while(1)
+	{
+		if (gui_get_message(&pMsg, 100) == 0) 
+		{
+
+			if (pMsg.message_id == GUI_KEYPRESS) 
+			{
+				presskey = pMsg.wparam;
+
+				switch(presskey) {
+				case GUI_KEY_UP:
+					if(iIndex != 9)
+					{
+						iIndex++;
+					}
+					
+					tts_volume_page_paint(iIndex);
+					break;
+				case GUI_KEY_DOWN:
+					if(iIndex != 0)
+					{
+						iIndex--;
+					}
+
+					tts_volume_page_paint(iIndex);
+					break;
+				}
+				
+				if (presskey == GUI_KEY_UP || GUI_KEY_DOWN == presskey)
+				{
+					Sys_SetTtsVolume(iIndex);
+					Play_Voice("TTSTEST");
+				}
+				else if(presskey == GUI_KEY_QUIT || GUI_KEY_OK == presskey)
+				{
+					break;
+				}
+			}
+		}
+	} 
+
+	return;
 }
-
-
 
 
 static int power_time_set_page(int nLightTime , char * szMsg)
@@ -128,7 +156,6 @@ int settings_menu()
 		"power time",	
 		"time set",		
 		"tts volume",
-		"tts speed",
 	};
 	int itemcount =  sizeof(items)/ sizeof(items[0]);
 	while ( ret >=0 && ret < itemcount  ){
@@ -143,7 +170,7 @@ int settings_menu()
 			key_sound_page();
 		}
 		else if(ret == 3){
-			powerdown_time_page();
+			backlight_time_page();
 		}
 		else if(ret == 4){
 			powerdown_time_page();
@@ -153,9 +180,6 @@ int settings_menu()
 		}
 		else if(ret == 6){
 			tts_volume_page();
-		}
-		else if(ret == 7){
-			tts_speed_page();
 		}
 	}
 	return ret;

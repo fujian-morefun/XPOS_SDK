@@ -1,12 +1,12 @@
 #include <string.h>
+#include "app_def.h"
+
 #include "ucosii\ucos_ii.h"
-#include "pub/osl/inc/osl_system.h"
+//#include "pub/osl/inc/osl_system.h"
 #include "mqtt_proc.h"
 #include "mqtt_embed/MQTTClient/src/MQTTClient.h"
-#include "pub\inc\taskdef.h"
-#include "pub/tracedef.h"
 #include "usermessage.h"
-#include "pub\common\misc\inc\mfmalloc.h"
+#include "libapi_xpos\inc\libapi_system.h"
 static MQTTClient c;
 static Network n;
 static e_status s_status;
@@ -52,7 +52,7 @@ static void mqtt_comm_messageArrived(MessageData* md)
 			memcpy( s_payload, (char*)m->payload ,s_payloadlen );
 			s_payload[s_payloadlen] = 0;
 			MQTT_UNLOCK
-			xgui_PostMessage( XM_MESSAGEARRIVED , 0,0);
+			gui_post_message( XM_MESSAGEARRIVED , 0,0);
 		}
 	}
 }
@@ -61,7 +61,7 @@ int mqtt_proc_Pause()
 	s_paused = 1;
 	while ( s_status == status_Recving )
 	{
-		osl_Sleep(100);
+		Sys_Sleep(100);
 	}
 
 }
@@ -74,14 +74,14 @@ int mqtt_proc_Resume()
 int mqtt_proc_default_msg(st_gui_message * pmsg)
 {
 	if (pmsg->message_id == XM_MESSAGEARRIVED){
-		unsigned char *payload = MALLOC(MAXPAYLOADSIZE);
+		unsigned char *payload = Util_Malloc(MAXPAYLOADSIZE);
 		unsigned int payloadlen;
 		payloadlen = mqtt_getpayload( payload , MAXPAYLOADSIZE);
 		if ( payloadlen )
 		{
 			onmessageArrived(payload,payloadlen);
 		}
-		FREE(payload);
+		Util_Free(payload);
 		return 1;
 	}	
 	return 0;
@@ -99,11 +99,11 @@ static int mqtt_subscribe_yield( MQTTClient *c )
 	sprintf(topic,"testNode/handshake/pub" , cid);
 	//sprintf(topic,"iot/v1/pXgzbzmjON5RQQv3/%s/user/task" , cid);
 
-	APP_TRACE("Subscribe...\r\n");
+	SYS_TRACE("Subscribe...\r\n");
 	sprintf(s_statustext,"Subscribe..");
-	APP_TRACE("topic %s\r\n", topic);
+	SYS_TRACE("topic %s\r\n", topic);
 	rc = MQTTSubscribeWithResults(c,topic, subsqos, mqtt_comm_messageArrived, &suback);
-	APP_TRACE("MQTTSubscribeWithResults:%d\r\n", rc);
+	SYS_TRACE("MQTTSubscribeWithResults:%d\r\n", rc);
 	if ( rc == 0)
 	{
 		sprintf(s_statustext,"Recving..");
@@ -174,7 +174,7 @@ static int mqtt_comm_run()
 	strcpy(s_statustext,"Connecting..");
 	s_status = status_Connecting;
 
-	APP_TRACE("Connecting\r\n");
+	SYS_TRACE("Connecting\r\n");
 	strcpy(ip,HOST);
 	port = PORT;
 
@@ -195,7 +195,7 @@ static int mqtt_comm_run()
 		rc = NetworkOverWebSocket( &n ,ip, port );
 	}
 #endif
-	APP_TRACE("NetworkConnect:%d\r\n", rc);
+	SYS_TRACE("NetworkConnect:%d\r\n", rc);
 	if ( rc == 0 )
 	{
 		MQTTPacket_connectData data = MQTTPacket_connectData_initializer;
@@ -219,7 +219,7 @@ static int mqtt_comm_run()
 
 		rc = MQTTConnect(&c, &data);
 		s_client = &c;
-		APP_TRACE("rc from connect:%d\r\n", rc);
+		SYS_TRACE("rc from connect:%d\r\n", rc);
 		if ( rc == 0 )
 		{
 			mqtt_subscribe_yield(&c);
@@ -259,7 +259,7 @@ int mqtt_proc_publish(const char *payload)
 
 		ret = MQTTPublish( s_client,topic,&msg);
 
- 		APP_TRACE("publish (%s):\r\n%s\r\n", topic, payload);
+ 		SYS_TRACE("publish (%s):\r\n%s\r\n", topic, payload);
 
  		return ret;
 	}
@@ -291,18 +291,18 @@ static void mqtt_comm_task(void * p)
 				s_status = status_Paused;
 				sprintf(s_statustext,"Paused..");
 			}
-			osl_Sleep(100);
+			Sys_Sleep(100);
 			continue;
 		}
 		//Wait one second and try again
-		osl_Sleep(1000);
+		Sys_Sleep(1000);
 
 
 		//Waiting network..
 		if ( net_func_link_state() == 0 ){
 			sprintf(s_statustext,"Wait network..");
 			s_status = status_WaitNetwork;
-			osl_Sleep(1000);
+			Sys_Sleep(1000);
 			continue;
 		}
 
@@ -311,7 +311,7 @@ static void mqtt_comm_task(void * p)
 			mqtt_comm_run();
 		}
 		else{
-			osl_Sleep(1000);
+			Sys_Sleep(1000);
 		}
 
 
@@ -323,8 +323,9 @@ static void mqtt_comm_task(void * p)
 
 
 #pragma data_alignment=8
+#define APP_TASK_MIN_PRIO	30
 #define _MQTT_TASK_SIZE		2048
-#define _MQTT_TASK_PRIO		(_APP_TASK_MIN_PRIO + 4)
+#define _MQTT_TASK_PRIO		(APP_TASK_MIN_PRIO + 4)
 static unsigned int pTaskStk[_MQTT_TASK_SIZE];
 
 int mqtt_proc_init()
@@ -338,7 +339,7 @@ int mqtt_proc_init()
 	sprintf(s_statustext,"Loading..");
 	//xgui_default_msg_func_add((void*)mqtt_proc_default_msg);
 
-	osl_task_create((void*)mqtt_comm_task,_MQTT_TASK_PRIO,pTaskStk ,_MQTT_TASK_SIZE );
+	Sys_TaskCreate(mqtt_comm_task,_MQTT_TASK_PRIO,(char *)pTaskStk ,_MQTT_TASK_SIZE );
 	return 0;
 }
 

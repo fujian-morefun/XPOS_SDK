@@ -278,6 +278,16 @@ static int https_recv(int sock, char *buff, int len, int timeover)
 	return -1;
 }
 
+
+static void http_comm_tip()
+{
+	gui_begin_batch_paint();
+	gui_clear_dc();
+	gui_textout_line_center("communicating...", GUI_LINE_TOP(4));
+	gui_end_batch_paint();
+	return;
+}
+
 void sdk_http_test()
 {
 	char *msg = "hello world!";
@@ -292,12 +302,15 @@ void sdk_http_test()
     int nret;	
 	int nTime = 3;
 
+	SYS_TRACE("sdk_http_test:---->\r\n");
 	sdk_http_pack(buff, msg);		//  Package http data
-			
-	nret = comm_net_link("", apn ,30000);		// 30s
+
+	http_comm_tip();
+	nret = comm_net_link("", apn ,5000);		// 30s
+	SYS_TRACE("comm_net_link = %d\r\n",nret);
 	if (nret != 0)
 	{
-		gui_messagebox_show("Http" , "Link Fail", "" , "confirm" , 0);
+		gui_messagebox_show("Http" , "Link Fail", "" , "confirm" , 0);		
 		return;
 	}
 
@@ -370,7 +383,8 @@ static void https_test()
 	//mbed_ssl_set_log(10); 
 	sdk_http_pack(buff, msg);		//  Package http data
 	
-	nret = comm_net_link( "" , apn,  30000);
+	http_comm_tip();
+	nret = comm_net_link( "" , apn,  5000);
 	if (nret != 0)
 	{
 		gui_messagebox_show("Https" , "Link Fail", "" , "confirm" , 0);

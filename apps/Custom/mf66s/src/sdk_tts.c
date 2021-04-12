@@ -108,6 +108,6 @@ void sdk_tts_play_amt_en(int amt)
 
 void sdk_tts_test()
 {
-	Play_Voice("Payment successful, welcome to visit next time");
+	Play_Voice("payok");//"Payment successful, welcome to visit next time");
 	
 }

@@ -21,11 +21,7 @@ static int number_copy( number * dst, number * src )
 	return 0;
 }
 
-#ifdef WIN32
-#define _snprintf sprintf_s
-#else
 #define _snprintf snprintf
-#endif
 
 static int trimzreo(char*numstr)
 {

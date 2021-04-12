@@ -1,10 +1,10 @@
 
 #include <string.h>
 #include "messagearrived.h"
-#include "driver/mf_supply_power.h"
+//#include "driver/mf_supply_power.h"
 #include "mqtt_proc.h"
 #include "usermessage.h"
-#include "pub/common/misc/inc/mfmalloc.h"
+//#include "pub/common/misc/inc/mfmalloc.h"
 
 static int _getval(const char *data, const char *key, char *outbuff, int size)
 {
@@ -83,7 +83,7 @@ static void on_otaurl(const char *payload,int payloadlen)
 		char filename[40] = "data\\tms.bin";
 		char fname[32];
 		int datalen = 0;
-		char *pbody = (char *)MALLOC(BODYSIZE);
+		char *pbody = (char *)Util_Malloc(BODYSIZE);
 
 		int firmware = _getvalint( payload, "firmware");
 		_getval( payload,"fname", fname, sizeof(fname));
@@ -100,7 +100,7 @@ static void on_otaurl(const char *payload,int payloadlen)
 		{
 			File_WriteBlockByName( filename, 0, pbody, datalen );
 		}
-		FREE(pbody);
+		Util_Free(pbody);
 
 		if ( firmware == 1)
 		{
@@ -108,7 +108,7 @@ static void on_otaurl(const char *payload,int payloadlen)
 			{
 				if( tms_update(filename) == 0 )
 				{
-					mf_system_power_state(POWER_STATE_RESET);
+					Sys_Reboot();
 				}
 			}
 		}
@@ -136,7 +136,7 @@ static void on_paymentend(const char *payload,int payloadlen)
 	}
 	else{
 	}
-	xgui_PostMessage( XM_PAYMENTEND, st, 0);
+	gui_post_message( XM_PAYMENTEND, st, 0);
 }
 
 

@@ -1,19 +1,11 @@
-#ifdef WIN32
-//#include <windows.h>
-#endif
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "http_download.h"
+#include "libapi_xpos/inc/libapi_system.h"
 
-
-#include "pub/common/misc/inc/mfmalloc.h"
-#include "pub/tracedef.h"
-
-#define HTTP_TRACE      APP_TRACE
 
 static app_http_download_progress s_progress = 0;
-
 
 typedef struct app_http_uri_tag
 {
@@ -55,7 +47,7 @@ static int app_http_uri_parse(const char *a_string, app_http_uri *a_uri)
 	if (!l_start_string)
 		goto ec;
 	if (a_uri) {
-		a_uri->proto = (char *)malloc(l_start_string - a_string + 1);
+		a_uri->proto = (char *)Util_Malloc(l_start_string - a_string + 1);
 		memcpy(a_uri->proto, a_string, (l_start_string - a_string));
 		a_uri->proto[l_start_string - a_string] = '\0';
 	}
@@ -79,7 +71,7 @@ static int app_http_uri_parse(const char *a_string, app_http_uri *a_uri)
 				/* only do this if a uri was passed in */
 				if (a_uri)
 				{
-					a_uri->host = (char *)malloc(l_end_string - l_start_string + 1);
+					a_uri->host = (char *)Util_Malloc(l_end_string - l_start_string + 1);
 					/* copy the data */
 					memcpy(a_uri->host, l_start_string, (l_end_string - l_start_string));
 					/* terminate */
@@ -97,7 +89,7 @@ static int app_http_uri_parse(const char *a_string, app_http_uri *a_uri)
 					goto ec;
 				if (a_uri)
 				{
-					a_uri->host = (char *)malloc(l_end_string - l_start_string + 1);
+					a_uri->host = (char *)Util_Malloc(l_end_string - l_start_string + 1);
 					memcpy(a_uri->host, l_start_string, (l_end_string - l_start_string));
 					a_uri->host[l_end_string - l_start_string] = '\0';
 				}
@@ -141,7 +133,7 @@ static int app_http_uri_parse(const char *a_string, app_http_uri *a_uri)
 			goto ec;
 		if (a_uri)
 		{
-			a_uri->host = (char *)malloc(l_end_string - l_start_string + 1);
+			a_uri->host = (char *)Util_Malloc(l_end_string - l_start_string + 1);
 			memcpy(a_uri->host, l_start_string, (l_end_string - l_start_string));
 			a_uri->host[l_end_string - l_start_string] = '\0';
 			/* for a "/" */
@@ -187,7 +179,7 @@ static app_http_uri * app_http_uri_new(void)
 {
 	app_http_uri *l_return = NULL;
 
-	l_return = (app_http_uri *)malloc(sizeof(app_http_uri));
+	l_return = (app_http_uri *)Util_Malloc(sizeof(app_http_uri));
 	l_return->full = NULL;
 	l_return->proto = NULL;
 	l_return->host = NULL;
@@ -199,22 +191,22 @@ static app_http_uri * app_http_uri_new(void)
 static void app_http_uri_destroy(app_http_uri *a_uri)
 {
 	if (a_uri->full) {
-		free(a_uri->full);
+		Util_Free(a_uri->full);
 		a_uri->full = NULL;
 	}
 	if (a_uri->proto) {
-		free(a_uri->proto);
+		Util_Free(a_uri->proto);
 		a_uri->proto = NULL;
 	}
 	if (a_uri->host) {
-		free(a_uri->host);
+		Util_Free(a_uri->host);
 		a_uri->host = NULL;
 	}
 	if (a_uri->resource) {
-		free(a_uri->resource);
+		Util_Free(a_uri->resource);
 		a_uri->resource = NULL;
 	}
-	free(a_uri);
+	Util_Free(a_uri);
 }
 
 
@@ -274,7 +266,7 @@ static int app_http_StatusCode(char *heads)
 	}
 	else
 	{
-		HTTP_TRACE( "app_http_StatusCode error %s", heads );
+		SYS_TRACE( "app_http_StatusCode error %s", heads );
 	}
 
 	return -1;
@@ -307,13 +299,13 @@ static int app_http_uri_connect( app_http_uri *uritem ,int sock )
 	int ret;
 	connectitck = osl_GetTick();
 
-	HTTP_TRACE("comm_ssl_init\r\n" );
+	SYS_TRACE("comm_ssl_init\r\n" );
 	comm_ssl_init(sock, 0, 0, 0,0);
-	HTTP_TRACE("comm_ssl_connect2 %d %s %d\r\n" , sock, uritem->host,uritem->port );
+	SYS_TRACE("comm_ssl_connect2 %d %s %d\r\n" , sock, uritem->host,uritem->port );
 
 	ret = comm_ssl_connect2( sock, uritem->host,uritem->port ,_connect_server_func );
 
-	HTTP_TRACE("comm_ssl_connect2 =%d\r\n" , ret );
+	SYS_TRACE("comm_ssl_connect2 =%d\r\n" , ret );
 
 	return ret;
 }
@@ -367,7 +359,7 @@ int app_http_download_uri( app_http_uri *uritem ,char *data,int datasize,int *in
 	int inoffset = *inout_offset;
 	int offset = inoffset;
 
-	HTTP_TRACE("app_http_download_uri datasize=%d ,offset=(%d,%d,%d)\r\n" , datasize,inoffset,offset,*inout_offset );
+	SYS_TRACE("app_http_download_uri datasize=%d ,offset=(%d,%d,%d)\r\n" , datasize,inoffset,offset,*inout_offset );
 
 	hret = comm_net_link("Dial","CMNET",30*1000);
 	if ( hret == 0 )
@@ -392,7 +384,7 @@ int app_http_download_uri( app_http_uri *uritem ,char *data,int datasize,int *in
 			int nRecvLen = 0;
 			unsigned int nstarttick = 0;
 
-			char *szTemp = (char *)malloc(RECVBUFFSIZE + 1);
+			char *szTemp = (char *)Util_Malloc(RECVBUFFSIZE + 1);
 
 			int ret = app_http_uri_getreqbuff( uritem , *inout_offset ,szTemp);
 
@@ -456,7 +448,7 @@ int app_http_download_uri( app_http_uri *uritem ,char *data,int datasize,int *in
 					Sys_Delay(200);
 				}
 			}
-			free(szTemp);
+			Util_Free(szTemp);
 
 			if ( hret == HTTP_ERR_SUCC && bodyindex < ContentLength )
 			{//	http body
@@ -497,7 +489,7 @@ int app_http_download_uri( app_http_uri *uritem ,char *data,int datasize,int *in
 		hret = HTTP_ERR_NETLINK;
 	}
 	
-	HTTP_TRACE("app_http_download_uri ContentLength=%d ,hret = %d\r\n" , datasize,hret );
+	SYS_TRACE("app_http_download_uri ContentLength=%d ,hret = %d\r\n" , datasize,hret );
 
 	return hret;
 }

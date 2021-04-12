@@ -1,33 +1,46 @@
 #include "status_page.h"
 #include "../usermessage.h"
 #include "libapi_xpos/inc/libapi_gui.h"
-#include "xGui/inc/draw_buf.h"
 #include "pub/code/Unicode.h"
+#include "sdk_readcard.h"
 
 typedef struct _pageinfo{
 	char data[256];
-
 	int  timer;
 }pageinfo;
 
 static e_pagemode s_mode;
 static pageinfo s_info;
 
+int rf_enterAmount_page(long long *llAmount)
+{
+	int ret =0;
+	double result;
+	long long namt = 0;
 
-int enterAmount()
+	ret = calculatorpage2(&result,0, "CalCulator" );
+	if (ret == 0){
+		*llAmount = result*100.00;
+		return SUCC;
+	}
+
+	return FAIL;
+}
+
+static int enterAmount()
 {
 	int ret =0;
 	const char msgstr[64];
 	char oid[32];
 	double result;
 
-	ret = calculatorpage2(&result,0x31, G2U("CalCulator") );
+	ret = calculatorpage2(&result,0x31, "CalCulator");
 	//ret = 0;
 	//result = 20.1;
 	if ( ret == 0)
 	{
 		Sys_GetDateTime(oid);
-		
+
 		sprintf(msgstr,"{\"cmd\":3, \"oid\":\"%s\", \"amt\":\"%0.02f\"}" ,oid , result);
 		ret = mqtt_proc_publish( msgstr);
 		if ( ret == 0)
@@ -39,8 +52,9 @@ int enterAmount()
 		}
 	}
 	return ret;
-	
+
 }
+
 static void paint_status()
 {
 	gui_begin_batch_paint();
@@ -63,9 +77,9 @@ static void paint_waiting()
 }
 static void paint_qr()
 {
-	gui_lcd_set_index(LCD_INDEX_1);
+	Sys_lcd_set_index(0);
 	sdk_showQr( s_info.data);
-	gui_lcd_set_index(LCD_INDEX_2);
+	Sys_lcd_set_index(1);
 
 	gui_begin_batch_paint();
 	gui_clear_dc();
@@ -107,10 +121,7 @@ void status_page()
 	st_gui_message pMsg;
 	s_mode = page_status;
 	memset(s_info,0x00, sizeof(s_info));
-#ifdef WIN32
-	
-#endif
-	setpowersuspend(1);
+	//setpowersuspend(1);
 	standby_page_status();
 
 	while(1){
